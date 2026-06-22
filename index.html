@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>网络攻防自测系统</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Microsoft YaHei",Arial,sans-serif;background:#f0f2f5;color:#333;min-height:100vh}
+.container{max-width:900px;margin:0 auto;padding:20px}
+h1{text-align:center;color:#1a73e8;margin-bottom:20px;font-size:1.8rem}
+.panel{background:#fff;border-radius:10px;padding:20px;margin-bottom:15px;
+       box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+.section-title{font-size:1.1rem;font-weight:bold;margin-bottom:12px;color:#333;
+               border-bottom:2px solid #1a73e8;padding-bottom:6px}
+.option-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px}
+.option-item{display:flex;align-items:center;padding:10px 14px;border:2px solid #ddd;
+             border-radius:8px;cursor:pointer;transition:all 0.2s;font-size:0.95rem}
+.option-item:hover{border-color:#1a73e8;background:#e8f0fe}
+.option-item input{margin-right:10px;transform:scale(1.2);cursor:pointer}
+.btn{padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-size:1rem;
+     transition:all 0.2s;font-weight:bold}
+.btn-primary{background:#1a73e8;color:#fff}
+.btn-primary:hover{background:#1557b0}
+.btn-success{background:#34a853;color:#fff}
+.btn-success:hover{background:#2d8e47}
+.btn-danger{background:#ea4335;color:#fff}
+.btn-danger:hover{background:#c5221f}
+.btn-secondary{background:#9e9e9e;color:#fff}
+.btn-secondary:hover{background:#7d7d7d}
+.btn-warning{background:#f9ab00;color:#fff}
+.btn-warning:hover{background:#d68000}
+.btn:disabled{opacity:0.5;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.col{flex:1;min-width:200px}
+.info-bar{display:flex;justify-content:space-between;align-items:center;
+          padding:10px 15px;background:#e8f0fe;border-radius:8px;margin-bottom:15px;
+          font-size:0.9rem;flex-wrap:wrap;gap:8px}
+.progress-bar-wrap{width:100%;height:8px;background:#ddd;border-radius:4px;overflow:hidden;margin-bottom:5px}
+.progress-bar{height:100%;background:#1a73e8;transition:width 0.3s;border-radius:4px}
+.stat-item{display:inline-flex;align-items:center;gap:4px;font-weight:bold}
+.stat-correct{color:#34a853}
+.stat-wrong{color:#ea4335}
+.stat-total{color:#1a73e8}
+.question-text{font-size:1.05rem;line-height:1.7;margin-bottom:15px;white-space:pre-wrap}
+.type-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.8rem;
+             margin-right:8px;font-weight:bold}
+.type-single{background:#e8f0fe;color:#1a73e8}
+.type-multi{background:#fff3e0;color:#e65100}
+.chapter-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.75rem;
+               background:#f5f5f5;color:#666;margin-bottom:10px}
+.result-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);
+                 display:flex;align-items:center;justify-content:center;z-index:1000;
+                 border-radius:10px}
+.result-card{background:#fff;border-radius:12px;padding:30px;max-width:400px;width:90%;
+             text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+.result-icon{font-size:4rem;margin-bottom:15px}
+.result-title{font-size:1.4rem;font-weight:bold;margin-bottom:10px}
+.result-detail{font-size:1rem;color:#666;margin-bottom:20px;line-height:1.6}
+.wrong-answer-panel{background:#fff3e0;border:2px solid #ff9800;border-radius:10px;
+                     padding:15px;margin-top:15px;max-height:300px;overflow-y:auto}
+.wrong-answer-item{background:#fff;padding:10px;border-radius:6px;margin-bottom:8px;
+                    border-left:4px solid #ea4335}
+.controls-section{display:none}
+.controls-section.active{display:block}
+.chapter-list{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:15px}
+.chapter-btn{padding:6px 12px;border:2px solid #ddd;border-radius:6px;cursor:pointer;
+             font-size:0.85rem;background:#fff;transition:all 0.2s}
+.chapter-btn:hover{border-color:#1a73e8}
+.chapter-btn.selected{background:#1a73e8;color:#fff;border-color:#1a73e8}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:15px}
+.mode-item{padding:10px;border:2px solid #ddd;border-radius:8px;cursor:pointer;
+           text-align:center;font-size:0.9rem;transition:all 0.2s;background:#fff}
+.mode-item:hover{border-color:#1a73e8}
+.mode-item.selected{background:#1a73e8;color:#fff;border-color:#1a73e8}
+.switch-row{display:flex;align-items:center;justify-content:space-between;
+             padding:8px 0;border-bottom:1px solid #eee}
+.switch-label{font-size:0.95rem}
+.switch{position:relative;width:48px;height:26px}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;
+        background:#ccc;border-radius:26px;transition:.3s}
+.slider:before{position:absolute;content:"";height:20px;width:20px;left:3px;bottom:3px;
+               background:#fff;border-radius:50%;transition:.3s}
+input:checked+.slider{background:#1a73e8}
+input:checked+.slider:before{transform:translateX(22px)}
+.number-input{width:70px;padding:6px 10px;border:2px solid #ddd;border-radius:6px;
+              font-size:0.95rem;text-align:center}
+.number-input:focus{outline:none;border-color:#1a73e8}
+.summary-bar{display:flex;justify-content:space-around;flex-wrap:wrap;gap:10px;
+              margin:15px 0}
+.summary-item{text-align:center}
+.summary-num{font-size:1.8rem;font-weight:bold}
+.summary-label{font-size:0.8rem;color:#666}
+.nav-buttons{display:flex;gap:10px;margin-top:15px}
+.nav-buttons .btn{flex:1}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);
+                display:flex;align-items:center;justify-content:center;z-index:2000;
+                display:none}
+.modal-overlay.active{display:flex}
+.modal{background:#fff;border-radius:12px;padding:25px;max-width:500px;width:90%;
+       max-height:80vh;overflow-y:auto}
+.modal h3{text-align:center;color:#1a73e8;margin-bottom:15px}
+.modal-close{float:right;font-size:1.5rem;cursor:pointer;line-height:1}
+.modal-close:hover{color:#ea4335}
+.history-item{padding:8px 0;border-bottom:1px solid #eee}
+.history-item:last-child{border-bottom:none}
+@media(max-width:600px){
+  .option-grid,.mode-grid{grid-template-columns:1fr}
+  .row{flex-direction:column}
+}
+.option-item.selected-correct{border-color:#34a853;background:#e6f4ea}
+.option-item.selected-wrong{border-color:#ea4335;background:#fce8e6}
+.option-item.show-correct{border-color:#34a853;background:#e6f4ea}
+.option-item.show-wrong{border-color:#ea4335;background:#fce8e6}
+.feedback-inline{padding:12px 16px;border-radius:8px;margin-top:12px;font-size:0.95rem;line-height:1.6;animation:fadeIn 0.3s}
+.feedback-correct{background:#e6f4ea;color:#34a853;border-left:4px solid #34a853}
+.feedback-wrong{background:#fce8e6;color:#ea4335;border-left:4px solid #ea4335}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+    <h1 style="margin:0;font-size:1.4rem">网络攻防原理与技术 自测系统</h1>
+    <button class="btn btn-secondary" id="topHomeBtn" style="padding:8px 16px;font-size:0.9rem">返回主页</button>
+  </div>
+
+  <!-- 设置面板 -->
+  <div class="panel" id="settingsPanel">
+    <div class="section-title">章节选择</div>
+    <div class="chapter-list" id="chapterList"></div>
+
+    <div class="section-title">题型选择</div>
+    <div class="option-grid">
+      <label class="option-item"><input type="checkbox" id="typeSingle" checked> 单项选择题</label>
+      <label class="option-item"><input type="checkbox" id="typeMulti" checked> 多项选择题</label>
+    </div>
+
+    <div class="section-title">测试模式</div>
+    <div class="mode-grid">
+      <div class="mode-item selected" data-mode="all">全部题目</div>
+      <div class="mode-item" data-mode="random">随机题目</div>
+    </div>
+
+    <div class="section-title">功能选项</div>
+    <div class="switch-row">
+      <span class="switch-label">错题自动加入错题本</span>
+      <label class="switch"><input type="checkbox" id="autoWrongBank" checked><span class="slider"></span></label>
+    </div>
+    <div class="switch-row">
+      <span class="switch-label">做题后即时提示正误及答案</span>
+      <label class="switch"><input type="checkbox" id="instantFeedback" checked><span class="slider"></span></label>
+    </div>
+    <div class="switch-row">
+      <span class="switch-label">显示题库遍历进度条</span>
+      <label class="switch"><input type="checkbox" id="showProgress" checked><span class="slider"></span></label>
+    </div>
+    <div class="switch-row">
+      <span class="switch-label">做过的不再做（跳过已做题目）</span>
+      <label class="switch"><input type="checkbox" id="skipDone"><span class="slider"></span></label>
+    </div>
+    <div class="switch-row">
+      <span class="switch-label">做过的接着做（从断点继续）</span>
+      <label class="switch"><input type="checkbox" id="redoDone"><span class="slider"></span></label>
+    </div>
+    <div class="switch-row">
+      <span class="switch-label">随机题量</span>
+      <span><input type="number" class="number-input" id="questionCount" value="20" min="1"></span>
+    </div>
+
+    <button class="btn btn-primary" style="width:100%;margin-top:15px" id="startBtn">开始测试</button>
+  </div>
+
+  <!-- 测试面板 -->
+  <div class="panel controls-section" id="testPanel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <span style="font-weight:bold;color:#1a73e8">测试中</span>
+      <button class="btn btn-secondary" id="testHomeBtn" style="padding:6px 14px;font-size:0.85rem">返回主页</button>
+    </div>
+    <div class="info-bar">
+      <span class="stat-item stat-total">已做: <span id="doneCount">0</span>/<span id="totalCount">0</span></span>
+      <span class="stat-item stat-correct">正确: <span id="correctCount">0</span></span>
+      <span class="stat-item stat-wrong">错误: <span id="wrongCount">0</span></span>
+      <span class="stat-item">正确率: <span id="accuracy">0</span>%</span>
+    </div>
+
+    <div class="progress-bar-wrap" id="progressWrap" style="display:none">
+      <div class="progress-bar" id="progressBar" style="width:0%"></div>
+    </div>
+
+    <div class="chapter-badge" id="questionMeta"></div>
+    <div class="question-text" id="questionText"></div>
+    <div class="option-grid" id="optionsGrid"></div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" id="prevBtn">上一题</button>
+      <button class="btn btn-primary" id="submitBtn">提交答案</button>
+      <button class="btn btn-success" id="nextBtn" style="display:none">下一题</button>
+    </div>
+  </div>
+
+  <!-- 结果面板 -->
+  <div class="panel controls-section" id="resultPanel">
+    <div class="section-title">测试结果</div>
+    <div class="summary-bar">
+      <div class="summary-item">
+        <div class="summary-num" id="resTotal">0</div>
+        <div class="summary-label">总题数</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-num stat-correct" id="resCorrect">0</div>
+        <div class="summary-label">正确数</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-num stat-wrong" id="resWrong">0</div>
+        <div class="summary-label">错误数</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-num" id="resAccuracy">0%</div>
+        <div class="summary-label">正确率</div>
+      </div>
+    </div>
+    <div class="row">
+      <button class="btn btn-primary" id="reviewWrongBtn">查看错题</button>
+      <button class="btn btn-warning" id="reviewAllBtn">查看全部</button>
+      <button class="btn btn-secondary" id="restartBtn">重新开始</button>
+    </div>
+    <div class="wrong-answer-panel" id="wrongAnswerPanel" style="display:none"></div>
+  </div>
+
+  <!-- 错题本面板 -->
+  <div class="panel controls-section" id="wrongBankPanel">
+    <div class="section-title">错题本</div>
+    <div class="summary-bar" style="margin-bottom:15px">
+      <div class="summary-item">
+        <div class="summary-num" id="bankCount">0</div>
+        <div class="summary-label">错题总数</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-num stat-correct" id="bankLearned">0</div>
+        <div class="summary-label">已掌握</div>
+      </div>
+    </div>
+    <div class="row">
+      <button class="btn btn-danger" id="clearBankBtn">清空错题本</button>
+      <button class="btn btn-success" id="practiceBankBtn">专项练习错题</button>
+      <button class="btn btn-secondary" id="backHomeBtn">返回主页</button>
+    </div>
+    <div id="wrongBankList"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ==================== 题库数据 ====================
+  const CHAPTERS = [
+    {id:1,name:"第1章 网络安全概述",sec:"1.6"},
+    {id:3,name:"第3章 网络安全基础",sec:"3.6"},
+    {id:4,name:"第4章 网络侦察",sec:"4.5"},
+    {id:5,name:"第5章 拒绝服务攻击",sec:"5.6"},
+    {id:6,name:"第6章 恶意代码",sec:"6.5"},
+    {id:7,name:"第7章 口令攻击",sec:"7.6"},
+    {id:8,name:"第8章 网络监听",sec:"8.6"},
+    {id:10,name:"第10章 Web安全",sec:"10.12"},
+    {id:11,name:"第11章 社会工程",sec:"11.5"},
+    {id:12,name:"第12章 防火墙",sec:"12.7"},
+    {id:13,name:"第13章 入侵检测",sec:"13.7"}
+  ];
+
+  const QUESTIONS = [
+    // ========== 第1章 ==========
+    {id:101,chapter:1,type:"single",text:"安全属性\"CIA\"不包括（ ）。",options:["A. 完整性","B. 机密性","C. 可用性","D. 可控性"],answer:"D"},
+    {id:102,chapter:1,type:"single",text:"属于被动攻击的是（ ）。",options:["A. 中断","B. 截获","C. 篡改","D. 伪造"],answer:"B"},
+    {id:103,chapter:1,type:"single",text:"下列攻击中，主要针对可用性的攻击是（ ）。",options:["A. 中断","B. 截获","C. 篡改","D. 伪造"],answer:"A"},
+    {id:104,chapter:1,type:"single",text:"下列攻击中，主要针对完整性的攻击是（ ）。",options:["A. 中断","B. 截获","C. 篡改","D. 伪造"],answer:"C"},
+    {id:105,chapter:1,type:"single",text:"下列攻击中，主要针对机密性的攻击是（ ）。",options:["A. 中断","B. 截获","C. 篡改","D. 伪造"],answer:"B"},
+    {id:106,chapter:1,type:"single",text:"元属性\"可用性\"不包括的子属性是（ ）。",options:["A. 可靠性","B. 稳定性","C. 可生存性","D. 可控性"],answer:"D"},
+    {id:107,chapter:1,type:"single",text:"信息在传送过程中，如果接收方接收到的信息与发送方发送的信息不同，则信息的（ ）遭到了破坏。",options:["A. 可用性","B. 不可否认性","C. 完整性","D. 机密性"],answer:"C"},
+    {id:108,chapter:1,type:"single",text:"重放攻击破坏了信息的（ ）。",options:["A. 机密性","B. 可控性","C. 可鉴别性","D. 可用性"],answer:"C"},
+    {id:109,chapter:1,type:"single",text:"信息在传送过程中，通信量分析破坏了信息的（ ）。",options:["A. 可用性","B. 不可否认性","C. 完整性","D. 机密性"],answer:"D"},
+    {id:110,chapter:1,type:"single",text:"P2DR 模型中的\"D\"指的是（ ）。",options:["A. 策略","B. 检测","C. 保护","D. 恢复"],answer:"B"},
+    {id:111,chapter:1,type:"single",text:"下列攻击方式中，最能代表网络战攻击水平的是（ ）。",options:["A. 口令破解","B. APT 攻击","C. 缓冲区溢出攻击","D. 网络监听"],answer:"B"},
+    {id:112,chapter:1,type:"multi",text:"以保护信息为主的安全元属性包括（ ）。",options:["A. 机密性","B. 可控性","C. 可鉴别性","D. 可用性"],answer:"AC"},
+    {id:113,chapter:1,type:"multi",text:"以保护信息系统为主的安全元属性包括（ ）。",options:["A. 机密性","B. 可控性","C. 可鉴别性","D. 可用性"],answer:"BD"},
+    {id:114,chapter:1,type:"multi",text:"网络空间（Cyberspace）要保护的核心对象中，在技术层面反映\"网络（Cyber）\"属性的对象包括（ ）。",options:["A. 设施","B. 用户","C. 操作","D. 数据"],answer:"AD"},
+    {id:115,chapter:1,type:"multi",text:"网络空间（Cyberspace）要保护的核心对象中，在社会层面反映\"空间（space）\"属性的对象包括（ ）。",options:["A. 设施","B. 用户","C. 操作","D. 数据"],answer:"BC"},
+    {id:116,chapter:1,type:"multi",text:"P2DR 模型中，\"P2\"指的是（ ）。",options:["A. 检测","B. 保护","C. 响应","D. 策略"],answer:"BD"},
+    {id:117,chapter:1,type:"multi",text:"IATF 定义的与信息安全有关的核心要素包括（ ）。",options:["A. 策略（Policy）","B. 人（People）","C. 技术（Technology）","D. 操作（Operation）"],answer:"BCD"},
+    {id:118,chapter:1,type:"multi",text:"人为的恶意攻击分为被动攻击和主动攻击，在以下的攻击类型中属于主动攻击的是（ ）。",options:["A. 网络监听","B. 数据篡改及破坏","C. 身份假冒","D. 数据流分析"],answer:"BC"},
+    {id:119,chapter:1,type:"multi",text:"元安全属性\"可用性\"主要包括以下安全属性（ ）。",options:["A. 可靠性","B. 稳定性","C. 可维护性","D. 可生存性"],answer:"ABCD"},
+    {id:120,chapter:1,type:"multi",text:"元安全属性\"可鉴别性\"主要包括以下安全属性（ ）。",options:["A. 完整性","B. 真实性","C. 不可抵赖性","D. 稳定性"],answer:"ABC"},
+    // ========== 第3章 ==========
+    {id:301,chapter:3,type:"single",text:"下面有关ARP 协议的描述中，（ ）是错误的。",options:["A. ARP 欺骗只能被用于本地网络","B. ARP 欺骗可在本地网络以外成功使用","C. ARP 协议可被用来进行拒绝服务攻击","D. 一般情况下，当主机收到 ARP 请求或响应时，需要刷新其ARP 缓存"],answer:"B"},
+    {id:302,chapter:3,type:"single",text:"下列认证方式中，不属于 OSPF 协议定义的认证方法是（ ）。",options:["A. NULL 认证","B. 简单口令认证","C. MD5 加密认证","D. SHA1 加密认证"],answer:"D"},
+    {id:303,chapter:3,type:"single",text:"2011 年出现的一种针对路由协议的攻击方法，俗称\"数字大炮\"，这种攻击利用了（ ）路由协议存在的安全缺陷。",options:["A. RIP","B. OSPF","C. BGP","D. IGRP"],answer:"C"},
+    {id:304,chapter:3,type:"single",text:"攻击者在攻击一个目标时，经常用伪造的 IP 地址来发送攻击数据包，主要原因是（ ）。",options:["A. 路由器在转发 IP 包时不检查IP 源地址","B. 路由器在转发 IP 包时检查IP 源地址","C. 路由器在转发 IP 包时检查IP 目的地址","D. 路由器在转发 IP 包时不检查IP 目的地址"],answer:"A"},
+    {id:305,chapter:3,type:"single",text:"UDP 协议可被攻击者用来进行（ ）。",options:["A. 监听","B. 风暴型拒绝服务攻击","C. 连接劫持","D. 传播木马"],answer:"B"},
+    {id:306,chapter:3,type:"single",text:"TCP 协议报文中，与TCP 连接建立和释放过程无关的标志位是（ ）。",options:["A. SYN","B. FIN","C. ACK","D. URG"],answer:"D"},
+    {id:307,chapter:3,type:"single",text:"互联网中大量存在的\"中间盒子\"不符合互联网设计之初提出的（ ）原则，导致了大量网络攻击事件的发生。",options:["A. 端到端","B. 尽力而为","C. 分组交换","D. 分层设计"],answer:"A"},
+    {id:308,chapter:3,type:"single",text:"下列路由协议中，安全性最高的是（ ）。",options:["A. RIPv1","B. RIPng","C. RIPv2","D. 所有版本的RIP 协议"],answer:"B"},
+    {id:309,chapter:3,type:"single",text:"下列路由协议中，使用TCP 作为传输协议的是（ ）。",options:["A. RIP","B. OSPF","C. BGP","D. RIPng"],answer:"C"},
+    {id:310,chapter:3,type:"single",text:"下列交换方式中，最容易被攻击的是（ ）。",options:["A. 分组交换","B. 电路交换","C. 专线","D. 报文交换"],answer:"A"},
+    {id:311,chapter:3,type:"multi",text:"很多单位的安全管理员会在防火墙的设置中禁用因特网控制管理协议（ICMP），主要原因是攻击者常常使用 ICMP 进行（ ）。",options:["A. 拒绝服务攻击","B. 隐蔽通信","C. 主机扫描","D. 会话劫持"],answer:"ABC"},
+    {id:312,chapter:3,type:"multi",text:"TCP 协议可被攻击者用来进行（ ）。",options:["A. 拒绝服务攻击","B. 连接劫持","C. 网络端口扫描","D. 网络监听"],answer:"ABC"},
+    {id:313,chapter:3,type:"multi",text:"IP 协议可以被攻击者用来进行（ ）。",options:["A. 拒绝服务攻击","B. 源路由攻击","C. 绕过防火墙","D. 网络端口扫描"],answer:"ABC"},
+    {id:314,chapter:3,type:"multi",text:"下列协议中，使用 UDP 作为传输协议的是（ ）。",options:["A. FTP","B. DNS","C. SNMP","D. RIP"],answer:"BCD"},
+    {id:315,chapter:3,type:"multi",text:"DNS 协议易遭受的网络攻击包括（ ）。",options:["A. 缓存投毒","B. 拒绝服务攻击","C. 域名解析劫持","D. 溢出攻击"],answer:"ABC"},
+    {id:316,chapter:3,type:"multi",text:"Web 浏览器和服务器使用 HTTPS 协议进行通信，可确保通信的（ ）。",options:["A. 机密性","B. 完整性","C. 可靠性","D. 服务器的真实性"],answer:"ABD"},
+    {id:317,chapter:3,type:"multi",text:"下列攻击中，针对 OSPF 协议的攻击包括（ ）。",options:["A. 篡改IP 包中的协议字段","B. 最大年龄（Max Age attack）攻击","C. 最大序列号攻击","D. LSA 报文重放攻击"],answer:"ABCD"},
+    // ========== 第4章 ==========
+    {id:401,chapter:4,type:"single",text:"攻击者如果想查找互联网上某个地方的联网摄像头，最合适的搜索引擎是（ ）。",options:["A. 百度","B. ZoomEye","C. 360 搜索引擎","D. 搜狗"],answer:"B"},
+    {id:402,chapter:4,type:"single",text:"如果在百度上用关键词查找符合要求的Word 文件，则应使用的百度命令是（ ）。",options:["A. filetype","B. site","C. Inurl","D. index"],answer:"A"},
+    {id:403,chapter:4,type:"single",text:"下列词当中，不属于Shodan 搜索引擎网络服务类过滤词的是（ ）。",options:["A. net","B. port","C. os","D. ip"],answer:"D"},
+    {id:404,chapter:4,type:"single",text:"如果要查询 nju.edu.cn 是在哪个域名注册机构注册的，最合适的 Whois 数据库是（ ）。",options:["A. CNNIC 的Whois 数据库","B. ICANN 的 Whois 数据库","C. IANA 的 Whois 数据库","D. RIPE 的Whois 数据库"],answer:"A"},
+    {id:405,chapter:4,type:"single",text:"如果要查询 yahoo.com 是在哪个域名注册机构注册的，最合适的 Whois 数据库是（ ）。",options:["A. CNNIC 的Whois 数据库","B. ICANN 的 Whois 数据库","C. IANA 的 Whois 数据库","D. RIPE 的Whois 数据库"],answer:"B"},
+    {id:406,chapter:4,type:"single",text:"如果要查询美国哈佛大学校园内的一个IP 地址的相关信息，最合适的Whois 数据库是（ ）。",options:["A. RIPE 的Whois 数据库","B. APNIC 的Whois 数据库","C. ARIN 的Whois 数据库","D. LACNIC 的 Whois 数据库"],answer:"C"},
+    {id:407,chapter:4,type:"single",text:"如果要查询英国牛津大学校园内的一个IP 地址的相关信息，最合适的Whois 数据库是（ ）。",options:["A. RIPE 的Whois 数据库","B. APNIC 的Whois 数据库","C. ARIN 的Whois 数据库","D. LACNIC 的 Whois 数据库"],answer:"A"},
+    {id:408,chapter:4,type:"single",text:"如果要查询江苏南京某小区住户家里通过宽带接入互联网的电脑的IP 地址的相关信息，最合适的Whois 数据库是（ ）。",options:["A. RIPE 的Whois 数据库","B. APNIC 的Whois 数据库","C. ARIN 的Whois 数据库","D. LACNIC 的 Whis 数据库"],answer:"B"},
+    {id:409,chapter:4,type:"single",text:"如果想了解一个域名注册机构是不是合法的，则应该在（ ）的网站上查询。",options:["A. ICANN","B. APNIC","C. CNNIC","D. ARIN"],answer:"A"},
+    {id:410,chapter:4,type:"single",text:"下列 Whois 数据库中，最有可能查询到一个后缀为.com 的域名的拥有者的相关信息的是（ ）。",options:["A. CNNIC 的Whois 数据库","B. ICANN 的 Whois 数据库","C. IANA 的 Whois 数据库","D. MarkMonitor Inc.的 Whois 数据库"],answer:"D"},
+    {id:411,chapter:4,type:"single",text:"支持域名的IP 及其所有者信息查询的是（ ）。",options:["A. Whois 数据库","B. DNS","C. 目录服务","D. 搜索引擎"],answer:"A"},
+    {id:412,chapter:4,type:"single",text:"对于TCP SYN 扫描，如果发送一个SYN 标志置1 的请求包后，对方返回（ ）的响应包则表明目标端口处于打开状态。",options:["A. ACK 标志置1","B. SYN 和ACK 标志置1","C. SYN 和 RST 标志置 1","D. RST 和ACK 标志置1"],answer:"B"},
+    {id:413,chapter:4,type:"single",text:"网络扫描一般不会使用（ ）进行。",options:["A. IP 协议","B. DNS 协议","C. TCP 协议","D. ICMP 协议"],answer:"B"},
+    {id:414,chapter:4,type:"single",text:"为了防止网络扫描行为被网络安全系统发现，不应当采用（ ）策略。",options:["A. 随机端口扫描","B. 分布式扫描","C. 连续端口快速扫描","D. 伪造源地址"],answer:"C"},
+    {id:415,chapter:4,type:"single",text:"端口扫描的主要功能是（ ）。",options:["A. 探测目标主机上开放了哪些网络服务","B. 探测主机是否开机","C. 识别操作系统的类型","D. 判断目标主机上是否存在某个已公开的漏洞"],answer:"A"},
+    {id:416,chapter:4,type:"single",text:"漏洞扫描能够识别的漏洞类型是（ ）。",options:["A. 已知漏洞","B. 未知漏洞","C. 已知漏洞和未知漏洞","D. 所有漏洞"],answer:"A"},
+    {id:417,chapter:4,type:"single",text:"下列扫描方式中，使用 ICMP 协议的是（ ）。",options:["A. TCP FIN 扫描","B. TCP SYN 扫描","C. 漏洞扫描","D. ping 扫描"],answer:"D"},
+    {id:418,chapter:4,type:"multi",text:"用 ping 探测目标主机，如果得不到其响应，可能的原因有（ ）。",options:["A. 目标主机没开机","B. 防火墙阻止了 ping 请求","C. 目标主机路由不可达","D. 肯定是没开机"],answer:"ABC"},
+    {id:419,chapter:4,type:"multi",text:"可用于进行网络主机或端口扫描的TCP/IP 协议有（ ）。",options:["A. TCP","B. ICMP","C. UDP","D. ARP"],answer:"ABC"},
+    {id:420,chapter:4,type:"multi",text:"可用于操作系统识别的特征包括（ ）。",options:["A. 网络协议指纹","B. 旗标（banner）","C. TCP 协议可选项","D. 开放网络端口信息"],answer:"ABCD"},
+    {id:421,chapter:4,type:"multi",text:"TCP SYN 扫描中，利用的标志位包括（ ）。",options:["A. SYN","B. ACK","C. URG","D. RST"],answer:"ABD"},
+    {id:422,chapter:4,type:"multi",text:"网络扫描包括（ ）。",options:["A. 主机扫描","B. 端口扫描","C. 操作系统识别","D. 漏洞扫描"],answer:"ABCD"},
+    {id:423,chapter:4,type:"multi",text:"如果 ICMP 协议被防火墙封锁，则下列扫描方式很可能不准确（ ）。",options:["A. TCP 全连接扫描","B. TCP SYN 扫描","C. UDP 扫描","D. ping 扫描"],answer:"CD"},
+    // ========== 第5章 ==========
+    {id:501,chapter:5,type:"single",text:"某单位联在公网上的Web 服务器的访问速度突然变得比平常慢很多，甚至无法访问到，这台Web 服务器最有可能遭到的网络攻击是（ ）。",options:["A. 拒绝服务攻击","B. SQL 注入攻击","C. 木马入侵","D. 缓冲区溢出攻击"],answer:"A"},
+    {id:502,chapter:5,type:"single",text:"2018 年 2 月，知名代码托管网站GitHub 遭遇了大规模 Memcached DDoS 攻击，这种攻击最有可能属于（ ）。",options:["A. 直接型DDoS","B. 反射型DDoS","C. 剧毒包型DoS","D. TCP 连接耗尽型DDoS 攻击"],answer:"B"},
+    {id:503,chapter:5,type:"single",text:"2016 年 10 月 21 日，美国东海岸地区遭受大面积网络瘫痪，其攻击流量的来源之一是感染了（ ）僵尸的设备。",options:["A. Sinit","B. Agobot","C. Mirai","D. Slapper"],answer:"C"},
+    {id:504,chapter:5,type:"single",text:"拒绝服务攻击导致攻击目标瘫痪的根本原因是（ ）。",options:["A. 网络和系统资源是有限的","B. 防护能力弱","C. 攻击能力太强","D. 无法确定"],answer:"A"},
+    {id:505,chapter:5,type:"single",text:"下列攻击中，不属于拒绝服务攻击的是（ ）。",options:["A. SYN Flood","B. Ping of death","C. UDP Flood","D. SQL Injection"],answer:"D"},
+    {id:506,chapter:5,type:"single",text:"下列安全机制中，主要用于缓解拒绝服务攻击造成的影响的是（ ）。",options:["A. 杀毒软件","B. 入侵检测","C. 流量清洗","D. 防火墙"],answer:"C"},
+    {id:507,chapter:5,type:"single",text:"在风暴型拒绝服务攻击中，如果攻击者直接利用控制的僵尸主机向攻击目标发送攻击报文，则这种拒绝服务攻击属于（ ）。",options:["A. 反射型拒绝服务攻击","B. 直接型拒绝服务攻击","C. 碎片攻击","D. 剧毒包型拒绝服务攻击"],answer:"B"},
+    {id:508,chapter:5,type:"single",text:"拒绝服务攻击除了瘫痪目标这一直接目的外，在网络攻防行动中，有时是为了（ ），帮助安装的后门生效或提升权限。",options:["A. 重启目标系统","B. 窃听","C. 传播木马","D. 控制主机"],answer:"A"},
+    {id:509,chapter:5,type:"single",text:"对 DNS 实施拒绝服务攻击，主要目的是导致 DNS 瘫痪进而导致网络瘫痪，但有时也是为了（ ）。",options:["A. 假冒目标DNS","B. 权限提升","C. 传播木马","D. 控制主机"],answer:"A"},
+    {id:510,chapter:5,type:"multi",text:"很多单位的网络安全管理员在配置网络防火墙时，会阻止 ICMP 协议通过，这样做的主要目的是防止攻击者对单位网络实施（ ）。",options:["A. 木马传播","B. 主机扫描","C. 端口扫描","D. 拒绝服务攻击"],answer:"BD"},
+    {id:511,chapter:5,type:"multi",text:"反射型拒绝服务攻击在选择用作攻击流量的网络协议时，通常依据以下原则（ ）。",options:["A. 互联网上有很多可探测到的支持该协议的服务器","B. 部分协议的请求报文大小远小于响应报文的大小","C. 协议具有无连接特性","D. 协议具有有连接特性"],answer:"ABC"},
+    {id:512,chapter:5,type:"multi",text:"DNS 经常被用作反射式DDoS 攻击的反射源，主要原因包括（ ）。",options:["A. DNS 查询的响应包远大于请求包","B. DNS 报文比较短","C. 区传送或递归查询过程中 DNS 响应报文数量远大于请求报文数量","D. 因特网上有很多DNS 服务器"],answer:"ACD"},
+    {id:513,chapter:5,type:"multi",text:"下列选项中，影响了目标系统可用性的有（ ）。",options:["A. 拒绝服务攻击","B. 网络窃听","C. 控制目标系统并修改关键配置使得系统无法正常运行","D. 在目标系统上安装后门"],answer:"AC"},
+    {id:514,chapter:5,type:"multi",text:"近几年，物联网设备大量被攻击者控制，成为僵尸网络的一部分。从攻击者的角度来，看选择物联网设备作为控制对象的主要因素包括（ ）。",options:["A. 物联网设备数量大","B. 物联网设备安全防护弱","C. 物联网设备计算能力弱","D. 物联网设备安全漏洞多"],answer:"ABD"},
+    {id:515,chapter:5,type:"multi",text:"下列协议中，可用作拒绝服务攻击的有（ ）。",options:["A. ICMP","B. HTTP","C. TCP","D. UDP"],answer:"ABCD"},
+    {id:516,chapter:5,type:"multi",text:"下列协议中，可用作反射型拒绝服务攻击的包括是（ ）。",options:["A. UDP","B. SSDP","C. TCP","D. NTP"],answer:"BD"},
+    {id:517,chapter:5,type:"multi",text:"当拒绝服务攻击发生时，被攻击目标的网络安全人员通常可采取的措施包括（ ）。",options:["A. 用流量清洗设备对攻击流量进行清洗","B. 断开网络，待攻击停止后再连通","C. 关机","D. 不采取任何措施"],answer:"AB"},
+    {id:518,chapter:5,type:"multi",text:"下列选项中，可用于检测拒绝服务攻击的有（ ）。",options:["A. DoS 攻击工具的特征","B. 网络异常流量特征","C. 源IP 地址","D. 目的地址"],answer:"AB"},
+    // ========== 第6章 ==========
+    {id:601,chapter:6,type:"single",text:"关闭网络端口（ ）可阻止勒索病毒 WannaCry 传播。",options:["A. 23","B. 445","C. 115","D. 25"],answer:"B"},
+    {id:602,chapter:6,type:"single",text:"计算机蠕虫（Worm）的主要传播途径是（ ）。",options:["A. 网络系统漏洞","B. 移动存储设备","C. 电子邮件","D. 宿主程序的运行"],answer:"A"},
+    {id:603,chapter:6,type:"single",text:"同计算机木马和蠕虫相比，计算机病毒最重要的特点是（ ）。",options:["A. 寄生性","B. 破坏性","C. 潜伏性","D. 自我复制"],answer:"D"},
+    {id:604,chapter:6,type:"single",text:"下列恶意代码中，传播速度最快的是（ ）。",options:["A. 计算机病毒","B. 计算机木马","C. 计算机蠕虫","D. 病毒和木马"],answer:"C"},
+    {id:605,chapter:6,type:"single",text:"对木马的可执行文件 readme.exe，为了诱骗用户双击执行，下列选项中，最好的隐藏方式是（ ）。",options:["A. 文件全名为readme.txt.exe，文件图标为TXT 文档默认图标","B. 文件全名为readme.txt，文件图标为TXT 文档默认图标","C. 文件全名为readme.exe，文件图标为EXE 文件默认图标","D. 文件全名为readme.exe.txt，文件图标为TXT 文档默认图标"],answer:"A"},
+    {id:606,chapter:6,type:"single",text:"下列文件类型中，感染木马可能性最小的是（ ）。",options:["A. exe 文件","B. txt 文件","C. doc 文件","D. ppt 文件"],answer:"B"},
+    {id:607,chapter:6,type:"single",text:"很多网银登录界面上的密码输入编辑框处要求用户下载并安装银行提供的安全控件，安全控件的主要目的是阻止木马（ ）。",options:["A. 窃取用户通过键盘输入的密码","B. 控制用户主机","C. 窃取用户主机操作系统的登录密码","D. 窃取用户的数字证书"],answer:"A"},
+    {id:608,chapter:6,type:"single",text:"根据微软的恶意代码命名规范解读 Trojan:Win32/Reveton.T!lnk 恶意代码的基本信息，正确的是（ ）。",options:["A．这是一个蠕虫程序","B．该病毒存在变种","C．该木马使用Windows 图片文件扩展名来伪装自己","D．该木马的目标运行平台包括 64 位 Windows 系统"],answer:"B"},
+    {id:609,chapter:6,type:"multi",text:"计算机木马可通过（ ）进行传播。",options:["A. 移动存储设备","B. 电子邮件","C. Office 文档","D. Web 网页"],answer:"ABCD"},
+    {id:610,chapter:6,type:"multi",text:"可能会被计算机木马用作远程回传信息的方法有（ ）。",options:["A. 网盘","B. 电子邮件","C. 人工拷贝","D. 与木马控制端直接建立TCP 连接"],answer:"ABD"},
+    {id:611,chapter:6,type:"multi",text:"网络钓鱼邮件附件中常用来携带木马的文档文件类型有（ ）。",options:["A. DOC/DOCX","B. PPT/PPTX","C. XLS/XLSX","D. PDF"],answer:"ABCD"},
+    {id:612,chapter:6,type:"multi",text:"常用的木马启动方式包括（ ）。",options:["A. 开机自启动","B. Windows 中的计划任务","C. 通过DLL 启动","D. 文件浏览自动播放"],answer:"ABCD"},
+    {id:613,chapter:6,type:"multi",text:"杀毒软件为了防止恶意代码侵入计算机，通常要监控Windows系统中的（ ）。",options:["A. 注册表","B. 系统文件","C. 用户的文本文件","D. Office 文档"],answer:"ABD"},
+    {id:614,chapter:6,type:"multi",text:"计算机木马在运行过程中的隐藏方法有（ ）。",options:["A. 正常运行","B. 木马DLL","C. 远程线程插入","D. 进程列表欺骗"],answer:"BCD"},
+    {id:615,chapter:6,type:"multi",text:"下列选项中，远程控制木马隐藏其通信的方式有（ ）。",options:["A. 端口复用","B. 通信内容隐藏在ICMP 协议报文中","C. 通信内容隐藏在 HTTP 协议报文中","D. 直接建立TCP 连接进行明文通信"],answer:"ABC"},
+    {id:616,chapter:6,type:"multi",text:"木马为了提高通信的隐蔽能力，通常不会采取的策略是（ ）。",options:["A. 快速将窃取的数据传回来","B. 少量多次回传窃取的数据","C. 将被控主机上所有文件全部打包回传","D. 明文传输"],answer:"ACD"},
+    {id:617,chapter:6,type:"multi",text:"恶意代码判断其运行环境是否为沙箱的依据包括（ ）。",options:["A. 检查可用的CPU 数量","B. 检查是否在常用虚拟机中运行","C. 检查是否在常见沙箱中运行","D. 检查硬盘大小"],answer:"ABC"},
+    // ========== 第7章 ==========
+    {id:701,chapter:7,type:"single",text:"现有研究表明，人类构建的口令服从（ ）。",options:["A. 正态分布","B. 均匀分布","C. Zipf 分布","D. 随机分布"],answer:"C"},
+    {id:702,chapter:7,type:"single",text:"2014 年 12 月 25 日，12306 网站部分用户信息在因特网上疯传，黑客获得这些用户信息的最可能方式是（ ）。",options:["A. 撞库","B. 洗库","C. 12306 网站管理员故意泄密","D. 钓鱼邮件"],answer:"A"},
+    {id:703,chapter:7,type:"single",text:"下列国民口令中，对于中文网民而言破解较容易，而对英文网民而言破解难度较大的是（ ）。",options:["A. 123456","B. woaini1314","C. 111111","D. 123123"],answer:"B"},
+    {id:704,chapter:7,type:"single",text:"如果一个网站中有高达 99.5 %的用户口令由字母和数字共同构成，就意味着该网站在运行不久就执行了（ ）的口令策略。",options:["A. 随机无限制","B. 字母 + 特殊字符","C. 数字 + 字母","D. 数字 + 特殊字符"],answer:"C"},
+    {id:705,chapter:7,type:"single",text:"如果一个网站的口令数据库中，长度为11 位数字串的用户口令中，有大量的口令包含手机号，则这个网站很可能是（ ）。",options:["A. 英文网站","B. 中文网站","C. 法语网站","D. 阿拉伯语网站"],answer:"B"},
+    {id:706,chapter:7,type:"single",text:"英文网站 Rootkit 用户的口令使用个人信息相较于中文网站 12306 的用户口令要少很多，最可能的原因是（ ）。",options:["A. 中文用户更倾向于在口令中使用个人信息","B. 英文用户的安全意识强","C. 只是一种偶然现象，没什么规律","D. Rootkit 网站是黑客论坛，用户的安全意识强且具有更丰富的安全专业知识"],answer:"D"},
+    {id:707,chapter:7,type:"single",text:"下列口令攻击算法中，需要使用用户个人信息的是（ ）。",options:["A. PCFG 漫步攻击算法","B. Markov 漫步攻击算法","C. Targeted-Markov 算法","D. 穷举攻击"],answer:"C"},
+    {id:708,chapter:7,type:"single",text:"下列身份认证方法中，简单易实现、成本较低的认证方法是（ ）。",options:["A. 静态口令认证","B. 用户特征认证","C. 密码学认证","D. 信物认证"],answer:"A"},
+    {id:709,chapter:7,type:"single",text:"利用掌握的某网络应用账号的用户名和口令，在互联网上尝试登录其它网络应用的行为称为（ ）。",options:["A. 撞库","B. 洗库","C. 脱库","D. 解库"],answer:"A"},
+    {id:710,chapter:7,type:"single",text:"下列方法中，用于自动化检测口令文件或数据库泄露的方法是（ ）。",options:["A. IDS","B. Honeybot","C. Honeynet","D. Honeywords"],answer:"D"},
+    // ========== 第8章 ==========
+    {id:801,chapter:8,type:"single",text:"网卡工作在（ ）模式时，对于接收到的数据帧，不会检查其帧头信息，而是一律产生硬件中断，通知操作系统进行处理。",options:["A. 正常","B. 混杂","C. 加密","D. 杂凑"],answer:"B"},
+    {id:802,chapter:8,type:"single",text:"主机网卡在正常工作时，会接收目的MAC 地址为（ ）的数据帧。",options:["A. 本机MAC 地址和广播地址","B. 网关MAC 地址和广播地址","C. 本机MAC 地址和网关MAC 地址","D. 任意主机的MAC 地址"],answer:"A"},
+    {id:803,chapter:8,type:"single",text:"在交换式网络环境中，网络管理员通常通过（ ）技术实施网络监听。",options:["A. 端口镜像","B. MAC 攻击","C. 端口盗用","D. ARP 欺骗"],answer:"A"},
+    {id:804,chapter:8,type:"single",text:"虚假的MAC 地址记录充满了交换机的 MAC 地址表，这是（ ）攻击的表现形式。",options:["A. 端口镜像","B. MAC 攻击","C. 端口盗用","D. ARP 欺骗"],answer:"B"},
+    {id:805,chapter:8,type:"single",text:"ARP 木马利用感染主机向网络发送大量虚假 ARP 报文，导致网络访问不稳定。向被攻击主机发送的虚假ARP 报文中，源IP 地址为（ ），源MAC 地址为（ ）。",options:["A. 网关IP 地址","B. 感染木马的主机 IP 地址","C. 网关MAC 地址","D. 感染木马的主机 MAC 地址"],answer:"AD"},
+    {id:806,chapter:8,type:"single",text:"为了防御网络监听，最常用的方法是（ ）。",options:["A. 采用物理传输（非网络）","B. 信息加密","C. 无线传输","D. 使用专线传输"],answer:"B"},
+    {id:807,chapter:8,type:"single",text:"网络监听的主要攻击目标是通信的（ ）。",options:["A. 机密性","B. 可用性","C. 完整性","D. 可控性"],answer:"A"},
+    {id:808,chapter:8,type:"single",text:"在某学校网络安全课程实验中，很多同学发现自己用 Wireshark 可以抓到使用 WebMail 登录学校邮箱时输入的用户名和口令，但却看不到登录 QQ 邮箱时输入的用户名和口令，最可能的原因是（ ）。",options:["A. QQ 邮箱服务器只允许HTTPS 协议登录","B. 学校邮箱服务器只允许HTTPS 协议登录","C. Wireshark 安装或使用方法不对","D. QQ 邮箱服务器只允许HTTP 协议登录"],answer:"A"},
+    {id:809,chapter:8,type:"single",text:"为了实现网络监听，需要将网卡置为（ ）。",options:["A. 混杂模式","B. 广播模式","C. 单播模式","D. 正常模式"],answer:"A"},
+    {id:810,chapter:8,type:"single",text:"如果攻击者要利用ARP 欺骗成功地实现中间人攻击，必须（ ）。",options:["A. 只需污染发送者的ARP 缓存","B. 只需污染接收者的ARP 缓存","C. 必须同时污染发送者和接收者的ARP 缓存","D. 污染发送者的ARP 缓存或污染接收者的ARP 缓存"],answer:"C"},
+    {id:811,chapter:8,type:"multi",text:"在交换式网络环境中，攻击者可以通过（ ）等技术实施网络流量劫持。",options:["A. 端口镜像","B. MAC 攻击","C. 端口盗用","D. ARP 欺骗"],answer:"ABCD"},
+    {id:812,chapter:8,type:"multi",text:"攻击者无法窃听其通信内容的协议包括（ ）。",options:["A. HTTP","B. IPsec","C. TLS","D. HTTPS"],answer:"BCD"},
+    {id:813,chapter:8,type:"multi",text:"下列网络攻击行为中，破坏通信的机密性的有（ ）。",options:["A. 网络监听","B. 中断","C. 伪造","D. 通信量分析"],answer:"AD"},
+    {id:814,chapter:8,type:"multi",text:"下列措施中，（ ）可用于防范中间人网络监听。",options:["A. 交换机端口绑定","B. 通信加密","C. 授权","D. 认证"],answer:"AB"},
+    {id:815,chapter:8,type:"multi",text:"为了监听Wi-Fi 通信，攻击者可采用的方法包括（ ）。",options:["A. ARP 欺骗","B. 无线热点钓鱼","C. 破解无线路由器的后台管理员口令","D. DNS 劫持"],answer:"BC"},
+    // ========== 第10章 ==========
+    {id:1001,chapter:10,type:"single",text:"为提高Cookie 的安全性，不建议采取的策略是（ ）。",options:["A. 在 Cookie 中设置 secure 属性","B. 在Cookie 中不设置 domain 属性","C. 在Cookie 中设置 domain 属性","D. 将 Cookie 的生存周期设置为 0 或负值"],answer:"C"},
+    {id:1002,chapter:10,type:"single",text:"下列选项中，（ ）不属于Web 应用在输出过程中产生的安全漏洞。",options:["A. SQL 注入","B. CSRF","C. HTTP 头注入","D. OS 命令注入"],answer:"B"},
+    {id:1003,chapter:10,type:"single",text:"在Web 用户登录界面上，某攻击者在输入口令的地方输入' or 'a' = 'a 后成功实现了登录，则该登录网页存在（ ）漏洞。",options:["A. SQL 注入","B. CSRF","C. HTTP 头注入","D. XSS"],answer:"A"},
+    {id:1004,chapter:10,type:"single",text:"为了防范跨站脚本攻击（XSS），需要对用户输入的内容进行过滤，下列字符中，不应被过滤的是（ ）。",options:["A. <","B. >","C. '","D. o"],answer:"D"},
+    {id:1005,chapter:10,type:"single",text:"下列 Web 应用攻击方法中，不属于跨站被动攻击的是（ ）。",options:["A. CSRF","B. XSS","C. SQL 注入","D. HTTP 头注入"],answer:"C"},
+    {id:1006,chapter:10,type:"single",text:"利用已登录网站的受信任用户身份来向第三方网站发送交易转账请求的攻击方法是（ ）。",options:["A. CSRF","B. XSS","C. SQL 注入","D. HTTP 头注入"],answer:"A"},
+    {id:1007,chapter:10,type:"single",text:"下列方法中，不能防止CSRF 攻击的是（ ）。",options:["A. 嵌入令牌","B. 再次输入密码","C. 校验HTTP 头中的Referer","D. 过滤特殊字符"],answer:"D"},
+    {id:1008,chapter:10,type:"single",text:"下列选项中，不属于目录遍历漏洞的必要条件是（ ）。",options:["A. 外界能够指定文件名","B. 设置Cookie 中的 secure 属性","C. 能够使用绝对路径或相对路径等形式来指定其它目录的文件名","D. 没有对拼接后的文件名进行校验就允许访问该文件"],answer:"B"},
+    {id:1009,chapter:10,type:"single",text:"可污染缓存服务器的Web 攻击方法是（ ）。",options:["A. SQL 注入","B. 操作系统命令注入","C. HTTP 消息头注入","D. XSS"],answer:"C"},
+    {id:1010,chapter:10,type:"single",text:"下列选项中，不能消除操作系统命令注入漏洞的是（ ）。",options:["A. 使用HTTPS","B. 不调用 Shell 功能","C. 避免使用内部可能会调用 Shell 的函数","D. 不将外部输入的字符串作为命令行参数"],answer:"A"},
+    {id:1011,chapter:10,type:"single",text:"某单位联在公网上的Web 服务器的访问速度突然变得比平常慢很多，这台Web 服务器最有可能遭到的网络攻击是（ ）。",options:["A. 拒绝服务攻击","B. SQL 注入攻击","C. 木马入侵","D. 缓冲区溢出攻击"],answer:"A"},
+    {id:1012,chapter:10,type:"single",text:"某单位联在公网上的 Web 服务器经常遭受到网页篡改、网页挂马、SQL 注入等黑客攻击，请从下列选项中为该Web 服务器选择一款最有效的防护设备（ ）。",options:["A. 网络防火墙","B. IDS","C. WAF","D. 杀毒软件"],answer:"C"},
+    {id:1013,chapter:10,type:"single",text:"Web 浏览器和服务器使用 HTTPS 协议进行通信，不能确保通信的（ ）。",options:["A. 机密性","B. 完整性","C. 可靠性","D. 服务器的真实性"],answer:"C"},
+    // ========== 第11章 ==========
+    {id:1101,chapter:11,type:"single",text:"下列攻击方法中，属于社会工程攻击的是（ ）。",options:["A. SQL Injection","B. 钓鱼邮件","C. TCP 连接劫持","D. 网络扫描"],answer:"B"},
+    {id:1102,chapter:11,type:"single",text:"社会工程攻击主要针对的是（ ）。",options:["A. 人的脆弱性","B. 入侵检测系统的脆弱性","C. 防火墙的脆弱性","D. 系统维护的脆弱性"],answer:"A"},
+    {id:1103,chapter:11,type:"single",text:"下列工具中，主要用于社会工程攻击的是（ ）。",options:["A. Nmap","B. Nessus","C. Traceroute","D. SET"],answer:"D"},
+    {id:1104,chapter:11,type:"single",text:"很多APT 攻击组织常用热点新闻事件或敏感话题作为钓鱼邮件的内容，这种社会工程学方法属于（ ）。",options:["A. 伪装","B. 引诱","C. 说服","D. 恐吓"],answer:"B"},
+    {id:1105,chapter:11,type:"single",text:"社会工程学攻击一般需要借助大量的情报数据来实施，这些数据通常称为（ ）。",options:["A. 社工库","B. 数据库","C. 情报","D. 信息"],answer:"A"},
+    {id:1106,chapter:11,type:"multi",text:"下列选项中，常用来进行 URL 伪装的组合包括（ ）。",options:["A. 英文字母o 和数字 0","B. 英文字母 a 和俄文字母a","C. 英文字母I 和数字 1","D. 英文字母 h 和k"],answer:"ABC"},
+    {id:1107,chapter:11,type:"multi",text:"下列文字中，常被社会工程人员制作钓鱼网站时用来在 URL 中替换特定英文字母的有（ ）。",options:["A. 中文","B. 西里尔文","C. 俄文","D. 日文"],answer:"BC"},
+    {id:1108,chapter:11,type:"multi",text:"利用社会工程工具 SET，可以直接实现的功能有（ ）。",options:["A. 漏洞攻击","B. 制作钓鱼网站","C. 制作钓鱼邮件","D. 群发邮件"],answer:"BCD"},
+    {id:1109,chapter:11,type:"multi",text:"如果用户收到一封冒充邮箱管理员发送的安全警告邮件，提醒用户其口令已泄露，点击按钮修改口令，则这种社会工程学方法属于（ ）。",options:["A. 伪装","B. 引诱","C. 说服","D. 恐吓"],answer:"AD"},
+    {id:1110,chapter:11,type:"multi",text:"下列攻击中，利用人的弱点的攻击有（ ）。",options:["A. 窃听","B. 钓鱼短信","C. 钓鱼邮件","D. 同学聚会合影邮件"],answer:"BCD"},
+    // ========== 第12章 ==========
+    {id:1201,chapter:12,type:"single",text:"在防火墙技术中，我们所说的外网通常指的是（ ）。",options:["A. 受信任的网络","B. 非受信任的网络","C. 防火墙内的网络","D. 局域网"],answer:"B"},
+    {id:1202,chapter:12,type:"single",text:"下面关于防火墙策略说法正确的是（ ）。",options:["A. 在创建防火墙策略以前，不需要对企业那些必不可少的应用软件执行风险分析","B. 防火墙安全策略一旦设定，就不能再作任何改变","C. 防火墙处理入站通信的默认策略应该是阻止所有的包和连接，除了被指出的允许通过的类型和连接","D. 防火墙规则集与防火墙平台体系结构无关"],answer:"C"},
+    {id:1203,chapter:12,type:"single",text:"包过滤型防火墙主要作用在（ ）。",options:["A. 网络接口层","B. 应用层","C. 网络层","D. 数据链路层"],answer:"C"},
+    {id:1204,chapter:12,type:"single",text:"应用网关防火墙主要作用在（ ）。",options:["A. 数据链路层","B. 网络层","C.传输层","D. 应用层"],answer:"D"},
+    {id:1205,chapter:12,type:"single",text:"下列关于防火墙的说法，错误的是（ ）。",options:["A. 防火墙的核心是访问控制","B. 防火墙也有可能被攻击者远程控制","C. 路由器中不能集成防火墙的部分功能","D. 如果一个网络没有明确边界，则使用防火墙可能没效果"],answer:"C"},
+    {id:1206,chapter:12,type:"single",text:"在设计防火墙时，考虑内网中需要向外提供服务的服务器常常放在一个单独的网段，这个网段称为（ ）。",options:["A. RSA","B. DES","C. CA","D. DMZ"],answer:"D"},
+    {id:1207,chapter:12,type:"single",text:"4 种防火墙结构中，相对而言最安全的是（ ）。",options:["A. 屏蔽路由器结构","B. 屏蔽主机结构","C. 双宿主机结构","D. 屏蔽子网结构"],answer:"D"},
+    {id:1208,chapter:12,type:"single",text:"某单位联在公网上的Web 服务器经常遭受到网页篡改、网页挂马、SQL 注入等黑客攻击，请为该Web 服务器选择一款最有效的防护设备（ ）。",options:["A. 网络防火墙","B. IDS","C. WAF","D. 杀毒软件"],answer:"C"},
+    {id:1209,chapter:12,type:"single",text:"以下关于防火墙的描述，不正确的是（ ）。",options:["A. 防火墙采用的是隔离技术","B. 防火墙的主要工作原理是对数据包及来源进行检查，阻断被拒绝的数据传输","C. 防火墙的主要功能是查杀病毒","D. 防火墙虽然能够提高网络的安全性，但不能保证网络绝对安全"],answer:"C"},
+    {id:1210,chapter:12,type:"single",text:"很多单位的安全管理员会因为安全的原因禁用因特网控制管理协议（ICMP），则可以使用网络安全设备（ ）来实现。",options:["A. 杀毒软件","B. 防火墙","C. 入侵检测系统","D. 网络扫描软件"],answer:"B"},
+    {id:1211,chapter:12,type:"single",text:"下列防火墙部署模式中，可隐藏内网IP 地址的是（ ）。",options:["A. 透明模式","B. 网关模式","C. NAT 模式","D. 桥接模式"],answer:"C"},
+    {id:1212,chapter:12,type:"single",text:"方程式组织武器库中的 EXBA 工具利用 Cisco 防火墙的一个零日漏洞实现对 Cisco 防火墙的远程控制。攻击成功的前提是目标防火墙中必启用（ ）。",options:["A. FTP 服务","B. 包过滤服务","C. VPN 服务","D. SNMP 服务"],answer:"D"},
+    {id:1213,chapter:12,type:"multi",text:"配置防火墙时，错误的原则是（ ）。",options:["A. 允许从内部站点访问 Internet 而不允许从 Internet 访问内部站点","B. 没有明确允许的就是禁止的","C. 防火墙过滤规则的顺序与安全密切相关","D. 可以不考虑防火墙过滤规则的顺序"],answer:"AD"},
+    {id:1214,chapter:12,type:"multi",text:"下列安全机制中，可用于机密性保护的有（ ）。",options:["A. 加密","B. 防火墙","C. 入侵检测","D. 数字签名"],answer:"AB"},
+    {id:1215,chapter:12,type:"multi",text:"下列关于防火墙的说法中，正确的是（ ）。",options:["A. 防火墙并不能阻止所有的网络攻击","B. 防火墙自身可能存在安全漏洞导致攻击者可以绕过防火墙","C. 如果防火墙配置不当，可能会起不到预期的防护作用","D. 攻击流量不经过防火墙，而是通过无线接入单位内网，防火墙无法进行控制"],answer:"ABCD"},
+    {id:1216,chapter:12,type:"multi",text:"下列系统或设备中，（ ）采用访问控制机制来实现对资源的安全访问。",options:["A. 加密系统","B. 防火墙","C. 操作系统","D. 数据库"],answer:"BCD"},
+    {id:1217,chapter:12,type:"multi",text:"防火墙的安全漏洞可能存在于（ ）。",options:["A. 设计上","B. 安全策略的配置上","C. 防火墙软件的实现上","D. 硬件平台"],answer:"ABCD"},
+    {id:1218,chapter:12,type:"multi",text:"下列防火墙部署模式中，可提供路由功能的是（ ）。",options:["A. 透明模式","B. 网关模式","C. NAT 模式","D. 桥接模式"],answer:"BC"},
+    {id:1219,chapter:12,type:"multi",text:"下列说法正确的是（ ）。",options:["A. 路由器可以集成防火墙功能","B. 防火墙可以实现 VPN","C. 防火墙可以实现路由功能","D. 防火墙可以阻止内网用户泄密"],answer:"ABC"},
+    {id:1220,chapter:12,type:"multi",text:"从攻击者的角度看，为了提高成功率，可以采用（ ）等方法穿过防火墙。",options:["A. 将攻击数据包隐藏在HTTPS 流量中","B. 将攻击数据包的 TCP 目的端口设置成80","C. 将攻击数据包的 TCP 目的端口设置成5480","D. 将攻击数据包隐藏在 ICMP 协议流量中"],answer:"AB"},
+    // ========== 第13章 ==========
+    {id:1301,chapter:13,type:"single",text:"基于网络的IDS 最适合检测（ ）攻击。",options:["A. 字典攻击和特烙伊木马","B. 字典攻击和拒绝服务攻击","C. 网络扫描和拒绝服务攻击","D. 拒绝服务攻击和木马"],answer:"C"},
+    {id:1302,chapter:13,type:"single",text:"下列入侵检测方法中，（ ）不是特征检测的实现方式。",options:["A. 模式匹配法","B. 专家系统法","C. 统计分析法","D. 状态迁移法"],answer:"C"},
+    {id:1303,chapter:13,type:"single",text:"采用异常检测方法进行入侵检测时，可以用（ ）来评估用于异常检测的数据的质量。",options:["A. 条件熵","B. 数据量","C. 数据类别","D. 概率"],answer:"A"},
+    {id:1304,chapter:13,type:"single",text:"如果要检测已知攻击，检测准确率最高的方法是（ ）。",options:["A. 聚类分析","B. 人工免疫","C. 神经网络","D. 模式匹配"],answer:"D"},
+    {id:1305,chapter:13,type:"single",text:"下列方法中，适合检测未知攻击的是（ ）。",options:["A. 异常检测","B. 特征检测","C. 专家系统","D. 模式匹配"],answer:"A"},
+    {id:1306,chapter:13,type:"single",text:"Snort 软件采用的入侵检测方法属于（ ）。",options:["A. 异常检测","B. 特征检测","C. 神经网络","D. 机器学习"],answer:"B"},
+    {id:1307,chapter:13,type:"single",text:"下列安全机制中，兼有入侵检测和防御攻击的有（ ）。",options:["A. 防火墙","B. 杀毒软件","C. 网络欺骗防御","D. 入侵检测系统"],answer:"C"},
+    {id:1308,chapter:13,type:"single",text:"如果攻击者使用一个零日漏洞对目标网络进行渗透攻击，则最有可能检测并防御这种攻击的安全机制是（ ）。",options:["A. 防火墙","B. 杀毒软件","C. 网络欺骗防御","D. 入侵检测系统"],answer:"C"},
+    {id:1309,chapter:13,type:"single",text:"如果攻击者使用加密信道（如 IPsec, TLS, HTTPS）对目标网络进行攻击，则最有可能检测到这种攻击的是（ ）。",options:["A. 基于网络的IDS","B. 基于主机的IDS","C. 基于网络的IDS 和基于主机的IDS","D. 防火墙"],answer:"B"},
+    {id:1310,chapter:13,type:"single",text:"如果攻击者在扫描一个网络时，扫描到了大量活动的主机，但在实施进一步攻击时，却发现很多主机有些异常，则该网络很可能采取了（ ）防御机制。",options:["A. 基于主机的入侵检测","B. 基于网络的入侵检测","C. 防火墙","D. 网络混淆"],answer:"D"},
+    {id:1311,chapter:13,type:"multi",text:"单位网络边界处已配置了网络防火墙，在内网中再配置入侵检测系统的主要原因包括（ ）。",options:["A. 防火墙并不能阻止所有的网络攻击","B. 防火墙自身可能存在安全漏洞导致攻击者可以绕过防火墙","C. 如果防火墙配置不当，可能会起不到预期的防护作用","D. 攻击流量不经过防火墙，而是通过无线接入单位内网，防火墙无法进行控制"],answer:"ABCD"},
+    {id:1312,chapter:13,type:"multi",text:"下列数据中，可用于判断计算机是否被入侵的有（ ）。",options:["A. 操作系统日志","B. 网络数据","C. 应用程序日志","D. 注册表记录"],answer:"ABCD"},
+    {id:1313,chapter:13,type:"multi",text:"如果要进行未知攻击检测，则应选择（ ）。",options:["A. 聚类分析","B. 人工免疫","C. 神经网络","D. 模式匹配"],answer:"ABC"},
+    {id:1314,chapter:13,type:"multi",text:"评价入侵检测系统性能的最重要的两个指标是（ ）。",options:["A. 吞吐率","B. 漏报率","C. 速率","D. 误报率"],answer:"BD"},
+    {id:1315,chapter:13,type:"multi",text:"下列安全技术中，采用网络欺骗技术的是（ ）。",options:["A. 防火墙","B. 入侵检测","C. 蜜罐","D. 蜜网"],answer:"CD"},
+    {id:1316,chapter:13,type:"multi",text:"下列安全技术中，可用于检测网络攻击的有（ ）。",options:["A. 防火墙","B. VPN","C. 入侵检测系统","D. 蜜网"],answer:"CD"},
+    {id:1317,chapter:13,type:"multi",text:"下列安全机制中，可用于引诱攻击者发起攻击的是（ ）。",options:["A. 防火墙","B. 蜜罐","C. 入侵检测系统","D. 蜜网"],answer:"BD"},
+    {id:1318,chapter:13,type:"multi",text:"下列选项中，属于数据层欺骗技术的是（ ）。",options:["A. Honeywords","B. 协议指纹混淆","C. 诱饵文档","D. 设置大量虚假主机"],answer:"AC"}
+  ];
+
+  // ==================== 状态管理 ====================
+  let state = {
+    allQuestions: QUESTIONS,
+    selectedChapters: new Set(CHAPTERS.map(c=>c.id)),
+    selectedTypes: new Set(['single','multi']),
+    testMode: 'all',
+    questionLimit: 20,
+    autoWrongBank: true,
+    instantFeedback: true,
+    showProgress: true,
+    // 测试状态
+    currentQuestions: [],
+    currentIndex: 0,
+    doneSet: new Set(JSON.parse(localStorage.getItem('doneSet')||'[]')),
+    history: [], // {qid, answer, correct}
+    wrongBank: JSON.parse(localStorage.getItem('wrongBank')||'[]'),
+    submitted: false,
+    selectedAnswer: null,
+    isPracticeBank: false
+  };
+
+  // ==================== 工具函数 ====================
+  function saveState(){
+    try{
+      localStorage.setItem('doneSet',JSON.stringify([...state.doneSet]));
+      localStorage.setItem('wrongBank',JSON.stringify(state.wrongBank));
+    }catch(e){}
+  }
+
+  function getChapterName(id){
+    const c=CHAPTERS.find(x=>x.id===id);
+    return c?c.name:'';
+  }
+
+  function shuffle(arr){
+    const a=[...arr];
+    for(let i=a.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+
+  function getAnswerText(q,answer){
+    if(!answer || answer.length===0) return '未作答';
+    return q.options.filter((_,i)=>answer.includes(String.fromCharCode(65+i))).join('；');
+  }
+
+  // ==================== UI 渲染 ====================
+  function initChapterList(){
+    const el=document.getElementById('chapterList');
+    el.innerHTML='';
+    CHAPTERS.forEach(ch=>{
+      const btn=document.createElement('div');
+      btn.className='chapter-btn'+(state.selectedChapters.has(ch.id)?' selected':'');
+      btn.textContent=ch.name;
+      btn.onclick=()=>{
+        if(state.selectedChapters.has(ch.id)){
+          if(state.selectedChapters.size>1) state.selectedChapters.delete(ch.id);
+        }else state.selectedChapters.add(ch.id);
+        btn.className='chapter-btn'+(state.selectedChapters.has(ch.id)?' selected':'');
+      };
+      el.appendChild(btn);
+    });
+  }
+
+  function initModeGrid(){
+    document.querySelectorAll('.mode-item').forEach(el=>{
+      el.className='mode-item'+(el.dataset.mode===state.testMode?' selected':'');
+      el.onclick=()=>{
+        state.testMode=el.dataset.mode;
+        document.querySelectorAll('.mode-item').forEach(x=>x.className='mode-item');
+        el.className='mode-item selected';
+      };
+    });
+  }
+
+  function initEvents(){
+    document.getElementById('typeSingle').onchange=e=>{
+      if(e.target.checked) state.selectedTypes.add('single');
+      else state.selectedTypes.delete('single');
+    };
+    document.getElementById('typeMulti').onchange=e=>{
+      if(e.target.checked) state.selectedTypes.add('multi');
+      else state.selectedTypes.delete('multi');
+    };
+    document.getElementById('questionCount').oninput=e=>{
+      state.questionLimit=Math.max(1,parseInt(e.target.value)||20);
+    };
+    document.getElementById('autoWrongBank').onchange=e=>{state.autoWrongBank=e.target.checked;};
+    document.getElementById('instantFeedback').onchange=e=>{state.instantFeedback=e.target.checked;};
+    document.getElementById('showProgress').onchange=e=>{state.showProgress=e.target.checked;};
+    document.getElementById('skipDone').onchange=e=>{
+      if(e.target.checked) document.getElementById('redoDone').checked=false;
+    };
+    document.getElementById('redoDone').onchange=e=>{
+      if(e.target.checked) document.getElementById('skipDone').checked=false;
+    };
+    document.getElementById('startBtn').onclick=startTest;
+    document.getElementById('prevBtn').onclick=prevQuestion;
+    document.getElementById('submitBtn').onclick=submitAnswer;
+    document.getElementById('nextBtn').onclick=nextQuestion;
+    document.getElementById('reviewWrongBtn').onclick=showWrongAnswers;
+    document.getElementById('reviewAllBtn').onclick=showAllAnswers;
+    document.getElementById('restartBtn').onclick=backToSettings;
+    document.getElementById('clearBankBtn').onclick=clearWrongBank;
+    document.getElementById('practiceBankBtn').onclick=practiceWrongBank;
+    document.getElementById('backHomeBtn').onclick=backToSettings;
+    document.getElementById('topHomeBtn').onclick=backToSettings;
+    const testHomeBtn=document.getElementById('testHomeBtn');
+    if(testHomeBtn) testHomeBtn.onclick=backToSettings;
+  }
+
+  function showPanel(name){
+    document.getElementById('settingsPanel').style.display=name==='settings'?'block':'none';
+    document.getElementById('testPanel').className='controls-section'+(name==='test'?' active':'');
+    document.getElementById('resultPanel').className='controls-section'+(name==='result'?' active':'');
+    document.getElementById('wrongBankPanel').className='controls-section'+(name==='bank'?' active':'');
+  }
+
+  // ==================== 测试逻辑 ====================
+  function buildQuestionPool(){
+    let pool=state.allQuestions.filter(q=>
+      state.selectedChapters.has(q.chapter)&&state.selectedTypes.has(q.type)
+    );
+    if(state.isPracticeBank){
+      pool=pool.filter(q=>state.wrongBank.some(w=>w.qid===q.id));
+    }
+    return pool;
+  }
+
+  function startTest(){
+    if(state.selectedChapters.size===0||state.selectedTypes.size===0){
+      alert('请至少选择一个章节和一种题型');
+      return;
+    }
+    state.isPracticeBank=false;
+    const skipDone=document.getElementById('skipDone').checked;
+    const redoDone=document.getElementById('redoDone').checked;
+    let pool=buildQuestionPool();
+    // 按功能选项过滤
+    if(skipDone){
+      pool=pool.filter(q=>!state.doneSet.has(q.id));
+      if(pool.length===0){alert('所有题目都已做过');return;}
+    }
+    if(redoDone){
+      pool=pool.filter(q=>state.doneSet.has(q.id));
+      if(pool.length===0){alert('没有已做过的题目');return;}
+    }
+    let questions;
+    switch(state.testMode){
+      case 'all':
+        questions=[...pool];
+        break;
+      case 'random':
+        questions=shuffle(pool).slice(0,state.questionLimit);
+        break;
+    }
+    state.currentQuestions=questions;
+    state.currentIndex=0;
+    state.history=[];
+    state.submitted=false;
+    state.selectedAnswer=null;
+    showPanel('test');
+    renderQuestion();
+  }
+
+  function practiceWrongBank(){
+    if(state.wrongBank.length===0){
+      alert('错题本为空');
+      return;
+    }
+    state.isPracticeBank=true;
+    const pool=buildQuestionPool();
+    if(pool.length===0){
+      alert('错题本为空');
+      return;
+    }
+    state.currentQuestions=shuffle(pool);
+    state.currentIndex=0;
+    state.history=[];
+    state.submitted=false;
+    state.selectedAnswer=null;
+    showPanel('test');
+    renderQuestion();
+  }
+
+  function renderQuestion(){
+    const q=state.currentQuestions[state.currentIndex];
+    if(!q){showResults();return;}
+    document.getElementById('questionMeta').textContent=
+      getChapterName(q.chapter)+' · '+(q.type==='single'?'单项选择':'多项选择');
+    document.getElementById('questionText').textContent=q.text;
+    document.getElementById('progressWrap').style.display=state.showProgress?'block':'none';
+    document.getElementById('doneCount').textContent=state.currentIndex;
+    document.getElementById('totalCount').textContent=state.currentQuestions.length;
+    if(state.showProgress){
+      document.getElementById('progressBar').style.width=
+        ((state.currentIndex/state.currentQuestions.length)*100)+'%';
+    }
+
+    // 检查是否已答过（从历史中恢复）
+    const histEntry=state.history[state.currentIndex];
+    const isSubmitted=!!histEntry;
+    const submittedAnswer=histEntry?histEntry.answer:null;
+    const doneCount=state.history.filter(h=>h).length;
+    document.getElementById('doneCount').textContent=doneCount;
+
+    const grid=document.getElementById('optionsGrid');
+    grid.innerHTML='';
+    q.options.forEach((opt,i)=>{
+      const key=String.fromCharCode(65+i);
+      const item=document.createElement('label');
+      let extraClass='';
+      if(isSubmitted){
+        if(histEntry.correct){
+          // 正确：选中的标绿
+          if(submittedAnswer&&submittedAnswer.includes(key)){
+            extraClass=' selected-correct';
+          }
+        }else{
+          // 错误：选中的标红，正确答案标绿
+          if(submittedAnswer&&submittedAnswer.includes(key)){
+            extraClass=' selected-wrong';
+          }
+          if(q.answer.includes(key)){
+            extraClass=' show-correct';
+          }
+        }
+      }else if(state.selectedAnswer&&state.selectedAnswer.includes(key)){
+        extraClass=' selected';
+      }
+      item.className='option-item'+extraClass;
+      item.innerHTML=`<input type="${q.type==='single'?'radio':'checkbox'}" 
+        name="qopt" value="${key}" 
+        ${(isSubmitted?submittedAnswer:state.selectedAnswer)&&(isSubmitted?submittedAnswer:state.selectedAnswer).includes(key)?'checked':''}
+        ${isSubmitted?'disabled':''}>${opt}`;
+      if(!isSubmitted){
+        item.onclick=()=>{
+          if(state.submitted) return;
+          if(q.type==='single'){
+            state.selectedAnswer=[key];
+            grid.querySelectorAll('input').forEach((inp,j)=>{
+              if(j!==i) inp.checked=false;
+            });
+          }else{
+            state.selectedAnswer=state.selectedAnswer||[];
+            if(state.selectedAnswer.includes(key)){
+              state.selectedAnswer=state.selectedAnswer.filter(x=>x!==key);
+            }else{
+              state.selectedAnswer=[...state.selectedAnswer,key];
+            }
+            grid.querySelectorAll('input').forEach(inp=>{
+              inp.checked=state.selectedAnswer.includes(inp.value);
+            });
+          }
+          // 更新选中样式
+          grid.querySelectorAll('.option-item').forEach(el=>{
+            el.className='option-item';
+            if(state.selectedAnswer&&state.selectedAnswer.includes(el.querySelector('input').value)){
+              el.className='option-item selected';
+            }
+          });
+        };
+      }
+      grid.appendChild(item);
+    });
+
+    // 渲染内联反馈
+    let fbEl=grid.nextElementSibling;
+    if(fbEl&&fbEl.classList.contains('feedback-inline')) fbEl.remove();
+    if(isSubmitted){
+      const fb=document.createElement('div');
+      fb.className='feedback-inline '+(histEntry.correct?'feedback-correct':'feedback-wrong');
+      if(histEntry.correct){
+        fb.innerHTML='<strong>✓ 回答正确</strong>';
+      }else{
+        fb.innerHTML=`<strong>✗ 回答错误</strong><br>你的答案：${getAnswerText(q,submittedAnswer)}<br>正确答案：${getAnswerText(q,q.answer.split(''))}`;
+      }
+      grid.insertAdjacentElement('afterend',fb);
+    }
+
+    document.getElementById('submitBtn').style.display=isSubmitted?'none':'inline-block';
+    document.getElementById('nextBtn').style.display=isSubmitted?'inline-block':'none';
+    document.getElementById('prevBtn').disabled=state.currentIndex===0;
+  }
+
+  function submitAnswer(){
+    const q=state.currentQuestions[state.currentIndex];
+    if(!state.selectedAnswer||state.selectedAnswer.length===0){
+      alert('请选择答案');
+      return;
+    }
+    state.submitted=true;
+    const userAns=state.selectedAnswer.slice().sort().join('');
+    const correct=q.answer.split('').sort().join('');
+    const isCorrect=userAns===correct;
+    state.doneSet.add(q.id);
+    state.history[state.currentIndex]={qid:q.id,answer:state.selectedAnswer,correct:isCorrect,q:q};
+    // 更新统计
+    const done=state.history.filter(h=>h).length;
+    const correctNum=state.history.filter(h=>h&&h.correct).length;
+    const wrongNum=done-correctNum;
+    document.getElementById('doneCount').textContent=state.currentIndex+1;
+    document.getElementById('correctCount').textContent=correctNum;
+    document.getElementById('wrongCount').textContent=wrongNum;
+    document.getElementById('accuracy').textContent=
+      done>0?Math.round(correctNum/done*100):0;
+    // 即时反馈 - 内联
+    renderQuestion();
+    // 错题本
+    if(state.autoWrongBank&&!isCorrect){
+      if(!state.wrongBank.some(w=>w.qid===q.id)){
+        state.wrongBank.push({qid:q.id,q:q});
+      }
+    }
+    saveState();
+  }
+
+  function nextQuestion(){
+    state.currentIndex++;
+    state.submitted=false;
+    state.selectedAnswer=null;
+    if(state.currentIndex>=state.currentQuestions.length){
+      showResults();
+    }else{
+      // 恢复已答过的题目的状态
+      const histEntry=state.history[state.currentIndex];
+      if(histEntry){
+        state.submitted=true;
+        state.selectedAnswer=histEntry.answer;
+      }
+      renderQuestion();
+    }
+  }
+
+  function prevQuestion(){
+    if(state.currentIndex>0){
+      state.currentIndex--;
+      state.submitted=false;
+      state.selectedAnswer=null;
+      // 恢复已答过的状态
+      const histEntry=state.history[state.currentIndex];
+      if(histEntry){
+        state.submitted=true;
+        state.selectedAnswer=histEntry.answer;
+      }
+      renderQuestion();
+    }
+  }
+
+  function showResults(){
+    const done=state.history.length;
+    const correctNum=state.history.filter(h=>h.correct).length;
+    const wrongNum=done-correctNum;
+    document.getElementById('resTotal').textContent=done;
+    document.getElementById('resCorrect').textContent=correctNum;
+    document.getElementById('resWrong').textContent=wrongNum;
+    document.getElementById('resAccuracy').textContent=done>0?Math.round(correctNum/done*100)+'%':'0%';
+    showPanel('result');
+  }
+
+  function showWrongAnswers(){
+    const panel=document.getElementById('wrongAnswerPanel');
+    const wrongs=state.history.filter(h=>!h.correct);
+    if(wrongs.length===0){panel.innerHTML='<p>没有错题</p>';panel.style.display='block';return;}
+    panel.innerHTML=wrongs.map(w=>`
+      <div class="wrong-answer-item">
+        <strong>${w.q.text}</strong><br>
+        你的答案：${getAnswerText(w.q,w.answer)}<br>
+        正确答案：${getAnswerText(w.q,w.q.answer.split(''))}
+      </div>`).join('');
+    panel.style.display='block';
+  }
+
+  function showAllAnswers(){
+    const panel=document.getElementById('wrongAnswerPanel');
+    panel.innerHTML=state.history.map(h=>`
+      <div class="wrong-answer-item" style="border-left-color:${h.correct?'#34a853':'#ea4335'}">
+        <strong>${h.q.text}</strong><br>
+        你的答案：${getAnswerText(h.q,h.answer)}<br>
+        正确答案：${getAnswerText(h.q,h.q.answer.split(''))}
+      </div>`).join('');
+    panel.style.display='block';
+  }
+
+  function clearWrongBank(){
+    if(!confirm('确定清空错题本？')) return;
+    state.wrongBank=[];
+    saveState();
+    renderWrongBank();
+  }
+
+  function renderWrongBank(){
+    document.getElementById('bankCount').textContent=state.wrongBank.length;
+    document.getElementById('bankLearned').textContent=
+      state.wrongBank.filter(w=>state.history.some(h=>h.qid===w.qid&&h.correct)).length;
+    const list=document.getElementById('wrongBankList');
+    list.innerHTML=state.wrongBank.map(w=>`
+      <div class="wrong-answer-item">
+        <strong>${w.q.text}</strong><br>
+        正确答案：${getAnswerText(w.q,w.q.answer.split(''))}
+      </div>`).join('');
+  }
+
+  function backToSettings(){
+    state.isPracticeBank=false;
+    showPanel('settings');
+  }
+
+  // ==================== 初始化 ====================
+  function init(){
+    initChapterList();
+    initModeGrid();
+    initEvents();
+    // 清理已删除章节的本地记录（chapter 2、9）
+    try{
+      const removedChapters=new Set([2,9]);
+      state.doneSet=new Set([...state.doneSet].filter(id=>{
+        const qid=typeof id==='number'?id:parseInt(id);
+        return !removedChapters.has(Math.floor(qid/100));
+      }));
+      state.wrongBank=state.wrongBank.filter(w=>{
+        const c=w.qid?Math.floor(w.qid/100):null;
+        return !removedChapters.has(c);
+      });
+      localStorage.setItem('doneSet',JSON.stringify([...state.doneSet]));
+      localStorage.setItem('wrongBank',JSON.stringify(state.wrongBank));
+    }catch(e){}
+    renderWrongBank();
+    // 默认显示设置页（主页）
+    showPanel('settings');
+  }
+
+  // 绑定错题本按钮
+  document.addEventListener('DOMContentLoaded',()=>{
+    init();
+    // 在设置面板加一个跳转到错题本的按钮
+    const btn=document.createElement('button');
+    btn.className='btn btn-warning';
+    btn.style='width:100%;margin-top:10px';
+    btn.textContent='查看错题本';
+    btn.onclick=()=>{renderWrongBank();showPanel('bank');};
+    document.getElementById('settingsPanel').appendChild(btn);
+  });
+})();
+</script>
+</body>
+</html>
