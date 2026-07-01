@@ -3,23 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>网络攻防自测系统</title>
+<title>治安管理学自测系统</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:"Microsoft YaHei",Arial,sans-serif;background:#f0f2f5;color:#333;min-height:100vh}
 .container{max-width:900px;margin:0 auto;padding:20px}
 h1{text-align:center;color:#1a73e8;margin-bottom:20px;font-size:1.8rem}
-.panel{background:#fff;border-radius:10px;padding:20px;margin-bottom:15px;
-       box-shadow:0 2px 8px rgba(0,0,0,0.1)}
-.section-title{font-size:1.1rem;font-weight:bold;margin-bottom:12px;color:#333;
-               border-bottom:2px solid #1a73e8;padding-bottom:6px}
+.panel{background:#fff;border-radius:10px;padding:20px;margin-bottom:15px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+.section-title{font-size:1.1rem;font-weight:bold;margin-bottom:12px;color:#333;border-bottom:2px solid #1a73e8;padding-bottom:6px}
 .option-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px}
-.option-item{display:flex;align-items:center;padding:10px 14px;border:2px solid #ddd;
-             border-radius:8px;cursor:pointer;transition:all 0.2s;font-size:0.95rem}
+.option-item{display:flex;align-items:flex-start;padding:10px 14px;border:2px solid #ddd;border-radius:8px;cursor:pointer;transition:all 0.2s;font-size:0.95rem}
 .option-item:hover{border-color:#1a73e8;background:#e8f0fe}
-.option-item input{margin-right:10px;transform:scale(1.2);cursor:pointer}
-.btn{padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-size:1rem;
-     transition:all 0.2s;font-weight:bold}
+.option-item input{margin-right:10px;transform:scale(1.2);cursor:pointer;margin-top:2px;flex-shrink:0}
+.option-item .opt-label{flex:1;line-height:1.5}
+.btn{padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-size:1rem;transition:all 0.2s;font-weight:bold}
 .btn-primary{background:#1a73e8;color:#fff}
 .btn-primary:hover{background:#1557b0}
 .btn-success{background:#34a853;color:#fff}
@@ -30,85 +27,29 @@ h1{text-align:center;color:#1a73e8;margin-bottom:20px;font-size:1.8rem}
 .btn-secondary:hover{background:#7d7d7d}
 .btn-warning{background:#f9ab00;color:#fff}
 .btn-warning:hover{background:#d68000}
+.btn-purple{background:#9c27b0;color:#fff}
+.btn-purple:hover{background:#7b1fa2}
 .btn:disabled{opacity:0.5;cursor:not-allowed}
 .row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
 .col{flex:1;min-width:200px}
-.info-bar{display:flex;justify-content:space-between;align-items:center;
-          padding:10px 15px;background:#e8f0fe;border-radius:8px;margin-bottom:15px;
-          font-size:0.9rem;flex-wrap:wrap;gap:8px}
+.info-bar{display:flex;justify-content:space-between;align-items:center;padding:10px 15px;background:#e8f0fe;border-radius:8px;margin-bottom:15px;font-size:0.9rem;flex-wrap:wrap;gap:8px}
 .progress-bar-wrap{width:100%;height:8px;background:#ddd;border-radius:4px;overflow:hidden;margin-bottom:5px}
 .progress-bar{height:100%;background:#1a73e8;transition:width 0.3s;border-radius:4px}
 .stat-item{display:inline-flex;align-items:center;gap:4px;font-weight:bold}
 .stat-correct{color:#34a853}
 .stat-wrong{color:#ea4335}
 .stat-total{color:#1a73e8}
+.stat-marked{color:#f9ab00}
 .question-text{font-size:1.05rem;line-height:1.7;margin-bottom:15px;white-space:pre-wrap}
-.type-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.8rem;
-             margin-right:8px;font-weight:bold}
+.type-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.8rem;margin-right:8px;font-weight:bold}
 .type-single{background:#e8f0fe;color:#1a73e8}
 .type-multi{background:#fff3e0;color:#e65100}
-.chapter-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.75rem;
-               background:#f5f5f5;color:#666;margin-bottom:10px}
-.result-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);
-                 display:flex;align-items:center;justify-content:center;z-index:1000;
-                 border-radius:10px}
-.result-card{background:#fff;border-radius:12px;padding:30px;max-width:400px;width:90%;
-             text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
-.result-icon{font-size:4rem;margin-bottom:15px}
-.result-title{font-size:1.4rem;font-weight:bold;margin-bottom:10px}
-.result-detail{font-size:1rem;color:#666;margin-bottom:20px;line-height:1.6}
-.wrong-answer-panel{background:#fff3e0;border:2px solid #ff9800;border-radius:10px;
-                     padding:15px;margin-top:15px;max-height:300px;overflow-y:auto}
-.wrong-answer-item{background:#fff;padding:10px;border-radius:6px;margin-bottom:8px;
-                    border-left:4px solid #ea4335}
-.controls-section{display:none}
-.controls-section.active{display:block}
-.chapter-list{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:15px}
-.chapter-btn{padding:6px 12px;border:2px solid #ddd;border-radius:6px;cursor:pointer;
-             font-size:0.85rem;background:#fff;transition:all 0.2s}
-.chapter-btn:hover{border-color:#1a73e8}
-.chapter-btn.selected{background:#1a73e8;color:#fff;border-color:#1a73e8}
-.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:15px}
-.mode-item{padding:10px;border:2px solid #ddd;border-radius:8px;cursor:pointer;
-           text-align:center;font-size:0.9rem;transition:all 0.2s;background:#fff}
-.mode-item:hover{border-color:#1a73e8}
-.mode-item.selected{background:#1a73e8;color:#fff;border-color:#1a73e8}
-.switch-row{display:flex;align-items:center;justify-content:space-between;
-             padding:8px 0;border-bottom:1px solid #eee}
-.switch-label{font-size:0.95rem}
-.switch{position:relative;width:48px;height:26px}
-.switch input{opacity:0;width:0;height:0}
-.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;
-        background:#ccc;border-radius:26px;transition:.3s}
-.slider:before{position:absolute;content:"";height:20px;width:20px;left:3px;bottom:3px;
-               background:#fff;border-radius:50%;transition:.3s}
-input:checked+.slider{background:#1a73e8}
-input:checked+.slider:before{transform:translateX(22px)}
-.number-input{width:70px;padding:6px 10px;border:2px solid #ddd;border-radius:6px;
-              font-size:0.95rem;text-align:center}
-.number-input:focus{outline:none;border-color:#1a73e8}
-.summary-bar{display:flex;justify-content:space-around;flex-wrap:wrap;gap:10px;
-              margin:15px 0}
-.summary-item{text-align:center}
-.summary-num{font-size:1.8rem;font-weight:bold}
-.summary-label{font-size:0.8rem;color:#666}
-.nav-buttons{display:flex;gap:10px;margin-top:15px}
-.nav-buttons .btn{flex:1}
-.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);
-                display:flex;align-items:center;justify-content:center;z-index:2000;
-                display:none}
-.modal-overlay.active{display:flex}
-.modal{background:#fff;border-radius:12px;padding:25px;max-width:500px;width:90%;
-       max-height:80vh;overflow-y:auto}
-.modal h3{text-align:center;color:#1a73e8;margin-bottom:15px}
-.modal-close{float:right;font-size:1.5rem;cursor:pointer;line-height:1}
-.modal-close:hover{color:#ea4335}
-.history-item{padding:8px 0;border-bottom:1px solid #eee}
-.history-item:last-child{border-bottom:none}
-@media(max-width:600px){
-  .option-grid,.mode-grid{grid-template-columns:1fr}
-  .row{flex-direction:column}
-}
+.chapter-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.75rem;background:#f5f5f5;color:#666;margin-bottom:10px}
+.nav-buttons{display:flex;gap:10px;margin-top:15px;flex-wrap:wrap}
+.nav-buttons .btn{flex:1;min-width:100px}
+.mark-btn{background:transparent;border:2px solid #f9ab00;color:#f9ab00;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:0.9rem;transition:all 0.2s}
+.mark-btn:hover{background:#f9ab00;color:#fff}
+.mark-btn.marked{background:#f9ab00;color:#fff}
 .option-item.selected-correct{border-color:#34a853;background:#e6f4ea}
 .option-item.selected-wrong{border-color:#ea4335;background:#fce8e6}
 .option-item.show-correct{border-color:#34a853;background:#e6f4ea}
@@ -117,33 +58,115 @@ input:checked+.slider:before{transform:translateX(22px)}
 .feedback-correct{background:#e6f4ea;color:#34a853;border-left:4px solid #34a853}
 .feedback-wrong{background:#fce8e6;color:#ea4335;border-left:4px solid #ea4335}
 @keyframes fadeIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.chapter-list{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:15px}
+.chapter-btn{padding:6px 12px;border:2px solid #ddd;border-radius:6px;cursor:pointer;font-size:0.85rem;background:#fff;transition:all 0.2s}
+.chapter-btn:hover{border-color:#1a73e8}
+.chapter-btn.selected{background:#1a73e8;color:#fff;border-color:#1a73e8}
+.switch-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee}
+.switch-label{font-size:0.95rem}
+.switch{position:relative;width:48px;height:26px}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#ccc;border-radius:26px;transition:.3s}
+.slider:before{position:absolute;content:"";height:20px;width:20px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+input:checked+.slider{background:#1a73e8}
+input:checked+.slider:before{transform:translateX(22px)}
+.number-input{width:70px;padding:6px 10px;border:2px solid #ddd;border-radius:6px;font-size:0.95rem;text-align:center}
+.number-input:focus{outline:none;border-color:#1a73e8}
+.summary-bar{display:flex;justify-content:space-around;flex-wrap:wrap;gap:10px;margin:15px 0}
+.summary-item{text-align:center}
+.summary-num{font-size:1.8rem;font-weight:bold}
+.summary-label{font-size:0.8rem;color:#666}
+.wrong-answer-panel{background:#fff3e0;border:2px solid #ff9800;border-radius:10px;padding:15px;margin-top:15px;max-height:350px;overflow-y:auto}
+.wrong-answer-item{background:#fff;padding:10px;border-radius:6px;margin-bottom:8px;border-left:4px solid #ea4335}
+.controls-section{display:none}
+.controls-section.active{display:block}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:2000;display:none}
+.modal-overlay.active{display:flex}
+.modal{background:#fff;border-radius:12px;padding:25px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto}
+.modal h3{text-align:center;color:#1a73e8;margin-bottom:15px}
+.modal-close{float:right;font-size:1.5rem;cursor:pointer;line-height:1}
+.modal-close:hover{color:#ea4335}
+.history-item{padding:8px 0;border-bottom:1px solid #eee}
+.history-item:last-child{border-bottom:none}
+.home-buttons{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:15px}
+.home-btn{padding:20px;text-align:center;border:2px solid #ddd;border-radius:10px;cursor:pointer;transition:all 0.2s;background:#fff}
+.home-btn:hover{border-color:#1a73e8;background:#e8f0fe;transform:translateY(-2px)}
+.home-btn-icon{font-size:2rem;margin-bottom:8px}
+.home-btn-text{font-weight:bold;color:#333}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:15px}
+.mode-item{padding:10px;border:2px solid #ddd;border-radius:8px;cursor:pointer;text-align:center;font-size:0.9rem;transition:all 0.2s;background:#fff}
+.mode-item:hover{border-color:#1a73e8}
+.mode-item.selected{background:#1a73e8;color:#fff;border-color:#1a73e8}
+.bank-list-item{padding:12px;border-bottom:1px solid #eee;cursor:pointer;transition:all 0.2s}
+.bank-list-item:hover{background:#f5f5f5}
+.bank-list-item .bank-q{font-size:0.9rem;color:#333;margin-bottom:5px}
+.bank-list-item .bank-meta{font-size:0.8rem;color:#999}
+.empty-tip{text-align:center;color:#999;padding:30px;font-size:0.95rem}
+@media(max-width:600px){
+  .option-grid,.mode-grid,.home-buttons{grid-template-columns:1fr}
+  .row{flex-direction:column}
+}
 </style>
 </head>
 <body>
 <div class="container">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
-    <h1 style="margin:0;font-size:1.4rem">网络攻防原理与技术 自测系统</h1>
-    <button class="btn btn-secondary" id="topHomeBtn" style="padding:8px 16px;font-size:0.9rem">返回主页</button>
+    <h1 style="margin:0;font-size:1.4rem">🛡️ 治安管理学自测系统</h1>
+  </div>
+
+  <!-- 主页 -->
+  <div class="panel controls-section active" id="homePanel">
+    <div class="home-buttons">
+      <div class="home-btn" onclick="showPanel('settingsPanel')">
+        <div class="home-btn-icon">📝</div>
+        <div class="home-btn-text">开始答题</div>
+      </div>
+      <div class="home-btn" onclick="showWrongBank()">
+        <div class="home-btn-icon">📕</div>
+        <div class="home-btn-text">错题本</div>
+      </div>
+      <div class="home-btn" onclick="showMarkedBank()">
+        <div class="home-btn-icon">⭐</div>
+        <div class="home-btn-text">标记题目</div>
+      </div>
+      <div class="home-btn" onclick="showPanel('browsePanel');initBrowse()">
+        <div class="home-btn-icon">📖</div>
+        <div class="home-btn-text">题库浏览</div>
+      </div>
+    </div>
+    <div class="info-bar" style="margin-top:10px">
+      <span class="stat-item stat-total">题库总数: <span id="totalQCount">0</span>题</span>
+      <span class="stat-item stat-wrong">错题本: <span id="homeWrongCount">0</span>题</span>
+      <span class="stat-item stat-marked">已标记: <span id="homeMarkedCount">0</span>题</span>
+    </div>
   </div>
 
   <!-- 设置面板 -->
-  <div class="panel" id="settingsPanel">
+  <div class="panel controls-section" id="settingsPanel">
     <div class="section-title">章节选择</div>
     <div class="chapter-list" id="chapterList"></div>
+    <div class="row" style="margin-bottom:15px">
+      <button class="btn btn-secondary" onclick="selectAllChapters(true)">全选</button>
+      <button class="btn btn-secondary" onclick="selectAllChapters(false)">全不选</button>
+    </div>
 
     <div class="section-title">题型选择</div>
     <div class="option-grid">
-      <label class="option-item"><input type="checkbox" id="typeSingle" checked> 单项选择题</label>
-      <label class="option-item"><input type="checkbox" id="typeMulti" checked> 多项选择题</label>
+      <label class="option-item"><input type="checkbox" id="typeSingle" checked> <span class="opt-label">单项选择题</span></label>
+      <label class="option-item"><input type="checkbox" id="typeMulti" checked> <span class="opt-label">多项选择题</span></label>
     </div>
 
     <div class="section-title">测试模式</div>
     <div class="mode-grid">
-      <div class="mode-item selected" data-mode="all">全部题目</div>
-      <div class="mode-item" data-mode="random">随机题目</div>
+      <div class="mode-item selected" data-mode="random" onclick="selectMode(this)">随机刷题</div>
+      <div class="mode-item" data-mode="all" onclick="selectMode(this)">顺序练习</div>
     </div>
 
     <div class="section-title">功能选项</div>
+    <div class="switch-row">
+      <span class="switch-label">随机题量</span>
+      <span><input type="number" class="number-input" id="questionCount" value="20" min="1"></span>
+    </div>
     <div class="switch-row">
       <span class="switch-label">错题自动加入错题本</span>
       <label class="switch"><input type="checkbox" id="autoWrongBank" checked><span class="slider"></span></label>
@@ -153,30 +176,24 @@ input:checked+.slider:before{transform:translateX(22px)}
       <label class="switch"><input type="checkbox" id="instantFeedback" checked><span class="slider"></span></label>
     </div>
     <div class="switch-row">
-      <span class="switch-label">显示题库遍历进度条</span>
+      <span class="switch-label">显示进度条</span>
       <label class="switch"><input type="checkbox" id="showProgress" checked><span class="slider"></span></label>
     </div>
-    <div class="switch-row">
-      <span class="switch-label">做过的不再做（跳过已做题目）</span>
-      <label class="switch"><input type="checkbox" id="skipDone"><span class="slider"></span></label>
-    </div>
-    <div class="switch-row">
-      <span class="switch-label">做过的接着做（从断点继续）</span>
-      <label class="switch"><input type="checkbox" id="redoDone"><span class="slider"></span></label>
-    </div>
-    <div class="switch-row">
-      <span class="switch-label">随机题量</span>
-      <span><input type="number" class="number-input" id="questionCount" value="20" min="1"></span>
-    </div>
 
-    <button class="btn btn-primary" style="width:100%;margin-top:15px" id="startBtn">开始测试</button>
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="showPanel('homePanel')">返回</button>
+      <button class="btn btn-primary" onclick="startQuiz()">开始测试</button>
+    </div>
   </div>
 
-  <!-- 测试面板 -->
+  <!-- 答题面板 -->
   <div class="panel controls-section" id="testPanel">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-      <span style="font-weight:bold;color:#1a73e8">测试中</span>
-      <button class="btn btn-secondary" id="testHomeBtn" style="padding:6px 14px;font-size:0.85rem">返回主页</button>
+      <span style="font-weight:bold;color:#1a73e8" id="testTitle">答题中</span>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="mark-btn" id="markBtn" onclick="toggleMark()">⭐ 标记</button>
+        <button class="btn btn-secondary" style="padding:6px 14px;font-size:0.85rem" onclick="exitQuiz()">退出</button>
+      </div>
     </div>
     <div class="info-bar">
       <span class="stat-item stat-total">已做: <span id="doneCount">0</span>/<span id="totalCount">0</span></span>
@@ -185,18 +202,19 @@ input:checked+.slider:before{transform:translateX(22px)}
       <span class="stat-item">正确率: <span id="accuracy">0</span>%</span>
     </div>
 
-    <div class="progress-bar-wrap" id="progressWrap" style="display:none">
+    <div class="progress-bar-wrap" id="progressWrap">
       <div class="progress-bar" id="progressBar" style="width:0%"></div>
     </div>
 
     <div class="chapter-badge" id="questionMeta"></div>
     <div class="question-text" id="questionText"></div>
     <div class="option-grid" id="optionsGrid"></div>
+    <div id="feedbackContainer"></div>
 
     <div class="nav-buttons">
-      <button class="btn btn-secondary" id="prevBtn">上一题</button>
-      <button class="btn btn-primary" id="submitBtn">提交答案</button>
-      <button class="btn btn-success" id="nextBtn" style="display:none">下一题</button>
+      <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()">上一题</button>
+      <button class="btn btn-primary" id="submitBtn" onclick="submitAnswer()">提交答案</button>
+      <button class="btn btn-success" id="nextBtn" style="display:none" onclick="nextQuestion()">下一题</button>
     </div>
   </div>
 
@@ -222,692 +240,849 @@ input:checked+.slider:before{transform:translateX(22px)}
       </div>
     </div>
     <div class="row">
-      <button class="btn btn-primary" id="reviewWrongBtn">查看错题</button>
-      <button class="btn btn-warning" id="reviewAllBtn">查看全部</button>
-      <button class="btn btn-secondary" id="restartBtn">重新开始</button>
+      <button class="btn btn-danger" onclick="showWrongPanel()">查看错题</button>
+      <button class="btn btn-warning" onclick="showAllReview()">查看全部</button>
+      <button class="btn btn-secondary" onclick="showPanel('homePanel');updateHomeStats()">返回主页</button>
     </div>
-    <div class="wrong-answer-panel" id="wrongAnswerPanel" style="display:none"></div>
+    <div class="wrong-answer-panel" id="reviewPanel" style="display:none"></div>
   </div>
 
   <!-- 错题本面板 -->
   <div class="panel controls-section" id="wrongBankPanel">
-    <div class="section-title">错题本</div>
-    <div class="summary-bar" style="margin-bottom:15px">
-      <div class="summary-item">
-        <div class="summary-num" id="bankCount">0</div>
-        <div class="summary-label">错题总数</div>
-      </div>
-      <div class="summary-item">
-        <div class="summary-num stat-correct" id="bankLearned">0</div>
-        <div class="summary-label">已掌握</div>
-      </div>
+    <div class="section-title">📕 错题本</div>
+    <div class="row" style="margin-bottom:15px">
+      <span style="padding:8px 0">共 <b id="wrongBankCount">0</b> 道错题</span>
     </div>
     <div class="row">
-      <button class="btn btn-danger" id="clearBankBtn">清空错题本</button>
-      <button class="btn btn-success" id="practiceBankBtn">专项练习错题</button>
-      <button class="btn btn-secondary" id="backHomeBtn">返回主页</button>
+      <button class="btn btn-primary" onclick="practiceWrong()">专项练习错题</button>
+      <button class="btn btn-purple" onclick="exportWrongTxt()">导出TXT</button>
+      <button class="btn btn-danger" onclick="clearWrongBank()">清空错题本</button>
+      <button class="btn btn-secondary" onclick="showPanel('homePanel')">返回</button>
     </div>
-    <div id="wrongBankList"></div>
+    <div id="wrongBankList" style="margin-top:15px"></div>
+  </div>
+
+  <!-- 标记题目面板 -->
+  <div class="panel controls-section" id="markedBankPanel">
+    <div class="section-title">⭐ 标记题目</div>
+    <div class="row" style="margin-bottom:15px">
+      <span style="padding:8px 0">共 <b id="markedBankCount">0</b> 道标记题目</span>
+    </div>
+    <div class="row">
+      <button class="btn btn-primary" onclick="practiceMarked()">专项练习标记题</button>
+      <button class="btn btn-purple" onclick="exportMarkedTxt()">导出TXT</button>
+      <button class="btn btn-danger" onclick="clearMarkedBank()">清空全部标记</button>
+      <button class="btn btn-secondary" onclick="showPanel('homePanel')">返回</button>
+    </div>
+    <div id="markedBankList" style="margin-top:15px"></div>
+  </div>
+
+  <!-- 题库浏览面板 -->
+  <div class="panel controls-section" id="browsePanel">
+    <div class="section-title">📖 题库浏览（直接显示答案）</div>
+    <div class="row">
+      <span>章节筛选:</span>
+      <select id="browseChapter" onchange="initBrowse()" style="padding:6px 10px;border:2px solid #ddd;border-radius:6px">
+        <option value="0">全部章节</option>
+      </select>
+      <span>题型:</span>
+      <select id="browseType" onchange="initBrowse()" style="padding:6px 10px;border:2px solid #ddd;border-radius:6px">
+        <option value="all">全部</option>
+        <option value="single">单选题</option>
+        <option value="multi">多选题</option>
+      </select>
+    </div>
+    <div class="info-bar">
+      <span>共 <b id="browseTotal">0</b> 题</span>
+      <span>当前: <b id="browseCurrent">0</b>/<b id="browseTotal2">0</b></span>
+    </div>
+    <div class="chapter-badge" id="browseMeta"></div>
+    <div class="question-text" id="browseText"></div>
+    <div class="option-grid" id="browseOptions"></div>
+    <div class="feedback-inline feedback-correct" id="browseAnswer" style="margin-top:12px"></div>
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="browsePrev()">上一题</button>
+      <button class="btn btn-warning" onclick="browseToggleMark()" id="browseMarkBtn">⭐ 标记</button>
+      <button class="btn btn-secondary" onclick="browseNext()">下一题</button>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="showPanel('homePanel')">返回主页</button>
+    </div>
   </div>
 </div>
 
 <script>
 (function(){
   // ==================== 题库数据 ====================
-  const CHAPTERS = [
-    {id:1,name:"第1章 网络安全概述",sec:"1.6"},
-    {id:3,name:"第3章 网络安全基础",sec:"3.6"},
-    {id:4,name:"第4章 网络侦察",sec:"4.5"},
-    {id:5,name:"第5章 拒绝服务攻击",sec:"5.6"},
-    {id:6,name:"第6章 恶意代码",sec:"6.5"},
-    {id:7,name:"第7章 口令攻击",sec:"7.6"},
-    {id:8,name:"第8章 网络监听",sec:"8.6"},
-    {id:10,name:"第10章 Web安全",sec:"10.12"},
-    {id:11,name:"第11章 社会工程",sec:"11.5"},
-    {id:12,name:"第12章 防火墙",sec:"12.7"},
-    {id:13,name:"第13章 入侵检测",sec:"13.7"}
-  ];
+  const CHAPTERS = [{"id": 1, "name": "第1单元 治安案件查处", "count": 88}, {"id": 2, "name": "第2单元 场所、特行及大型活动治安管理", "count": 50}, {"id": 3, "name": "第3单元 治安勤务", "count": 29}, {"id": 4, "name": "第4单元 危险物品管理", "count": 30}, {"id": 5, "name": "户政与人口管理", "count": 25}, {"id": 6, "name": "治安应急处置", "count": 29}];
+  const QUESTIONS = [{"type": "single", "text": "《治安管理处罚法》规定的处罚种类包括（ ）。", "options": ["A. 没收", "B. 收缴", "C. 责令停产停业", "D. 吊销公安机关发放的许可证件"], "answer": "D", "chapter": 1, "id": 1000}, {"type": "single", "text": "猥亵他人，情节恶劣的，处5日以上10日以下拘留；猥亵（ ）的，处10日以上15日以下拘留。", "options": ["A. 残疾人", "B. 残疾人和精神病人", "C. 老年人", "D. 智力残疾人，精神病人或不满14周岁的人"], "answer": "D", "chapter": 1, "id": 1001}, {"type": "single", "text": "对房屋出租人的下列行为不应给予治安管理处罚的是（ ）。", "options": ["A. 将房屋出租给无身份证件的人居住", "B. 不按规定登记承租人姓名、身份证件的种类和号码", "C. 明知承租人利用出租屋进行犯罪活动，不向公安机关报告", "D. 放任承租人从事噪声扰民的经营项目"], "answer": "D", "chapter": 1, "id": 1002}, {"type": "single", "text": "关于公安机关办理行政案件的说法错误的有(  )", "options": ["A. 办理行政案件应当坚持教育与处罚相结合的原则", "B. 办理未成年人的行政案件，应当根据未成年人的身心特点，保障其合法权益", "C. 在少数民族聚居或者多民族共同居住的地区，应当使用当地通用的语言进行询问", "D. 对不通晓当地通用语言文字的当事人，不用为他们提供翻译"], "answer": "D", "chapter": 1, "id": 1003}, {"type": "single", "text": "张某在火车站贩卖小玩具，导致进站秩序混乱，民警认定张某扰乱公共场所秩序，但鉴于该案违法情节较轻且张某认错态度较好，对其当场罚款100元。对这一处罚的程序，以下说法正确的是(  )", "options": ["A. 必须书面告知处罚的事实、理由和依据，及依法享有的权利", "B. 对张某提出的申辩可不予理睬", "C. 不用制作处罚决定书", "D. 可以口头告知处罚的事实、理由和依据，及依法享有的权利"], "answer": "D", "chapter": 1, "id": 1004}, {"type": "single", "text": "李某和邻居张某打架，造成张某轻微伤。在民警的主持下，双方自愿达成了调解协议，张某拿到了李某赔偿的医药费500元。一个月后，张某觉得吃亏了，又到派出所要求重新处理。对此办案民警可以(  )", "options": ["A. 再次调解", "B. 告知张某可以对李某提起民事诉讼", "C. 对李某作出治安处罚", "D. 告知张某可申请行政复议或提起行政诉讼"], "answer": "B", "chapter": 1, "id": 1005}, {"type": "single", "text": "2020 年 6 月 21 日早晨，某市某小区 2 号楼 3 单元 503 室女子李某外出遛狗，行至该单元三层时，狗叫惊吓到正在上楼的女子刘某(402 住户)，李某和刘某互骂互殴，造成刘某轻微伤，公安民警接报警后赶到现场，了解到以下情况:刘某称三楼住户张某看见双方互殴，但张某不予证实;二楼住户徐某听见双方互骂，并上楼劝架，但未看见双方动手;李某也不承认案发当日与刘某见过面。下列关于民警后续调查工作错误的说法是:(  )", "options": ["A. 可以查询犬类登记，确认李某是否依法养犬", "B. 应当走访临近的二层、四层的居民，了解案发时的情况", "C. 可以要求居委会调取当日周边私人视频资料", "D. 可以走访居委会，了解双方日常关系"], "answer": "C", "chapter": 1, "id": 1006}, {"type": "single", "text": "传唤后询问查证的时间不得超过( )小时;情况复杂，可能适用行政拘留处罚的，询问查证的时间不得超过( )小时。", "options": ["A. 8;24", "B. 24;48", "C. 8;48", "D. 8;72"], "answer": "A", "chapter": 1, "id": 1007}, {"type": "single", "text": "下列证据中既属于间接证据，又属于原始证据的是(   )。", "options": ["A. 被告人认罪的供述", "B. 证人听到被害人哭声的证言", "C. 赃物的复制品", "D. 鉴定结论的手抄件"], "answer": "B", "chapter": 1, "id": 1008}, {"type": "single", "text": "关于治安管理处罚权限，下列说法错误的是(   )。", "options": ["A. 警告处罚可以由派出所决定", "B. 1000元以下的罚款处罚可以由派出所决定", "C. 5 日以下的拘留处罚可以由派出所决定", "D. 吊销公安机关发放的许可证件的处罚只能由县级以上人民政府公安机关决定"], "answer": "C", "chapter": 1, "id": 1009}, {"type": "single", "text": "询问多个被害人的方法是(   )", "options": ["A. 坚持个别询问", "B. 同时一并询问", "C. 以座谈会形式询问", "D. 可单独、也可集中询问"], "answer": "A", "chapter": 1, "id": 1010}, {"type": "single", "text": "依据《公安机关办理行政案件程序规定》第三十四条，凡知道案件情况的人，都有作证的义务。下列哪些人不能作为证人(   )", "options": ["A. 三岁的儿童甲", "B. 患有精神病的乙", "C. 民警丙", "D. 警校学生丁"], "answer": "B", "chapter": 1, "id": 1011}, {"type": "single", "text": "依据《公安机关办理行政案件程序规定》第三十八条，民警欲对张某进行当场处罚，民警的做法不正确的是( )", "options": ["A. 向违法行为人出示警官证", "B. 向违法行为人出示执法资格证", "C. 口头告知违法行为人拟作出行政处罚决定的事实、理由和依据", "D. 填写当场处罚决定书并当场交付被处罚人"], "answer": "B", "chapter": 1, "id": 1012}, {"type": "single", "text": "关于公安机关办理行政案件的说法不正确的是(  )", "options": ["A. 办理行政案件应当以事实为根据，以法律为准绳", "B. 办理行政案件应当遵循合法、公正、公开、及时的原则", "C. 办理未成年人的行政案件，应当根据未成年人的身心特点，保障其合法权益", "D. 公安机关及其人民警察在办理行政案件时，对与案件有关的个人隐私不用保密"], "answer": "D", "chapter": 1, "id": 1013}, {"type": "single", "text": "根据《公安机关办理行政案件程序规定》，下列人员违反治安管理的行为事实清楚，证据确凿，可以适用当场处罚的情形是( )\n‍", "options": ["A. 李某，因非法储存少量罂粟壳应当处以二百元罚款", "B. 王某，因赌博应当处以二百元罚款", "C. 邵某，因嫖娼应当处以二百元罚款", "D. 江某，网谎报疫情应当处以二百元罚款"], "answer": "D", "chapter": 1, "id": 1014}, {"type": "single", "text": "2019年 12 月 3 日，顾某因一些小事殴打高某，高某于 4 日向公安机关报案。6 日， 公安机关对此案予以调解，顾某和高某达成调解协议，并约定顾某于 12 月 15 日前向高某赔偿医药费 1200 元。但顾某于 12 月 14 日明确表示不愿意履行调解协议。该案件的期限应从何时起计算?(     )", "options": ["A. 2019年 12 月 3 日", "B. 2019年 12 月 6 日", "C. 2019年 12 月 14 日", "D. 2019 年 12 月 15 日"], "answer": "C", "chapter": 1, "id": 1015}, {"type": "single", "text": "下列关于回避的说法错误的是(   )", "options": ["A. 公安机关负责人、办案人民警察提出回避申请的,应当说明理由。", "B. 公安机关负责人的回避,由上一级公安机关决定", "C. 鉴定人、翻译人员的回避,由鉴定人、翻译人员所在机构决定", "D. 在公安机关作出回避决定前,办案人民警察不得停止对行政案件的调查"], "answer": "C", "chapter": 1, "id": 1016}, {"type": "single", "text": "依据《公安机关办理行政案件程序规定》第三十七条，违法事实确凿,且具有下列哪些情形之一的,人民警察可以当场作出处罚决定(  )。", "options": ["A. 王某因闯红灯被罚款100元", "B. 李某因损害公共财物被处于拘留处罚", "C. 1913酒吧因涉嫌开设赌场被处罚", "D. 江某因涉嫌嫖娼被处罚"], "answer": "A", "chapter": 1, "id": 1017}, {"type": "single", "text": "下列关于罚款的规定正确的是(  )", "options": ["A. 公安机关及其人民警察当场收缴罚款的，如果没有带收据可以不用出具", "B. 被处罚人确有经济困难，经被处罚人申请和作出处罚决定的公安机关批准，可以分期缴纳罚款", "C. 被处罚人未在规定时间内缴纳罚款的，公安机关可以按照每日按罚款数额的百分之三加处罚款，没有上限，直到缴纳罚款为止", "D. 无论被处罚人是否有经济困难，都不可以暂缓缴纳罚款"], "answer": "B", "chapter": 1, "id": 1018}, {"type": "single", "text": "下列关于涉案物品的保管做法正确的是( )", "options": ["A. 涉案物品是一车鲜鱼，在拍照录像后派出所食堂将鱼直接烹饪", "B. 涉案物品是一箱烟花爆竹，公安机关将其存放在派出所的露天院子里", "C. 对第三人占有的财物在登记、拍照后返还，并在案卷中注明返还的理由", "D. 对不宜入卷的物证，进行拍照入卷，原物在结案后按照有关规定处理"], "answer": "D", "chapter": 1, "id": 1019}, {"type": "single", "text": "关于听证的说法错误的是(  )", "options": ["A. 公安机关不得因违法嫌疑人提出听证要求而加重处罚", "B. 在作出行政处罚决定之前，应当告知违法嫌疑人有要求举行听证的权利", "C. 在作出行政处罚决定之后，应当告知违法嫌疑人有要求举行听证的权利", "D. 当事人被处以二千元以上的罚款可以要求组织听证"], "answer": "C", "chapter": 1, "id": 1020}, {"type": "single", "text": "下列关于公安机关办理行政案件应当遵循的原则不包括( )", "options": ["A. 严格依据相关的法律规定办案", "B. 保证案件办理的合理性", "C. 办理案件时不考虑不相关因素，做到公正公开", "D. 及时处理"], "answer": "B", "chapter": 1, "id": 1021}, {"type": "single", "text": "下列关于辨认的说法错误的是(  )", "options": ["A. 辨认由二名以上办案人民警察主持", "B. 多名辨认人对同一辨认对象或者一名辨认人对多名辨认对象进行辨认时,应当个别进行。", "C. 辨认违法嫌疑人时,被辨认的人数不得少于七人", "D. 对违法嫌疑人照片进行辨认的,不得少于二十人的照片"], "answer": "D", "chapter": 1, "id": 1022}, {"type": "single", "text": "根据《治安管理处罚法》规定，一般情况下，治安案件由（  ）管辖。", "options": ["A. 违法行为地的公安机关", "B. 违法行为人居住地的公安机关", "C. 最初受理的公安机关", "D. 违法行为人户籍所在地的公安机关"], "answer": "A", "chapter": 1, "id": 1023}, {"type": "single", "text": "公安机关办理的行政案件，由违法行为地的公安机关管辖。如果由（   ）公安机关管辖更为适宜的，可以由其管辖。", "options": ["A. 最初受理的", "B. 违法行为人户籍所在地", "C. 违法行为人居住地", "D. 上一级"], "answer": "C", "chapter": 1, "id": 1024}, {"type": "single", "text": "根据《公安机关办理行政案件程序规定》的规定，下列案件可以由违法行为人居住地公安机关管辖的是（   ）。", "options": ["A. 卖淫、嫖娼", "B. 复制淫秽物品", "C. 吸毒", "D. 赌博"], "answer": "B", "chapter": 1, "id": 1025}, {"type": "single", "text": "A县某公司的业务员甲、乙一起到B县出差，在B县的宾馆内认识了C县某公司的业务员丙、丁，四人便在房间内赌博，被人举报。派出所出警时，被出来买烟的甲、乙看见，两人打电话通知丙、丁后，先行逃到了公司设在D 县的营销点，丙、丁则被派出所出警人员抓到。该案件应由（  ）办理。", "options": ["A. A县公安局", "B. B县公安局", "C. C县公安局", "D. D县公安局"], "answer": "B", "chapter": 1, "id": 1026}, {"type": "single", "text": "某工地地处A区与B区的交界处。某日，一工人因劳资纠纷与包工头吵了起来，并纠集了多名老乡到其办公室“讨说法”，双方言语不和，进而大打出手。从A区打到B区，造成多人轻微伤，围观群众立即报了警。关于此案的管辖正确的是（   ）。", "options": ["A. 应由A区公安机关管辖", "B. 应由B区公安机关管辖", "C. 应由最初受理的公安机关管辖", "D. 无论谁先受理，均由上级公安机关指定管辖"], "answer": "C", "chapter": 1, "id": 1027}, {"type": "single", "text": "王某从M省N市H县向M省X市Y区的被侵害人李某邮寄了一封敲诈勒索信。李某接信后按要求在M省X市Z区工商银行向指定账户存入了800元人民币，同日王某从M省N市H县取出。李某被敲诈勒索后向公安机关报案，H、Y、Z三地公安机关互相推诿，经协商无法达成一致。该案应（  ）。", "options": ["A. 由最初受理的Y区公安机关管辖", "B. 报请N市公安机关指定管辖", "C. 报请X市公安机关指定管辖", "D. 报请M省公安机关指定管辖"], "answer": "D", "chapter": 1, "id": 1028}, {"type": "single", "text": "某市公安局东城区公安分局巡逻民警在本区将携带平板电脑、形迹可疑的季某（居住在朝阳区）抓获。经查，季某携带的平板电脑系当日在西城区某商场盗窃所得，价值480元。此案应由（  ）管辖。", "options": ["A. 东城区公安分局", "B. 西城区公安分局", "C. 朝阳区公安分局", "D. 东城区或者西城区公安分局"], "answer": "B", "chapter": 1, "id": 1029}, {"type": "single", "text": "张某是甲县人，长期前往乙县、丙县做生意，下列行政案件在甲县查获，可由甲县公安机关予以处罚的是（   ）。", "options": ["A. 张某在乙县嫖娼", "B. 张某在丙县赌博", "C. 张某在丙县吸毒", "D. 张某在丁县贩卖淫秽光盘"], "answer": "D", "chapter": 1, "id": 1030}, {"type": "single", "text": "某国际机场位于甲市乙区，一日两位在机场候机室等候南方某航空公司航班的乘客，因排队问题发生争吵，乘客A恼羞成怒一拳将乘客B的眼镜打落在地，造成乘客B眼角淤青，乘客B也不甘示弱，对乘客A进行反击。如果该案属于行政案件，关于该案的管辖说法正确的是（   ） 。", "options": ["A. 由甲市乙区公安分局管辖", "B. 由该机场民航公安机关管辖", "C. 由甲市公安局指定管辖", "D. 由乙区公安分局和机场公安机关协商共同管辖"], "answer": "B", "chapter": 1, "id": 1031}, {"type": "single", "text": "下列关于办理治安案件回避的说法，错误的是（  ）。", "options": ["A. 人民警察甲的回避，由其所属的公安机关决定", "B. 违反治安管理行为人是民警乙的儿子，乙应当回避", "C. 民警丙的母亲是其办理的治安案件中的被侵害人，丙应当回避", "D. 公安机关负责人丁的回避，由同级人民政府决定"], "answer": "D", "chapter": 1, "id": 1032}, {"type": "single", "text": "人民警察在办理治安案件过程中，遇有法定情形应当回避的，由（   ）决定。", "options": ["A. 其所属的公安机关", "B. 其所属的公安机关的上一级机关", "C. 其所属的公安机关的同级人民政府", "D. 其所属的办案部门"], "answer": "A", "chapter": 1, "id": 1033}, {"type": "single", "text": "在办理治安案件过程中，公安机关负责人的回避，由（   ）决定。", "options": ["A. 其所属的公安机关", "B. 上一级公安机关", "C. 其所属的公安机关的同级人民政府", "D. 同级人民检察院检察委员会"], "answer": "B", "chapter": 1, "id": 1034}, {"type": "single", "text": "在办理治安案件过程中，公安机关负责人、办案人民警察在回避决定作出之前进行的与案件有关的活动（  ）。", "options": ["A. 有效", "B. 无效", "C. 由承办案件的公安机关审查后决定是否有效", "D. 由作出回避决定的公安机关根据案件情况决定是否有效"], "answer": "D", "chapter": 1, "id": 1035}, {"type": "single", "text": "在办理治安案件过程中，下列不属于人民警察法定回避情形的是（  ）。", "options": ["A. 是本案当事人或者当事人的近亲属的", "B. 与本案当事人或者当事人的近亲属认识的", "C. 本人或者其近亲属与本案有利害关系的", "D. 与本案当事人有其他关系，可能影响案件公正处理的"], "answer": "B", "chapter": 1, "id": 1036}, {"type": "single", "text": "王某因涉嫌侮辱他人被传唤至公安派出所，对其询问调查的民警张某系其中学同学，二人曾因追求同一女孩结怨。王某遂要求张某回避，张某告诉王某应当请律师提出回避申请，口头提出回避申请无效。在案件调查过程中，王某请了律师并提出书面回避申请，张某被决定回避，停止调查此案。关于本案，以下说法正确的是（  ）。", "options": ["A. 王某口头提出回避不符合法律要求", "B. 张某的回避由其所属的公安机关决定", "C. 张某在回避前调查的证据全部无效", "D. 张某在回避前调查的证据全部有效"], "answer": "B", "chapter": 1, "id": 1037}, {"type": "single", "text": "王某系某技校学生，一日在某书店偷书时被店主抓获并扭送到派出所。经过询问，王某供出其上个月曾到该店中偷书一次。派出所民警对王某的宿舍进行了检查，发现王某有本日记，在日记中王某详细地记录了自己上次偷书的过程。这本日记应属于（ ）。", "options": ["A. 物证", "B. 证人证言", "C. 书证", "D. 违法嫌疑人的陈述和申辩"], "answer": "C", "chapter": 1, "id": 1038}, {"type": "single", "text": "下列不属于公安机关办理行政案件证据种类的是（ ）。", "options": ["A. 鉴定结论", "B. 检查笔录", "C. 电子数据", "D. 被侵害人陈述"], "answer": "A", "chapter": 1, "id": 1039}, {"type": "single", "text": "以借款条中的签名笔迹证明案件事实时，该借款条属于（ ）。", "options": ["A. 书证", "B. 物证", "C. 当事人陈述", "D. 鉴定意见"], "answer": "B", "chapter": 1, "id": 1040}, {"type": "single", "text": "《治安管理处罚法》规定，违反治安管理行为事实清楚，证据确凿，处警告或者（  ）以下罚款的，可以当初作出治安管理处罚决定。", "options": ["A. 300元", "B. 1000元", "C. 200元", "D. 500元"], "answer": "D", "chapter": 1, "id": 1041}, {"type": "single", "text": "对适用简易程序处罚的治安案件，下列说法正确的是（ ）。", "options": ["A. 可由办案民警一人作出处罚决定", "B. 可以不制作处罚决定书", "C. 处罚决定书可以事后邮寄送达", "D. 经办民警应当在3日内将当场处罚决定书报所属公安机关备案"], "answer": "A", "chapter": 1, "id": 1042}, {"type": "single", "text": "下列行政案件中，违法事实确凿，人民警察可以当场作出处罚决定的是（ ）。", "options": ["A. 张某因纠纷将邻居电风扇砸坏", "B. 王某吸食毒品", "C. 李某赌博", "D. 刘某擅自在铁路线路上行走"], "answer": "D", "chapter": 1, "id": 1043}, {"type": "single", "text": "下列行政案件违法事实确凿时，人民警察不可以当场作出处罚决定的是（ ）", "options": ["A. 饲养动物干扰他人正常生活，处警告的案件", "B. 虐待家庭成员，处警告的案件", "C. 因殴打他人，对违法行为人处1000元罚款的案件", "D. 对道路交通违法行为人处200元罚款的案件"], "answer": "C", "chapter": 1, "id": 1044}, {"type": "single", "text": "下列行政案件违法事实确凿，人民警察可以适用简易程序作出处罚决定的是（ ）。", "options": ["A. 对殴打他人违反治安管理的陈某处500元罚款的案件", "B. 对交通技术监控设备记录的占用公交车道行驶的谢某处200元罚款的案件", "C. 对违反《居民身份证法》的陶某处100元罚款的案件", "D. 对参与赌博的违反治安管理行为人李某处500元罚款的案件"], "answer": "B", "chapter": 1, "id": 1045}, {"type": "single", "text": "公安机关在办理赵某故意损毁财物治安案件时，调查了与赵某有关的下列事实，其中不需要调查的是（ ）。", "options": ["A. 赵某的基本情况", "B. 赵某故意损毁财物的行为是否存在", "C. 故意损毁财物的行为是否赵某所为", "D. 赵某在单位的现实表现情况"], "answer": "D", "chapter": 1, "id": 1046}, {"type": "single", "text": "某派出所持检查证对一涉嫌赌博的场所进行检查时实施行政强制措施，扣押了现场的赌具和赌资。民警制作了检查笔录，下列说法正确的是（ ）。", "options": ["A. 被检查人必须在检查笔录上签名", "B. 不再制作现场笔录", "C. 赌具和赌资应当追缴", "D. 民警不能当场作出扣押的决定"], "answer": "B", "chapter": 1, "id": 1047}, {"type": "single", "text": "某公安机关值班民警在工作中发现一电子游戏厅涉嫌赌博，鉴于情况紧急，当场对现场赌具进行了扣押，民警应当在（ ）依法向所属的公安机关负责人报告，并补办批准手续。", "options": ["A. 12小时内", "B. 24小时内", "C. 48小时内", "D. 返回单位后立即"], "answer": "B", "chapter": 1, "id": 1048}, {"type": "single", "text": "公安机关在办理行政案件中，对违法嫌疑人强制传唤的，( ）。", "options": ["A. 应当使用手铐、警绳等约束性警械", "B. 应当使用制服性警械", "C. 不得使用警械", "D. 可以使用手铐、警绳等约束性警械"], "answer": "D", "chapter": 1, "id": 1049}, {"type": "single", "text": "根据《治安管理处罚法》的规定，下列关于传唤的说法错误的是（ ）。", "options": ["A. 传唤证由公安机关办案部门负责人审批", "B. 口头传唤不必出示传唤证", "C. 口头传唤后应当补办传唤证", "D. 口头传唤应当在询问笔录中注明"], "answer": "C", "chapter": 1, "id": 1050}, {"type": "single", "text": "在办理行政案件中，下列不可以适用口头传唤的是（   ）。", "options": ["A. 民警在执勤时发现张某正在偷窃超市物品", "B. 民警巡逻途中抓到打人后正在逃离现场的违法嫌疑人李某", "C. 公安机关接到举报，在逃的违法嫌疑人王某已回到家中", "D. 民警走访社区时，发现在逃的违法嫌疑人刘某"], "answer": "C", "chapter": 1, "id": 1051}, {"type": "single", "text": "民警王某在办理陈某盗窃的行政案件时对其强制传唤。以下说法正确的是（ ）。", "options": ["A. 传唤时除确有必要立即检查的，检查陈某人身应当出示人民警察证和县级以上公安机关开具的检查证", "B. 检查陈某人身应经派出所负责人审批", "C. 强制传唤王某必须由县级以上公安机关负责人审批", "D. 检查陈某的住处可由派出所负责人审批"], "answer": "A", "chapter": 1, "id": 1052}, {"type": "single", "text": "张某（17周岁）在大排档喝酒，喝醉后向老板钱某赊账150元，钱某不同意，张某辱骂钱某并砸酒瓶，钱某报警。民警王某、谢某赶到后，对张某进行口头传唤。张某便倒地耍赖，拒绝接受传唤。下列说法正确的是（ ）。", "options": ["A. 张某构成强迫交易、故意损毁财物的违反治安管理行为", "B. 可以使用手铐对张某采取保护性约束措施", "C. 可以使用警绳将张某强制传唤回公安派出所，立即向所长报告，补办批准手续", "D. 如传唤张某，对其询问时间不得超过8小时，并应当通知其父母到场"], "answer": "C", "chapter": 1, "id": 1053}, {"type": "single", "text": "公安机关询问未成年人，下列做法错误的是（ ）。", "options": ["A. 甲公安机关在李某18周岁生日那天询问他时，通知其监护人到场", "B. 乙公安机关在对不满18周岁的陈某询问时，其在场监护人故意干扰询问查证工作，致使正常的询问查证无法继续进行，办案民警责令其监护人离开询问场所", "C. 丙公安机关在对不满18周岁的外地来的流浪儿赵某询问时，经通知其监护人无法到场，就没有再通知其他人，只在询问笔录中注明", "D. 丁公安机关在对18周岁的张某询问时，没有通知其监护人"], "answer": "C", "chapter": 1, "id": 1054}, {"type": "single", "text": "派出所民警小李在办理一起吸毒案件时，将违法行为人传唤到公安机关询问查证。询问查证的时间不得超过（ )；情况复杂，依照《治安管理处罚法》规定可能适用行政拘留处罚的，询问查证的时间不得超过（ ）。", "options": ["A. 8小时；24小时", "B. 8小时；12小时", "C. 12小时；24小时", "D. 6小时； 12小时"], "answer": "A", "chapter": 1, "id": 1055}, {"type": "single", "text": "某派出所民警甲、乙在某小区内巡逻，有居民举报说，听到该小区5号楼1单元4楼西户有打架的声音，并听到有人叫喊“杀人了”，甲与乙接警后，如需要入户检查，正确的做法是（ ）。", "options": ["A. 经说明人民警察身份后，可以立即检查", "B. 经出示人民警察证后，可以立即检查", "C. 不能检查，因为检查公民住所应持有检查证", "D. 经出示证件后，可以立即检查，但事后必须补办检查证"], "answer": "B", "chapter": 1, "id": 1056}, {"type": "single", "text": "为了查明案情，公安机关决定对行政案件中专门性技术问题进行鉴定的，鉴定费用由（ ）承担。", "options": ["A. 违法嫌疑人", "B. 被侵害人", "C. 鉴定人或者鉴定机构", "D. 公安机关"], "answer": "D", "chapter": 1, "id": 1057}, {"type": "single", "text": "为了查明案情，办案人民警察可以让（ ）对与违法行为有关的物品、场所或者违法嫌疑人进行辨认。", "options": ["A. 违法嫌疑人", "B. 被侵害人", "C. 证人", "D. 以上三者均包括"], "answer": "D", "chapter": 1, "id": 1058}, {"type": "single", "text": "张某与赵某因宅基地问题产生纠纷。张某一时气愤，手持铁棍来到赵某家中，将赵某的自行车砸坏，赵某上前将铁棍抢走，张某遂拿起赵某家中的铁锨将赵某打致轻微伤。派出所民警对铁棍和铁锨处理正确的是（ ）。", "options": ["A. 对铁棍予以扣押，对铁锨予以登记", "B. 对铁棍、铁锨均予以扣押", "C. 对铁棍予以登记，对铁锨予以扣押", "D. 对铁棍、铁锨均予以先行登记保存"], "answer": "A", "chapter": 1, "id": 1059}, {"type": "single", "text": "下列情形中，不适用治安调解的有（  ）。", "options": ["A. 制造噪声干扰他人正常生活", "B. 偷开他人机动车", "C. 结伙斗殴", "D. 捏造事实诽谤他人"], "answer": "C", "chapter": 1, "id": 1060}, {"type": "single", "text": "甲饲养了一条宠物狗，因该狗经常在夜晚长吠，邻居乙多次找甲要求其采取措施，甲因此怀恨在心。某晚甲在小区内遛狗，见乙的女儿回家，甲驱使其宠物狗将乙的女儿咬伤。乙要求公安机关裁决甲，并要求赔偿其女儿医药费及精神损失费等。根据《治安管理处罚法》的规定，公安机关可以（）。", "options": ["A. 参照民法有关规定，裁决甲赔偿乙的损失", "B. 责令甲赔偿损失，不赔偿的可予以警告，但对乙提出的精神损失的赔偿请求应提起民事诉讼", "C. 告知乙就赔偿问题向人民调解委员会申请调解", "D. 进行调解，调解不成的告知乙就赔偿问题向人民法院提起诉讼"], "answer": "D", "chapter": 1, "id": 1061}, {"type": "single", "text": "下列情形中，可以适用治安调解的有（  ）。", "options": ["A. 放任动物恐吓他人", "B. 结伙斗殴或者其他寻衅滋事行为", "C. 当事人明确表示不愿意调解处理", "D. 行为人多次实施违反治安管理行为"], "answer": "A", "chapter": 1, "id": 1062}, {"type": "single", "text": "下列情形中，可以适用治安调解的有（  ）。", "options": ["A. 捏造事实诽谤他人", "B. 结伙斗殴或者其他寻衅滋事行为", "C. 雇凶伤害他人", "D. 多次实施违反治安管理行为"], "answer": "A", "chapter": 1, "id": 1063}, {"type": "single", "text": "下列行政案件可以适用调解处理的是（ ）。", "options": ["A. 甲怀恨张某，花了2000元钱让刘某把张某打伤", "B. 乙与陈某因为土地纠纷，纠集一伙人与陈某的家人及亲属打斗", "C. 丙与江某因为债务纠纷，多次打伤江某、损毁江某家的财物", "D. 丁因与邻居吵架，将邻居家房门（价值400元）砸坏"], "answer": "D", "chapter": 1, "id": 1064}, {"type": "single", "text": "下列关于办理行政案件中扣押的说法正确的是（ ）", "options": ["A. 民警在对废品站检查时扣押了疑是赃物的井盖，除制作检查笔录外，应当制作现场笔录", "B. 办案民警在某棋牌室当场查获一起赌博案，由于有见证人在场，在制作证据保全决定书时，还应当由在场的见证人签名", "C. 某小区发生一起盗窃案，被侵害人报警后，派出所扣押了被盗窃的水美一箱，因不易保管，所长决定对水果进行变卖，变卖款暂时保存在远出所", "D. 民警依法扣押了陈某殴打他人的棒球棍。因为案情复杂，需要延长扣期限，应当及时电话通知陈某，并说明理由"], "answer": "B", "chapter": 1, "id": 1065}, {"type": "multi", "text": "根据《治安管理处罚法》的规定，下列属于非法携带枪支、弹药、管制器具的行为的是：（ ）", "options": ["A. 甲随身携带气枪进入公园", "B. 乙将子弹放入行李箱中带往火车站", "C. 丙随身携带匕首乘坐公交车", "D. 丁在超市购买包装完好的水果刀后步行回家"], "answer": "ABC", "chapter": 1, "id": 1066}, {"type": "multi", "text": "某派出所民警王某与刘某出警，进入现场后发现甲,乙,丙,丁四名男子正在赌博，经当事人确认共有赌资三千五百元;另外发现一把匕首,多张淫秽光盘以及一支用过的疑似毒品注射器，随即对四人口头传唤。经进一步调查发现，淫秽光盘是甲的，丁注射过少量海洛因，甲,乙,丁三人均指认匕首是丙的，但丙矢口否认;民警刘某是丙的舅舅，非常生气，对丙拳打脚踢，丙忍受不住只好承认匕首是自己的。查明上述案情后，民警依法对四名当事人做出处理。办案民警在本案的询问查证过程中，正确的做法有:( )", "options": ["A. 将传唤的原因和依据通知甲，乙，丙，丁四人各自的家属", "B. 在自己的办公室对嫌疑人进行询问", "C. 分别将甲，乙，丙，丁四人带到不同房间进行询问", "D. 告知被询问人享有拒绝回答与本案无关问题的权利"], "answer": "CD", "chapter": 1, "id": 1067}, {"type": "multi", "text": "下列违反治安管理行为人中，行为人要求听证的，公安机关应当及时依法举行听证的是( )", "options": ["A. 甲因嫖娼行为被处以行政拘留 10 日的处罚", "B. 乙因卖淫行为被处以行政拘留 10 日并处 2500 元罚款的处罚", "C. 丙被吊销特种行业经营许可证", "D. 丁因利用计算机信息网络传播淫秽信息被处以行政拘留 10 日并处 1500 元罚款的处罚"], "answer": "BC", "chapter": 1, "id": 1068}, {"type": "multi", "text": "行政案件由违法行为地的公安机关管辖，由违法行为人居住地公安机关管辖更为适宜的，可以由违法行为人居住地公安机关管辖，但是涉及哪些情况的除外( )", "options": ["A. 卖淫", "B. 嫖娼", "C. 赌博", "D. 打架斗殴"], "answer": "ABC", "chapter": 1, "id": 1069}, {"type": "multi", "text": "民警王某在办理一起案件时，哪些情况下应该回避(   )。", "options": ["A. 王某是民警的妻子", "B. 民警曾经处罚过王某", "C. 王某是民警儿子的小学老师", "D. 王某是民警辖区的住户"], "answer": "AC", "chapter": 1, "id": 1070}, {"type": "multi", "text": "李某参与赌博，被公安机关当场查获，公安机关需要调查的事实包括( )", "options": ["A. 李某的年龄", "B. 李某涉及的赌资数量", "C. 李某有无法定从重、从轻、减轻以及不予处罚的情节", "D. 李某是否为人大代表"], "answer": "ABCD", "chapter": 1, "id": 1071}, {"type": "multi", "text": "2020年6月 25日，杨某和肖某(在逃)在某网吧的厕所吸食毒品海洛因时被网吧老板发现，两人遂逃离网吧。6月30日，杨某在其父陪同下到辖区公安局投案自首，辖区公安局于当日受理了此案。因杨某主动投案，并向公安机关如实陈述了自己的违法行为，辖区公安局于 7月1日对杨某作出不予处罚的决定。针对本案，下列选项不正确的是(    )", "options": ["A. 杨某违法行为成立，虽有主动投案情节，也应当给予警告等相应治安处罚", "B. 杨某违法行为成立，基于杨某主动投案，可以减轻处罚但不应当不予处罚", "C. 杨某违法行为成立，公安机关的处理决定符合法律规定", "D. 公安机关的处理决定违反了教育与处罚相结合的原则"], "answer": "ABD", "chapter": 1, "id": 1072}, {"type": "multi", "text": "A为甲地人，长期居住在甲地，在乙地盗窃后逃往丙地,在丙地被公安机关抓获，下列关于管辖权的说法正确的是( )", "options": ["A. 由甲地公安机关管辖更为适宜的，可以由甲地公安机关管辖", "B. 必要时，可以由乙地公安机关管辖", "C. 对管辖权发生争议的，报请共同的上级公安机关指定管辖", "D. 几个公安机关都有权管辖的行政案件，由最初受理的公安机关管辖"], "answer": "ABCD", "chapter": 1, "id": 1073}, {"type": "multi", "text": "下列属于物证的有( )", "options": ["A. 作案的工具", "B. 被侵害人的血衣", "C. 被盗的自行车", "D. 执法记录仪里拍摄的视频"], "answer": "ABC", "chapter": 1, "id": 1074}, {"type": "multi", "text": "依据《公安机关办理行政案件程序规定》第四十一条，行政案件具有下列哪些情形之一的，不适用快速办理( )", "options": ["A. 16岁的违法嫌疑人甲", "B. 聋哑人乙", "C. 对丙作出责令停产停业处罚", "D. 丁冒用宗教、气功名义进行扰乱社会秩序、损害他人身体健康活动，情节严重"], "answer": "ABCD", "chapter": 1, "id": 1075}, {"type": "multi", "text": "依据《公安机关办理行政案件程序规定》四十条至四十六条的规定，关于快速办理正确的是( )", "options": ["A. 公安机关可以根据不同案件类型，使用简明扼要的格式询问笔录，尽量减少需要文字记录的内容", "B. 使用执法记录仪等设备对询问过程录音录像的，可以替代书面询问笔录", "C. 对快速办理的行政案件，公安机关应当在违法嫌疑人到案后二十四小时内作出处理决定", "D. 快速办理阶段依法收集的证据，可以作为定案的根据"], "answer": "ABD", "chapter": 1, "id": 1076}, {"type": "multi", "text": "依据《公安机关办理行政案件程序规定》第五十条，办理行政案件需要调查的案件事实包括( )", "options": ["A. 违法嫌疑人的基本情况", "B. 违法行为是否存在", "C. 违法行为是否为违法嫌疑人实施", "D. 实施违法行为的时间、地点、手段、后果以及其他情节"], "answer": "ABCD", "chapter": 1, "id": 1077}, {"type": "multi", "text": "依据《公安机关办理行政案件程序规定》第九十八条，具有下列情形之一的,应当进行重新鉴定(  )", "options": ["A. 鉴定程序违法或者违反相关专业技术要求,可能影响鉴定意见正确性的", "B. 鉴定机构、鉴定人不具备鉴定资质和条件的", "C. 鉴定意见明显依据不足的", "D. 鉴定人故意作虚假鉴定的"], "answer": "ABCD", "chapter": 1, "id": 1078}, {"type": "multi", "text": "依据《公安机关办理行政案件程序规定》第一百零七条，对下列物品，不得扣押或者扣留( )", "options": ["A. 当事人生活的必需品", "B. 当事人抚养其未成年子女的生活必需品", "C. 第三人占有的财产", "D. 被侵害人合法占有的财产"], "answer": "ABD", "chapter": 1, "id": 1079}, {"type": "multi", "text": "依据《公安机关办理行政案件程序规定》第一百一十五条，有下列哪些情形之一的，公安机关应当立即退还财物，并由当事人签名确认;不涉及财物退还的，应当书面通知当事人解除证据保全( )", "options": ["A. 当事人没有违法行为", "B. 被采取证据保全的场所、设施、物品、财产与违法行为无关的", "C. 已经作出处理决定，不再需要采取证据保全措施的", "D. 采取证据保全措施的期限已经届满的"], "answer": "ABCD", "chapter": 1, "id": 1080}, {"type": "multi", "text": "依据《公安机关办理行政案件程序规定》第一百九十四条，对在办理行政案件中查获的哪些物品应当依法收缴( )", "options": ["A. 毒品", "B. 赌博所用的工具", "C. 伪造的发票", "D. 变造的身份证"], "answer": "ABCD", "chapter": 1, "id": 1081}, {"type": "multi", "text": "王某，男，1999 年 12 月 1 日出生，家境较好，无涉案、涉警记录。2017 年 8 月 3日，王某因吸毒被公安机关抓获。2017 年 8 月 4 日，某县公安局决定对王某处七日行政拘留并处一千元罚款。下列说法错误的有:(   )", "options": ["A. 某县公安局立即将王某送某县拘留所执行行政拘留", "B. 王某不服行政拘留处罚决定，可以申请行政复议但不能直接提起行政诉讼", "C. 对王某作出行政拘留处罚后应及时通知王某家属", "D. 王某提出暂缓缴纳罚款，某县公安局同意暂缓缴纳罚款"], "answer": "ABD", "chapter": 1, "id": 1082}, {"type": "multi", "text": "依据《公安机关办理行政案件程序规定》,下列关于听证的说法正确的是( )", "options": ["A. 听证由公安机关治安部门组织", "B. 违法嫌疑人王某不服处罚要求组织听证，公安机关可以对其加重处罚", "C. 本案的调查人员不得担任听证员", "D. 当事人在听证活动中拥有申请回避的权利"], "answer": "CD", "chapter": 1, "id": 1083}, {"type": "multi", "text": "关于治安管理处罚程序，下列说法正确的有(    )", "options": ["A. 以非法手段收集的证据不得作为处罚的依据", "B. 被询问人要求就被询问事项自行提供书面材料的，应当准许", "C. 询问不满 18 周岁的违反治安管理行为人，应当通知其父母或者其他监护人到场", "D. 询问聋哑的违反治安管理行为人，应当有通晓手语的人提供帮助，并在笔录上注明"], "answer": "ABCD", "chapter": 1, "id": 1084}, {"type": "multi", "text": "某地公安机关在对娱乐场所进行治安检查过程中，发现王某与赵某在包间吸食海洛因，公安机关发现后将其带回公安机关进行处理，经调查，王某为初次吸毒，赵某正在接受社区戒毒，下列说法错误的是( )", "options": ["A. 公安机关应当对王某进行强制隔离戒毒", "B. 公安机关可以责令王某进行社区强制戒毒，期限为一年", "C. 公安机关应当对赵某进行强制隔离戒毒，期限为六个月", "D. 强制隔离戒毒属于公安机关的行政处罚"], "answer": "ABCD", "chapter": 1, "id": 1085}, {"type": "multi", "text": "罚款是治安管理处罚的一个种类，是指公安机关强制违反治安管理行为人交纳一定钱币的处罚。根据《行政处罚法》、《治安管理处罚法》、《公安机关办理行政案件程序规定》相关规定，罚款的执行不仅有罚缴分离，还包括当场收缴、暂缓执行等。下列情形中，人民警察可以当场收缴治安管理处罚罚款的是（      ）。", "options": ["A. 被处以五十元以下罚款，被处罚人对罚款无异议的；", "B. 在边远地区，被处罚人向指定的银行缴纳罚款确有困难，经被处罚人提出的", "C. 被处罚人在当地没有固定住所，不当场收缴事后难以执行的", "D. 被处罚人家庭困难，不当场收缴事后无法执行的"], "answer": "ABC", "chapter": 1, "id": 1086}, {"type": "multi", "text": "(多选)根据《中华人民共和国治安管理处罚法》第二十八条规定，以下属于扰乱体育、文化等大型群众性活动秩序的行为有( )。", "options": ["A. 强行进入场内的", "B. 违反规定，在场内燃放烟花爆竹或者其他物品的", "C. 展示侮辱性标语条幅等物品的", "D. 围攻裁判员、运动员或者其他工作人员的"], "answer": "ABCD", "chapter": 1, "id": 1087}, {"type": "single", "text": "下列哪一项属于《大型活动安全管理条例》中所界定的大型活动。(     )", "options": ["A. 预计参加人数为800人的体育比赛", "B. 单位内部举办的体育比赛", "C. 预计参加人数为2000人的演唱会", "D. 预计参加人数为2000人的集会游行"], "answer": "C", "chapter": 2, "id": 2000}, {"type": "single", "text": "下列特种行业里属于公安机关实施的审批许可的是(    )。", "options": ["A. 旅馆业特种行业许可", "B. 典当业营业执照", "C. 印刷业特种行业许可", "D. 娱乐场所经营许可"], "answer": "A", "chapter": 2, "id": 2001}, {"type": "single", "text": "有下列情形的人员，可以开办娱乐场所或者在娱乐场所内从业(       )。", "options": ["A. 因故意杀人曾被剥夺政治权利的", "B. 盗窃罪", "C. 强奸罪", "D. 因吸食毒品曾被强制戒毒的"], "answer": "B", "chapter": 2, "id": 2002}, {"type": "single", "text": "公安机关对大型群众性活动的安全许可实行分级管理，由设区的市级人民政府公安机关实施安全许可的大型群众性活动预计人数规模是(      )。", "options": ["A. 1000人以上5000人以下", "B. 5000人以上", "C. 1000人以上3000人以下", "D. 3000人以上"], "answer": "B", "chapter": 2, "id": 2003}, {"type": "single", "text": "下列哪一项不属于卖淫行为的特征。(      )", "options": ["A. 以营利为目的", "B. 发生性关系", "C. 自愿", "D. 异性之间"], "answer": "D", "chapter": 2, "id": 2004}, {"type": "single", "text": "根据 《娱乐场所治安管理办法》规定，娱乐场所营业面积在800平方米的，应当配备(      )名保安人员。", "options": ["A. 2", "B. 3", "C. 4", "D. 5"], "answer": "D", "chapter": 2, "id": 2005}, {"type": "single", "text": "根据2016年施行的《娱乐场所管理条例》，以下不属于娱乐场所的是(      )。", "options": ["A. 卡拉OK厅", "B. 会员制娱乐场所", "C. 单位内部的舞会", "D. 保龄球馆"], "answer": "C", "chapter": 2, "id": 2006}, {"type": "single", "text": "以下需要公安机关行政许可的特种行业是(     )。", "options": ["A. 旅馆业", "B. 典当业", "C. 寄卖业", "D. 开锁业"], "answer": "A", "chapter": 2, "id": 2007}, {"type": "single", "text": "个体刻字店可以刻制(      )。", "options": ["A. 党政机关印章", "B. 企事业单位业务专用章", "C. 学校印章、戳记", "D. 个人印章"], "answer": "D", "chapter": 2, "id": 2008}, {"type": "single", "text": "下列哪一项活动需要向公安机关申请大型活动安全许可。(     )", "options": ["A. 企业举办的预计参加人数为2000人的演唱会", "B. 北京市政府和张家口市政府联合牵头举办的2022年冬奥会", "C. 国庆70周年庆典", "D. 南京市政府牵头举办的大型展销会"], "answer": "A", "chapter": 2, "id": 2009}, {"type": "single", "text": "关于公安机关治安管理部门对公共娱乐场安全检查，下列哪一项不符合安全检查要求:(  )", "options": ["A. 娱乐场所在营业时，可以适当超过额定人数", "B. 检查人员不得少于两人", "C. 场所有两个以上安全出口", "D. 填写安全检查记录"], "answer": "A", "chapter": 2, "id": 2010}, {"type": "single", "text": "在娱乐场所检查过程中，下列哪一阶段发生，即可认定卖淫嫖娼行为成立。(      )", "options": ["A. 拉客招嫖", "B. 讨价还价", "C. 达成一致", "D. 询价问价"], "answer": "C", "chapter": 2, "id": 2011}, {"type": "single", "text": "下列物品中不能典当的是(   )。", "options": ["A. 裘皮大衣", "B. 警服", "C. 从国外带回国的金项链", "D. 接受遗赠得到的汽车"], "answer": "B", "chapter": 2, "id": 2012}, {"type": "single", "text": "娱乐场所因更名、扩建或变更场地等事项，需要变更备案信息的，应当在何时向原备案的公安机关办理变更手续？(  )", "options": ["A. 自变更之日起15日内", "B. 自变更之日起30日内", "C. 在变更事项发生后立即办理", "D. 在下次年检时一并办理"], "answer": "C", "chapter": 2, "id": 2013}, {"type": "single", "text": "迪斯科舞厅保安人员应当按照场所核定人数的(      )配备。", "options": ["A. 5%", "B. 6%", "C. 7%", "D. 8%"], "answer": "A", "chapter": 2, "id": 2014}, {"type": "single", "text": "大型群众性活动安全许可时限为受理之日起(      )内。", "options": ["A. 7日", "B. 10日", "C. 15日", "D. 30日"], "answer": "A", "chapter": 2, "id": 2015}, {"type": "single", "text": "根据《娱乐场所治安管理办法》，营业面积1000平方米以下的迪斯科舞厅至少应当配备(  )作为安全检查设备。", "options": ["A. 手持式金属探测器", "B. 通过式金属探测器", "C. 微剂量X射线安全检查设备", "D. 排爆设备"], "answer": "A", "chapter": 2, "id": 2016}, {"type": "single", "text": "大型群众性活动的预计参加人数在5000人以上的，由(      )实施安全许可。", "options": ["A. 活动所在地的县级人民政府公安机关", "B. 活动所在地的地市级人民政府公安机关", "C. 活动所在地的省级人民政府公安机关", "D. 国务院公安部门"], "answer": "B", "chapter": 2, "id": 2017}, {"type": "single", "text": "做好旅馆业治安管理工作的第一步，也是至关重要的一个环节是(      )。", "options": ["A. 旅客财物保管制度", "B. 验证登记制度", "C. 严把开业审批关", "D. 来访登记制度"], "answer": "C", "chapter": 2, "id": 2018}, {"type": "single", "text": "娱乐场所营业日志应当留存(     )备查，不得删改。", "options": ["A. 15日", "B. 30日", "C. 45日", "D. 60日"], "answer": "D", "chapter": 2, "id": 2019}, {"type": "single", "text": "(单选)传统的安全检查设备，能发现金属武器和普通炸药等危险物品，在安全检查工作中发挥了重要作用，其中不包括( )。", "options": ["A. X光安检仪", "B. 金属武器检测门", "C. X光透视仪", "D. 车底安全检查扫描系统"], "answer": "C", "chapter": 2, "id": 2020}, {"type": "single", "text": "(单选)非法携带枪支、弹药或者弩、匕首等国家规定的管制器具的，( );情节较轻的，处警告或者二百元以下罚款。", "options": ["A. 处五日以下拘留，可以并处一千元以下罚款", "B. 处五日以下拘留，可以并处八百元以下罚款", "C. 处十日以下拘留，可以并处八百元以下罚款", "D. 处十日以下拘留，可以并处一千元以下罚款"], "answer": "A", "chapter": 2, "id": 2021}, {"type": "single", "text": "(单选)握住手持式金属探测器，用平坦的一侧接近受检者的身体，距离身体约为( )厘米。", "options": ["A. 3-8", "B. 8-10", "C. 0.3-0.8", "D. 0.8-1.0"], "answer": "A", "chapter": 2, "id": 2022}, {"type": "single", "text": "(单选)在现场安全检查工作中，通常采用( )的方法。", "options": ["A. 仪器检查", "B. 纯手工检查", "C. 仪器与手工相结合检查", "D. 疑点排查"], "answer": "C", "chapter": 2, "id": 2023}, {"type": "single", "text": "(单选)当X光安检仪值机员在显示的图像中发现可疑物品时，( )。", "options": ["A. 可立即向领导汇报", "B. 可立即报警", "C. 可要求其接受开箱包检查", "D. 应立即动手进行开箱包检查"], "answer": "C", "chapter": 2, "id": 2024}, {"type": "single", "text": "下列属于《大型群众性活动安全管理条例》中所界定的大型群众性活动的是( )。", "options": ["A. 预计参加人数为800人的体育比赛", "B. 单位内部举办的体育比赛", "C. 预计参加人数为2000人的演唱会", "D. 预计参加人数为2000人的集会游行"], "answer": "C", "chapter": 2, "id": 2025}, {"type": "single", "text": "(单选)公安机关对大型群众性活动的安全许可实行分级管理，由设区的市级人民政府公安机关实施安全许可的大型群众性活动预计人数规模是( )。", "options": ["A. 1000人以上5000人以下", "B. 5000人以上", "C. 1000人以上3000人以下", "D. 3000人以上"], "answer": "B", "chapter": 2, "id": 2026}, {"type": "single", "text": "(单选)下列哪一项活动需要向公安机关申请大型群众性活动安全许可。( )", "options": ["A. 企业举办的预计参加人数为2000人的演唱会", "B. 北京市政府和张家口市政府联合牵头举办的2022年冬奥会", "C. 国庆70周年庆典", "D. 南京市政府牵头举办的大型展销会"], "answer": "A", "chapter": 2, "id": 2027}, {"type": "single", "text": "(单选)大型群众性活动安全许可时限为受理之日起(   )内。", "options": ["A. 7日", "B. 10日", "C. 15日", "D. 30日"], "answer": "A", "chapter": 2, "id": 2028}, {"type": "single", "text": "(单选)根据《娱乐场所治安管理办法》规定，娱乐场所营业面积在800平方米的，应当配备(    )名保安人员。", "options": ["A. 2", "B. 3", "C. 4", "D. 5"], "answer": "D", "chapter": 2, "id": 2029}, {"type": "single", "text": "小李因扰乱体育比赛秩序被处以拘留处罚，下列说法正确的是( )。", "options": ["A. 他在三个月至六个月以内不得进入体育场馆观看同类比赛", "B. 他在六个月至一年以内不得进入体育场馆观看同类比赛", "C. 他违反规定进入体育场馆，可以处五日以上十日以下拘留", "D. 他违反规定进入体育场所，可以处500元以下罚款"], "answer": "B", "chapter": 2, "id": 2030}, {"type": "single", "text": "(单选))《娱乐场所治安管理办法》规定了歌舞娱乐场所包厢、包间、吧台等安全设施的具体要求。下列选项符合要求的是( )。", "options": ["A. 包厢、包间内的吧台、餐桌等物品不得高于1米", "B. 包厢、包间的门窗，距地面1米以上应当部分使用透明材质", "C. 包厢、包间内的吧台、餐桌等物品不得高于1.2米", "D. 包厢、包间的门窗使用的透明材质的高度不小于0.6米"], "answer": "C", "chapter": 2, "id": 2031}, {"type": "single", "text": "(单选)某5A级风景游览区人流汇集，各种纠纷、矛盾频发，推高治安、刑事案件的数量。下述关于景区管理机构排查化解景区矛盾纠纷，错误的说法是( )。", "options": ["A. 要加强景区巡逻，及时发现各类矛盾纠纷，随时予以化解", "B. 要加强景区保安法律知识培训，推动提高保安参与调解、化解矛盾的能力", "C. 要开展专项整治、惩治各种违法犯罪行为，提高化解力度", "D. 招聘任治安信息员，专门排查矛盾纠纷先兆、以便提前化解"], "answer": "C", "chapter": 2, "id": 2032}, {"type": "single", "text": "(单选)小马负责对辖区内的歌舞娱乐场所进行监督检查。下列检查项目中，符合规定的是( )。", "options": ["A. 应当配备专业或兼职的保安人员", "B. 应当建立营业日志并留存30日", "C. 应当安装展现室内整体环境的透明门窗", "D. 应当留存闭路电视监控录像原始资料60日"], "answer": "C", "chapter": 2, "id": 2033}, {"type": "multi", "text": "娱乐场所的特征为(        )。", "options": ["A. 以营利为目的", "B. 向公众开放", "C. 消费者自娱自乐", "D. 专门观赏为主"], "answer": "ABC", "chapter": 2, "id": 2034}, {"type": "multi", "text": "在制止娱乐场所赌博活动中，(     )行为已触犯了我国刑法，应依法追究刑事责任。", "options": ["A. 打麻将", "B. 聚众赌博", "C. 以赌博为业的", "D. 开设赌场的"], "answer": "BCD", "chapter": 2, "id": 2035}, {"type": "multi", "text": "旅馆业治安管理的基本制度包括(       )。", "options": ["A. 开业审批制度", "B. 验证登记制度", "C. 旅客财物保管制度", "D. 门卫值班制度"], "answer": "ABCD", "chapter": 2, "id": 2036}, {"type": "multi", "text": "旧货业禁止收购 (        )。", "options": ["A. 枪支、弹药、爆炸物品", "B. 剧毒、放射性物品及其容器", "C. 铁路、油田器材", "D. 财物和来源不明物品"], "answer": "ABCD", "chapter": 2, "id": 2037}, {"type": "multi", "text": "大型文体活动场所的出入口要严格检查，禁止观众携带(       )。", "options": ["A. 酒类", "B. 罐装或玻璃瓶装饮料", "C. 水果刀", "D. 香蕉及其他水果"], "answer": "ABC", "chapter": 2, "id": 2038}, {"type": "multi", "text": "在娱乐场所中不能认定为赌博行为的有(        )", "options": ["A. 不以营利为目的，亲属之间进行带有财物输赢的打麻将、玩扑克等娱乐活动", "B. 亲属之外的其他人之间进行带有少量财物输赢的打麻将、玩扑克等娱乐活动", "C. 以营利为目的，为赌博提供条件的", "D. 以营利为目的，参与赌博赌资较大的"], "answer": "AB", "chapter": 2, "id": 2039}, {"type": "multi", "text": "根据《娱乐场所治安管理办法》的规定，以下正确的是(        )。", "options": ["A. 歌舞娱乐场所营业时间内，场所包厢、包间门窗透明玻璃", "B. 歌舞娱乐场所的视频监控资料需要留存60日备查", "C. 歌舞娱乐场所的包厢、包间内不得安装可调灯光", "D. 娱乐场所对从业人员应当实行实名登记制度"], "answer": "ACD", "chapter": 2, "id": 2040}, {"type": "multi", "text": "公共秩序管理的范围包括(     )。", "options": ["A. 公共场所管理", "B. 特种行业管理", "C. 大型群众性活动安全管理", "D. 户政管理"], "answer": "ABC", "chapter": 2, "id": 2041}, {"type": "multi", "text": "在公共场所和特种行业，应将(     )教育作为治安防范教育的重点。", "options": ["A. 防盗", "B. 防火", "C. 防爆炸", "D. 防治安灾害事故"], "answer": "ABCD", "chapter": 2, "id": 2042}, {"type": "multi", "text": "(多选)以下属于大型群众性活动场所管理者的安全责任的有( )。", "options": ["A. 保障活动场所、设施符合国家安全标准和安全规定", "B. 落实应急救援措施并组织演练", "C. 保障监控设备和消防设施、器材配置齐全、完好有效", "D. 提供必要的停车场地，并维护安全秩序"], "answer": "ACD", "chapter": 2, "id": 2043}, {"type": "multi", "text": "(多选)根据《娱乐场所管理条例》，不得开办或变相参与娱乐场所的经营活动的有( )。", "options": ["A. 民警小张", "B. 民警小王的老婆", "C. 文旅局小李的弟弟", "D. 退休民警小龙的妹夫"], "answer": "ABC", "chapter": 2, "id": 2044}, {"type": "multi", "text": "(多选)公安机关治安部门对公共场所开展的治安管理工作主要包括( )。", "options": ["A. 公共场所的环境条件管理", "B. 公共场所的安全制度管理", "C. 公共场所的从业人员管理", "D. 公共场所的业务内容管理"], "answer": "ABC", "chapter": 2, "id": 2045}, {"type": "multi", "text": "(多选)某机场因天气原因航班长时间延误，导致大量旅客滞留机场，多名旅客在与航空公司交涉时情绪失控，硬闯登机口。以下现场民警处置措施正确的有( )。", "options": ["A. 维持现场秩序", "B. 向旅客宣讲法律规定", "C. 对少数煽动闹事且不听劝阻的旅客依法传唤", "D. 妥善安排住宿饮食"], "answer": "ABC", "chapter": 2, "id": 2046}, {"type": "multi", "text": "(多选)大型群众性活动安全工作方案应当具备的内容要件有( )。", "options": ["A. 活动的时间、地点、内容及组织方式", "B. 安全工作人员的数量、任务分配和识别标志", "C. 活动的预算经费", "D. 应急救援预案"], "answer": "ABD", "chapter": 2, "id": 2047}, {"type": "multi", "text": "(多选)根据《中华人民共和国治安管理处罚法》第二十八条规定，以下属于扰乱体育、文化等大型群众性活动秩序的行为有( )。", "options": ["A. 强行进入场内的", "B. 违反规定，在场内燃放烟花爆竹或者其他物品的", "C. 展示侮辱性标语条幅等物品的", "D. 围攻裁判员、运动员或者其他工作人员的"], "answer": "ABCD", "chapter": 2, "id": 2048}, {"type": "multi", "text": "(多选)根据《中华人民共和国治安管理处罚法》第二十八条规定，以下属于扰乱体育、文化等大型群众性活动秩序的行为有( )。", "options": ["A. 强行进入场内的", "B. 违反规定，在场内燃放烟花爆竹或者其他物品的", "C. 展示侮辱性标语条幅等物品的", "D. 围攻裁判员、运动员或者其他工作人员的"], "answer": "ABCD", "chapter": 2, "id": 2049}, {"type": "single", "text": "近期每日 10:00 至 14:00，某闹市区连续发生多起诈骗案件，嫌疑人以“低价出售名牌手表”为名骗取路人钱财，看到制式警车巡逻就立即躲进背街小巷。为打击此类街面犯罪，公安机关应选择的巡逻勤务方式是(   )", "options": ["A. 白天与夜间巡逻相结合", "B. 着装与便衣巡逻相结合", "C. 步巡与车巡相结合", "D. 常规巡逻与随机巡逻相结合"], "answer": "B", "chapter": 3, "id": 3000}, {"type": "single", "text": "某日，某县民警小李、小孙(女)下班途中，乘坐公共汽车时发现一名女小偷正在实施扒窃。两名民警控制嫌疑人后，不应采取的做法是(  )", "options": ["A. 出示证件，表明警察身份", "B. 小李对嫌疑人进行搜身", "C. 警戒周围，防止嫌疑人同伙袭击", "D. 及时将现场情况报告县公安局指挥中心"], "answer": "B", "chapter": 3, "id": 3001}, {"type": "single", "text": "凌晨 1: 00, 民警小张和小李巡逻中发现一可疑男子前来取件，遂前去盘问。该男子慌忙将包裹丢弃在绿化带中，夺路而逃。民警将其控制后，不宜采取的措施是( )", "options": ["A. 对嫌疑人进行人身搜查", "B. 立即通知家属到现场，确认嫌疑人身份", "C. 现场收集被丢弃的包裹，固定证据", "D. 使用执法记录仪记录嫌疑人体貌特征"], "answer": "B", "chapter": 3, "id": 3002}, {"type": "single", "text": "某日14时许，家任南方某城市的张阿姨回家途中，路经 某商住高层建筑时，被高空突然掉落的物品砸中头部，当场昏迷。接警后，民警小蔡、小徐迅速到达现场。现场处置过程中，民警首先应做的是: (    )\n‌", "options": ["A. 清理现场玻璃渣", "B. 对伤者开展紧急救助", "C. 接受记者采访", "D. 进入嫌疑人家中搜查"], "answer": "B", "chapter": 3, "id": 3003}, {"type": "single", "text": "某 日 10 时许，派出所接到 110 指令称，自称蔡某的一名男子，说自己偷了一辆摩托车，要投案自首。接到指令后，民警老李、小王立即赶到报案地点。发现报警人蔡某因琐事与父亲在家中发生争吵，随后蔡某便骑父亲的摩托车外出，在途中被姑父拦住。蔡某赌气不想回家，便谎报警情。在处理该警情时，民警恰当的处理方式是:(  )", "options": ["A. 口头传唤蔡某到派出所接受询问", "B. 对蔡某批评教育并化解蔡某的家庭矛盾", "C. 对蔡某所骑的摩托车进行扣押", "D. 要求蔡某父亲提供摩托车证明"], "answer": "A", "chapter": 3, "id": 3004}, {"type": "single", "text": "某日凌晨 1 时许，民警小罗、小廖巡逻时发现一名形迹可疑的年轻男子，正坐在一辆无牌摩托车上四处张望。二人立即上前对该男子进行控制和检查。面对民警盘问，该男子神色慌张，无法说明摩托车座位箱内放置的 T 型、一字型工具的用途和多部旧手机的正当来源。因不能排除违法嫌疑，民警依法将该男子带到派出所继续盘问。根据法律有关规定，下列说法错误的是:(   )", "options": ["A. 立即通知该男子的家属", "B. 应当听取该男子的陈述和申辩", "C. 继续盘问的时限一般为八小时", "D. 继续盘问时限最长可以延长至四十八小时"], "answer": "C", "chapter": 3, "id": 3005}, {"type": "single", "text": "十一国庆长假期间，某市商业街游客被盗案件频发。为控制案件发生， 保障游客财产安全，辖区派出所决定增加两支巡逻队伍，负责商业街核心区域重点时段的巡逻。以下巡逻方式合适的是:(   )", "options": ["A. 徒步", "B. 自行车", "C. 摩托车", "D. 汽车"], "answer": "A", "chapter": 3, "id": 3006}, {"type": "single", "text": "某日 22 时，某码头治安派出所两位民警在该码头旅客下客通道北侧附近巡逻，发现一辆非法运营车辆在通道出口前面停放，该车驾驶员刘某在通道出口处拉客，民警对其予以劝离。刘某以影响其生意为由，高声辱骂民警，多次用语言挑衅要与民警“单挑”，并向民吐口水。民警针对刘某的行为，正确做法是 :(     )\n‏", "options": ["A. 忍受挨骂，以理服人，劝导刘某", "B. 直接控制，将刘某带至公安派出所处理", "C. 脱下制服，与其“单挑”，打服刘某", "D. 在对骂中严厉呵斥，在声势上压倒刘某"], "answer": "B", "chapter": 3, "id": 3007}, {"type": "single", "text": "小王和小李是一个巡逻小组民警，接警后赶赴现场，在某个小区里控制了寻衅滋事的犯罪嫌疑人张某，小王对张某实施上铐。此时，小李应采取的措施是:(    )", "options": ["A. 向有关人员了解情况", "B. 帮助小王上铐并搜身", "C. 戒备控制防止攻击", "D. 请求警力增援"], "answer": "C", "chapter": 3, "id": 3008}, {"type": "single", "text": "在某县火车站广场附近巡逻时，两名民警发现一名身背双肩包、怀抱一名 2 岁左右幼儿的女子，该女子见到民警后眼神躲闪，有意逃离。于是民警上前对该女子进行询问，核实其身份情况。 该女子自称身份证已丢失，只能说出自己的姓名，民警下列做法正确的是:(   )", "options": ["A. 先盘查，若无可疑，予以放行", "B. 依法传唤至派出所", "C. 依法带至派出所继续盘问", "D. 依法立即予以拘留"], "answer": "C", "chapter": 3, "id": 3009}, {"type": "single", "text": "某日凌晨 1 时许，火车站派出所一名民警正在站前街执勤。街边铁路招待所一名服务员向其反映，刚有一名男子在招待所寄存处寄存物品时，从提袋中掉出一把手枪，该男子将枪捡起后，匆匆离开招待所，往火车站内走去。接到服务员报警后，民警首先应:(    )", "options": ["A. 根据男子体貌特征马上开展追查", "B. 立即报告派出所值班领导和 110 指挥中心", "C. 将情况转告火车站管理部门", "D. 立即查看招待所视频监控图像资料"], "answer": "B", "chapter": 3, "id": 3010}, {"type": "single", "text": "派出所接到村民甲报案，称村中发生打架斗殴事件，有村民受伤。民警赶到现场后，应根据情况采取下列处置措施，流程排序正确的是:(    )\n‏①控制现场 ②向派出所报告现场情况 ③开启执法记录仪 ④联系120急救中心救助受伤村民⑤在现场收集相关的物证 ⑥制止村民的打架斗殴行为 ⑦向报警人了解基本情况", "options": ["A. ①③②⑥④⑤⑦", "B. ⑦⑥③⑤①④②", "C. ⑥④③②①⑦⑤", "D. ③⑦②⑥①④⑤"], "answer": "D", "chapter": 3, "id": 3011}, {"type": "single", "text": "某日上午 10 时许，新城分局巡警小李和小王在辖区内武装巡逻，行至花园街时，发现两名男子正从东兴小区灌木丛中钻出来，其中一人背一件大号双肩包。小李和小王上前拦截两名男子，实施盘查。 当小李表明警察身份，告知依法进行盘查时，被盘查的一名男子要求小李出示执法证，小李恰当的做法是:(   )", "options": ["A. 向其告知没有执法证", "B. 出示警察证，告知其该证实警察执法的凭证", "C. 告知其有执法证，未随身携带", "D. 出示执法资格等级考试初级证书"], "answer": "B", "chapter": 3, "id": 3012}, {"type": "single", "text": "某日，某派出所值班民警接到群众报警称: 甲村有不明动物咬伤多人，情况危急，请求处理。值班所长刘某带领两名民警，携带枪支、网枪、麻醉枪、抱钳、套绳、单警装备、执法记录仪等装备赶赴现场，发现一只狐狸已被居民赶至一个围墙的角落。面对这种情形，下列处置方式不恰当的是:(   )", "options": ["A. 封控现场，请求专业人员处置", "B. 应当果断予以捕杀", "C. 利用网枪、麻醉枪、抱钳、套绳等工具捕获狐狸", "D. 驱赶狐狸返回山林"], "answer": "A", "chapter": 3, "id": 3013}, {"type": "single", "text": "交警小欧在路边查处一辆违章停放的车辆时，怀抱婴儿的车主许某拒不接受处罚，连续推搡并辱骂小欧。此时，小欧恰当的做法是:(     )", "options": ["A. 采用切别摔徒手动作制服许某", "B. 不予理睬，直接撤离", "C. 采取口头警告制止，保持安全距离", "D. 警告后使用催泪喷射器制服许某"], "answer": "C", "chapter": 3, "id": 3014}, {"type": "single", "text": "某晚，派出所两名民警携带规定装备在巡逻盘查时，发现一名嫌疑人甲与网上在逃人员高度相似（涉嫌绑架杀人），民警二人随即上前盘查，此刻民警最恰当的做法是：（）", "options": ["A. 正面截停，让甲出示身份证件", "B. 立即向指挥中心汇报，跟踪甲", "C. 立即对其进行约束", "D. 直接将甲按倒在地"], "answer": "C", "chapter": 3, "id": 3015}, {"type": "single", "text": "疫情期间，某日晚，A县公安局接到报警称：A县某超市门口有人发生冲突，报警人称：有人不戴口罩，强行进入超市，与超市工作人员发生肢体冲突。A县公安局积极响应，启动应急预案，按照预案进行派警处置：A县公安局 B派出所民警小宋接到派警信息后，迅速反应，按照现场执法规范的要求带队迅速赶到现场处置。民警小宋接到警情后，开展了以下工作：（1）制止冲突 （2）做好防护 （3）开启执法记录仪 （4）控制现场（5）依法传唤", "options": ["A. 3/2/1/4/5", "B. 2/3/1/4/5", "C. 3/2/4/1/5", "D. 2/1/3/4/5"], "answer": "B", "chapter": 3, "id": 3016}, {"type": "multi", "text": "某市公安局指挥中心接群众报警称，有--疑似精神病人持刀站在闹市区车行道上，造成交通堵塞。巡警 1 组根据指挥中心指令到达现场，发现该男子时哭时笑，挥舞着刀对围观群众大喊有人要杀他。下列现场民警应选择的恰当做法有(    )", "options": ["A. 在一定区域和时间实行交通管制", "B. 稳定该人情绪，尽力化解其暴力行为", "C. 在对方拒不放下手中刀时，依法开枪射击", "D. 通知其监护人，并协助送医治疗"], "answer": "AB", "chapter": 3, "id": 3017}, {"type": "multi", "text": "根据《公安机关人民警察盘查规范》的有关规定，巡逻民警在对可疑物品进行检查时，应当遵循的正确操作规范有(    )", "options": ["A. 发现有声、有味的物品时，应当谨慎拿取", "B. 发现爆炸物时，应当疏散人群，立即进行排除", "C. 检查物品时，应当避免损坏或者遗失财物", "D. 开启箱包时，应当监控被检查人，让其缓慢打开"], "answer": "AC", "chapter": 3, "id": 3018}, {"type": "multi", "text": "某省甲市一个月后将举办重大国际性赛事。按省公安厅指令，各地市公安机关立即启动“三道防线”，强化对入省车辆及人员的检查力度，统一标准配置警力。乙市位于该省北部，扼守南下甲市的战略要冲，设有多个治安检查站。乙市公安局巡特警支队经调研发现，随着交通路网的建设发展，以及群众出行方式的改变，部分治安检查站盘查、拦截的工作量也发生较大变化，需要在总警力配置不变的前提下，对各检查站警力进行调整。检查过程中，民警小廖发现牌照为某省 AGH111 的机动车有违法嫌疑，引导其驶入人员、物品检查区，检查后未发现违禁物品，遂对乘客张某的身份进行查验。下列查验做法正确的有:(    )", "options": ["A. 要求张某出示身份证", "B. 让张某自述本人身份，并留意其反应", "C. 使用居民身份证核查仪对张某进行人证比对", "D. 若张某拒不出示身份证，应将其带至公安机关继续盘问"], "answer": "ABCD", "chapter": 3, "id": 3019}, {"type": "multi", "text": "2021年，世界 VR 产业大会在江西南昌举行，南昌市公安局启动社会面巡逻防控等安保工作，小王、小高负责设卡盘查，在盘查过往车辆时应把握以下哪些要求:( )", "options": ["A. 依法进行盘查", "B. 保持警力优势", "C. 明确职责分工", "D. 正面堵截接近"], "answer": "ABC", "chapter": 3, "id": 3020}, {"type": "multi", "text": "下列关于在盘查过往车辆时检查的做法，合理的是:(    )", "options": ["A. 暂时收存被查车辆钥匙，对车上人员进行逐一检查", "B. 当被查车辆拒检逃逸，应立即驾车追缉", "C. 对未携带身份证件的人员应进行身份信息核查", "D. 对可疑物品进行检查"], "answer": "CD", "chapter": 3, "id": 3021}, {"type": "multi", "text": "民警陈某在外来人口聚集地核查出租屋时，发现一男子神色慌张，欲从陈某身边快速走过。民 警陈某立即将该男子拦下，要求其出示身份证件。民警陈某后续的做法正确的有:(     )", "options": ["A. 让该男子自报信息，边问边观察", "B. 查看证件内容，将该男子和照片比对", "C. 查验证件防伪标识和暗记，判定证件真伪", "D. 通过公安信息系统核对身份证信息"], "answer": "ABCD", "chapter": 3, "id": 3022}, {"type": "multi", "text": "某日出所民警在巡逻中，发现一名行迹可疑的男子，推着一辆自行车走的很吃力，自行车尾架上放着一个明显很重的麻布袋。民警上前把该男子叫停，对其进行了现场盘查。 假如你是派出所民警，对该名男子进行盘查时做法正确的有:(   )", "options": ["A. 应当就近选择光线好、场地开阔、容易相互支援的场地", "B. 由于该男子违法嫌疑较大，应先对其人身检查", "C. 责令该男子将麻布袋放在适当位置，不得让其自行翻拿", "D. 由一名民警负责检查麻布袋，其他民警负责监控该男子"], "answer": "ABCD", "chapter": 3, "id": 3023}, {"type": "multi", "text": "检查发现麻布袋里装有二十余把管制刀具，该男子说不清刀具的来源和用途。民警能采用的是: (    )", "options": ["A. 可以决定将该男子带回公安机关", "B. 必须报派出所领导同意才能将该男子带回公安机关", "C. 可以报派出所所长审批决定继续盘问 12 小时", "D. 可以报派出所所长审批决定延长盘问时间至 48 小时"], "answer": "AC", "chapter": 3, "id": 3024}, {"type": "multi", "text": "小李和小王检查被盘查男子携带的双肩包的过程中，做法错误的有:(     )", "options": ["A. 命令被盘查对象自己打开双肩包进行检查", "B. 小王命令被盘查对象后退拉开距离，小李拉开双肩包检查", "C. 两人上前对被盘查对象双肩包进行检查", "D. 小王让被盘查对象转过身去，小李打开双肩包检查"], "answer": "ACD", "chapter": 3, "id": 3025}, {"type": "multi", "text": "公安机关及其民警受理报警、求助和投诉。下列属于 110 报警服务台受理报警类范围的有:(   )", "options": ["A. 某精神病患者走失，家属要求公安机关帮忙查找", "B. 不明身份的一群人在某医院门口拉横幅，堵住医院大门不让人进出", "C. 天降暴雨引发泥石流把某处民房冲毁", "D. 甲欠乙100万到约定期限拒不偿还，乙爬上100米高的电视塔扬言要自杀"], "answer": "BC", "chapter": 3, "id": 3026}, {"type": "multi", "text": "2019年5月，习近平总书记在全国公安工作会议上的重要讲话中，充分肯定了公安机关深入开展执法规范化建设取得的成绩，对推进严格规范公正文明执法提出了更高要求，为公安机关执法规范化建设指明了前进方向。某派出所接到“110”指令：处置某烧烤店客人寻性滋事案件。现场处置民警以下做法中不妥的是：（    ）", "options": ["A. 向指挥中心报告情况并请求支援", "B. 立即控制住烧烤店的老板和服务员", "C. 巡警甲经双方当事人同意便开始治安调解", "D. 巡警乙立即联系120救护车，协助救治伤员，并维持现场秩序"], "answer": "BC", "chapter": 3, "id": 3027}, {"type": "multi", "text": "2019年5月，习近平总书记在全国公安工作会议上的重要讲话中，充分肯定了公安机关深入开展执法规范化建设取得的成绩，对推进严格规范公正文明执法提出了更高要求，为公安机关执法规范化建设指明了前进方向。某派出所接到“110”指令：处置某烧烤店客人寻性滋事案件。现场处置民警以下做法中不妥的是：（    ）", "options": ["A. 向指挥中心报告情况并请求支援", "B. 立即控制住烧烤店的老板和服务员", "C. 巡警甲经双方当事人同意便开始治安调解", "D. 巡警乙立即联系120救护车，协助救治伤员，并维持现场秩序"], "answer": "BC", "chapter": 3, "id": 3028}, {"type": "single", "text": "单位和个人开展游艺活动，可以配置口径不超过4.5毫米的(    )", "options": ["A. 民用猎枪", "B. 仿真枪", "C. 射击运动枪", "D. 游艺用气步枪"], "answer": "D", "chapter": 4, "id": 4000}, {"type": "single", "text": "江西省南昌市有一批公务用枪运往江苏南京，《枪支运输许可证》应向(      )公安机关申领。", "options": ["A. 江苏省公安厅", "B. 江西省公安厅", "C. 南京市公安局", "D. 南昌市公安局"], "answer": "A", "chapter": 4, "id": 4001}, {"type": "single", "text": "根据《民用爆炸物品安全管理条例》的规定，不属于公安机关核发许可证的是:（  ）", "options": ["A. 《民用爆炸物品生产许可证》", "B. 《民用爆炸物品购买许可证》", "C. 《爆破作业单位许可证》", "D. 《民用爆炸物品运输许可证》"], "answer": "A", "chapter": 4, "id": 4002}, {"type": "single", "text": "依据管制刀具的认定标准，下列不属于管制刀具的是:(     )", "options": ["A. 菜刀", "B. 东洋武士刀", "C. 带有自锁装置的弹簧刀", "D. 匕首"], "answer": "A", "chapter": 4, "id": 4003}, {"type": "single", "text": "运输民用爆炸物品，收货单位应当向(  )提出申请。", "options": ["A. 发货地县级人民政府交通机关", "B. 运达地县级人民政府公安机关", "C. 运达地县级人民政府交通机关", "D. 发货地县级人民政府公安机关"], "answer": "B", "chapter": 4, "id": 4004}, {"type": "single", "text": "下列行为不构成非法携带管制器具行为的是(  )", "options": ["A. 旅客甲携带匕首乘坐火车", "B. 丙携带跳刀进入公园游览", "C. 游客丁携带三棱刀在百货商场购物", "D. 藏民乙佩带藏刀在藏区生活"], "answer": "D", "chapter": 4, "id": 4005}, {"type": "single", "text": "销售民用爆炸物品的企业，应当将购买单位的许可证、银行账户转账凭证、经办人的身份证明复印件保存(   )备查。", "options": ["A. 6个月", "B. 1年", "C. 2年", "D. 3个月"], "answer": "C", "chapter": 4, "id": 4006}, {"type": "single", "text": "我国目前对于枪支管理最重要的法律法规是(    )", "options": ["A. 《公安机关人民警察佩带使用枪支规范》", "B. 《枪支管理法》", "C. 《宪法》", "D. 《人民警察法》"], "answer": "B", "chapter": 4, "id": 4007}, {"type": "single", "text": "根据《枪支管理法》规定，下列不属于公安机关枪支管理范围的是：(   )", "options": ["A. 军用枪支", "B. 展览枪", "C. 射击运动枪", "D. 公务用枪"], "answer": "A", "chapter": 4, "id": 4008}, {"type": "single", "text": "下列不符合《公安机关公务用枪管理规定》的是(：   )", "options": ["A. 携枪必须同时携带《公务用枪持枪证》和《枪证》", "B. 非警务活动可以携带枪支", "C. 警察所配枪支被盗立即报告公安机关", "D. 接受枪支主管部门的查验和年度审验"], "answer": "B", "chapter": 4, "id": 4009}, {"type": "single", "text": "人民警察应停止使用枪支的情形是(   )", "options": ["A. 犯罪嫌疑人试图抢夺民警配枪", "B. 犯罪嫌疑人准备实施爆炸犯罪", "C. 犯罪嫌疑人暴力袭警", "D. 犯罪嫌疑人受伤倒地昏迷"], "answer": "D", "chapter": 4, "id": 4010}, {"type": "single", "text": "下列爆炸物品不能与其他任何爆炸物品同库存放，同车运输的是(    )。", "options": ["A. 雷管", "B. 导火索", "C. 硝胺类炸药", "D. 导爆索"], "answer": "A", "chapter": 4, "id": 4011}, {"type": "single", "text": "以下对《爆破作业单位许可证》的有效期表述正确的是：(     )", "options": ["A. 6个月", "B. 1年", "C. 2年", "D. 3年"], "answer": "D", "chapter": 4, "id": 4012}, {"type": "single", "text": "以下对易燃液体的特性描述不正确的是(    )", "options": ["A. 高度易燃性", "B. 挥发性", "C. 受热膨胀性", "D. 蒸汽易爆性"], "answer": "B", "chapter": 4, "id": 4013}, {"type": "single", "text": "在城市、风景名胜区和重要工程设施附近实施爆破作业的，由爆破作业所在地(     )实施许可。", "options": ["A. 设区的市级人民政府公安机关", "B. 县级人民政府公安机关", "C. 省级人民政府公安机关", "D. 县级人民政府安监部门"], "answer": "A", "chapter": 4, "id": 4014}, {"type": "single", "text": "根据《烟花爆竹安全管理条例》的规定，经由道路运输烟花爆竹的，应当遵守相关规定。下列不符合规定的是：（  ）", "options": ["A. 随车携带《烟花爆竹道路运输许可证》", "B. 随意改变运输路线", "C. 运输烟花爆竹车辆的核定载质量不得超过10吨", "D. 装载烟花爆竹的车厢不得载人"], "answer": "B", "chapter": 4, "id": 4015}, {"type": "single", "text": "关于枪支的出入境，下列表述正确的是：(    )", "options": ["A. 任何单位或者个人未经许可，不得私自携带枪支入境、出境", "B. 其他人员携带枪支入境、出境的，应当事先经国家安全部批准", "C. 外国体育代表团入境参加射击竞技体育活动，需要携带射击运动枪支入境，必须经公安部批准", "D. 外国驻华外交代表机构的人员携枪入境，必须事先报经公安部批准"], "answer": "A", "chapter": 4, "id": 4016}, {"type": "single", "text": "根据规定，不可以配备公务用枪的人员为(   )", "options": ["A. 专职守护、押运人员", "B. 高档社区保安人员", "C. 人民警察", "D. 沿海、沿边地区海关的缉私人员"], "answer": "B", "chapter": 4, "id": 4017}, {"type": "single", "text": "配备、配置枪支的单位必须妥善保管枪支，确保枪支安全。下列属于枪支保管法定要求的是：(    )", "options": ["A. 配备、配置给个人使用的枪支，可以随意出租、出借、出售", "B. 枪支、弹药可以一起存放", "C. 枪支（弹药）库室目前没有统一的安全防范的基本要求", "D. 交由个人使用的枪支，必须使用完毕，及时收回"], "answer": "D", "chapter": 4, "id": 4018}, {"type": "single", "text": "根据《枪支管理法》的规定，负责对涉枪单位实施安全检查正确的是：(    )", "options": ["A. 公安部", "B. 设区的市级以上各级人民政府公安机关", "C. 县级以上各级人民政府公安机关", "D. 省级人民政府公安机关"], "answer": "C", "chapter": 4, "id": 4019}, {"type": "multi", "text": "因工作需要可以配备公务用枪的单位有:(   )", "options": ["A. 人民法院", "B. 厂矿保卫部门", "C. 人民检察院", "D. 公安机关"], "answer": "ACD", "chapter": 4, "id": 4020}, {"type": "multi", "text": "下列选项属于民用爆炸物品管理中的“五双制度”:(    )", "options": ["A. 双人保管", "B. 双人收发", "C. 双本账目", "D. 双人领料"], "answer": "ABCD", "chapter": 4, "id": 4021}, {"type": "multi", "text": "关于管制刀具的销售，下列表述正确的有:(   )", "options": ["A. 可以向非使用三棱刮刀进行机械加工的单位销售", "B. 匕首只准销售给人民警察、专业狩猎人员、从事地质勘探", "C. 销售匕首必须查验单位证明和单位批准文件", "D. 销售三棱刮刀的单位必须查验单位介绍信"], "answer": "BCD", "chapter": 4, "id": 4022}, {"type": "multi", "text": "经由道路运输烟花爆竹的，托运人应当向运达地县级人民政府公安部门提交下列(   )有关资料。", "options": ["A. 起始地点", "B. 运输时间", "C. 运输车辆牌号", "D. 行驶路线"], "answer": "ABCD", "chapter": 4, "id": 4023}, {"type": "multi", "text": "《人民警察使用警械和武器条例》第9条的规定。人民警察判明有下列暴力犯罪行为的紧急情形之一，经警告无效，可以使用枪支的情形的有:(    )", "options": ["A. 发现实施犯罪的人为怀孕的妇女、儿童的", "B. 犯罪分子携带枪支拘捕、逃跑的", "C. 暴力袭击人民警察，危及人民警察生命安全的", "D. 结伙抢劫或者持械抢劫公私财物的"], "answer": "BCD", "chapter": 4, "id": 4024}, {"type": "multi", "text": "经由道路运输民用爆炸物品的，应当遵守的规定有(    )", "options": ["A. 运输车辆安全技术状况应当符合国家有关安全技术标准的要求，并按照规定悬挂或者安装符合国家标准的易燃易爆危险物品警示标志", "B. 携带《民用爆炸物品运输许可证》", "C. 民用爆炸物品的装载符合国家有关标准和规范，车厢内可载人看护", "D. 运输民用爆炸物品的车辆应当保持安全车速"], "answer": "ABD", "chapter": 4, "id": 4025}, {"type": "multi", "text": "依据管制刀具的管理要求，下列选项表述正确的有:(     )", "options": ["A. 制造管制刀具的工厂，必须将刀具样品及其说明送所在地县、市公安局备案", "B. 经销管制刀具的商店，购销要建立完备的登记制度", "C. 持有管制刀具的个人不得随意赠送、转借他人使用", "D. 少数民族人员只能在民族自治地区佩带和使用民族刀具"], "answer": "ABCD", "chapter": 4, "id": 4026}, {"type": "multi", "text": "人民警察违反枪支管理规定，视情节会受到以下处罚(    )。", "options": ["A. 刑事处罚", "B. 行政处分", "C. 开除或辞退", "D. 纪律处分"], "answer": "ABC", "chapter": 4, "id": 4027}, {"type": "multi", "text": "下列属于公安机关在爆炸物品使用管理中的职责的有：(    )", "options": ["A. 《爆破作业单位许可证》核发", "B. 销毁爆炸物品从业单位中变质和过期失效的爆炸物品", "C. 日常安全检查", "D. 监控爆炸物品流向"], "answer": "ACD", "chapter": 4, "id": 4028}, {"type": "multi", "text": "严格枪支的制造管理，是搞好枪支管理的基础性工作，我国枪支制造管理的法律措施包括(       )", "options": ["A. 实行限额制造、配售制度", "B. 实行定期检查制度", "C. 实行指定企业制造制度", "D. 实行特别许可制度"], "answer": "ABCD", "chapter": 4, "id": 4029}, {"type": "single", "text": "根据《中华人民共和国居民身份证法》的规定,伪造、变造居民身份证的,应当(   )", "options": ["A. 给予治安管理处罚", "B. 给予行政处分", "C. 依法追究刑事责任", "D. 给予警告处罚"], "answer": "C", "chapter": 5, "id": 5000}, {"type": "single", "text": "王某的出生日期是2010年12月12日,居民身份证的签发日期是2020年4月27日,该居民身份证的有效期限是(    )", "options": ["A. 2020年4月28日~2025年4月29日", "B. 2020年4月27日~2025年4月27日", "C. 2020年4月28日~2025年4月27日", "D. 2020年4月27日~2025年4月26日"], "answer": "B", "chapter": 5, "id": 5001}, {"type": "single", "text": "通过(   )登记,可以验证公民法律责任年龄是否成立。\n‎", "options": ["A. 死亡", "B. 迁入", "C. 婚姻", "D. 出生"], "answer": "D", "chapter": 5, "id": 5002}, {"type": "single", "text": "2025年9月15日起正式实施的《住房租赁条例》是我国首部专门规范住房租赁活动的行政法规，有利于深化公安机关租赁房屋治安管理职责。下列关于公安机关租赁房屋治安管理方面的表述正确的是（   ）。", "options": ["A. 《条例》有利于公安机关租赁房屋治安管理集中在打击违法犯罪行为", "B. 《条例》为公安机关租赁房屋治安管理从“被动处置”转向“主动治理”", "C. 《条例》明确了住房租赁备案的主管部门是公安机关治安管理部门", "D. 《条例》明确了公安机关获取租住人员信息只能“请求协助”下才能获取"], "answer": "B", "chapter": 5, "id": 5003}, {"type": "single", "text": "居民身份证具有证明公民身份的法律效力,居住在中华人民共和国境内年满(    )周岁的中国公民,应当向常住户口所在地的公安派出所申领居民身份证。", "options": ["A. 16", "B. 14", "C. 20", "D. 18"], "answer": "A", "chapter": 5, "id": 5004}, {"type": "single", "text": "临时居民身份证的有效期限是:(   )\n‍", "options": ["A. 三个月", "B. 六十日", "C. 三十日", "D. 六个月"], "answer": "A", "chapter": 5, "id": 5005}, {"type": "single", "text": "以下关于常住人口信息表中的“何时何因迁往何地”一项的表述,正确的是(    )", "options": ["A. 在做迁入和迁出登记时不一定需要填写这一栏", "B. 在做迁入和迁出登记时皆需要填写这一栏", "C. 在做迁入登记时需要填写这一栏", "D. 在做迁出登记时需要填写这一栏"], "answer": "B", "chapter": 5, "id": 5006}, {"type": "single", "text": "公安机关应自公民提交《居民身份证申领登记表》之日起(  )日内发放居民身份证。", "options": ["A. 30日", "B. 10日", "C. 20日", "D. 60日"], "answer": "D", "chapter": 5, "id": 5007}, {"type": "single", "text": "以下不属于肇事肇祸精神病障碍患者的治安管控措施是:(    )\n‎", "options": ["A. 教育感化", "B. 分类管控", "C. 动态风险评估", "D. 核查列管"], "answer": "A", "chapter": 5, "id": 5008}, {"type": "single", "text": "流动人口申领居住证,应如实填写(   ),并出示有效身份证件及相关证明材料。", "options": ["A. 《执行通知书》", "B. 《居住证申领表》", "C. 《流动人口居住信息登记表》", "D. 《居住证》"], "answer": "B", "chapter": 5, "id": 5009}, {"type": "single", "text": "根据《中华人民共和国户口登记条例》第十五条的规定,(    )是指离开常住户口所在地的市区或乡镇到其他地区居住3日以上的人员。\n‌", "options": ["A. 重点人口", "B. 常住人口", "C. 寄住人口", "D. 暂住人口"], "answer": "D", "chapter": 5, "id": 5010}, {"type": "single", "text": "根据《户口登记条例》,(    )是户口登记的基本单位。", "options": ["A. 户", "B. 户口", "C. 家庭", "D. 户籍"], "answer": "A", "chapter": 5, "id": 5011}, {"type": "single", "text": "公民身份证号码是特征组合码,其中第(    )是顺序码。", "options": ["A. 15-17位", "B. 7-14位", "C. 第18位", "D. 1-6位"], "answer": "A", "chapter": 5, "id": 5012}, {"type": "single", "text": "被判处拘役、有期徒刑以上刑罚的人和被羁押的人,已领取居民身份证的,由执行机关按规定(     )其居民身份证。", "options": ["A. 收回", "B. 收缴", "C. 扣押", "D. 没收"], "answer": "B", "chapter": 5, "id": 5013}, {"type": "single", "text": "公民身份证号码是特征组合码,其中第(    )是校验码。", "options": ["A. 1-6位", "B. 15-17位", "C. 第18位", "D. 7-14位"], "answer": "C", "chapter": 5, "id": 5014}, {"type": "multi", "text": "居民身份证符合申请换领新证的的情形有:(     )", "options": ["A. 有效期满", "B. 证件严重损坏不能辨认", "C. 变更常住地址", "D. 公民姓名变更"], "answer": "ABD", "chapter": 5, "id": 5015}, {"type": "multi", "text": "居民身份证的有效期限分为(     )", "options": ["A. 15年", "B. 10年", "C. 5年", "D. 20年"], "answer": "BCD", "chapter": 5, "id": 5016}, {"type": "multi", "text": "张某,男,2007年3月16日出生,常住户口所在地为湖北省宜昌市伍家岗区胜利三路73号,现长期居住在南京市栖霞区学则路128号。因工作需要申办居民身份证。根据《中华人民共和国居民身份证法》,下列选项符合申领要求的有:(    )", "options": ["A. 申领单位可以是湖北省宜昌市伍家岗区胜利三路73号所在的公安机关,也可以是南京市栖霞区学则路128号所在的公安机关", "B. 公安机关应签发有效期限为10年的身份证", "C. 公安机关应签发有效期限为20年的身份证", "D. 申领单位只能是湖北省宜昌市伍家岗区胜利三路73号所在的公安机关"], "answer": "AB", "chapter": 5, "id": 5017}, {"type": "multi", "text": "根据《中华人民居民身份证法》的相关规定,下列选项符合查验居民身份证情形的有:(    )", "options": ["A. 具有违法犯罪嫌疑的人员", "B. 发生严重危害社会治安突发事件时,需要查明现场有关人员身份的", "C. 在火车站、长途汽车站、港口、码头、机场需要查明有关人员身份的", "D. 依法实施现场管制时,需要查明有关人员身份的"], "answer": "ABCD", "chapter": 5, "id": 5018}, {"type": "multi", "text": "公民离开常住户口所在地,到其他城市居住半年以上,符合有(   )条件之一的,可以依照规定申领居住证。\n‏", "options": ["A. 连续就读", "B. 合法稳定就业", "C. 连续缴纳社保满24个月", "D. 合法稳定住所"], "answer": "ABD", "chapter": 5, "id": 5019}, {"type": "multi", "text": "《中华人民共和国户口登记条例》规定,(   )是户口登记机关。\n‎", "options": ["A. 县级公安机关户政科", "B. 治安大队", "C. 公安派出所", "D. 未设公安派出所的乡镇人民政府"], "answer": "CD", "chapter": 5, "id": 5020}, {"type": "multi", "text": "关于常住人口登记中“按户登记”的原则,下列表述正确的有:(     )\n‎", "options": ["A. 集体户口一般按同一单位共居一处的立为一户,分居几处的分别立户", "B. 家庭户是亲缘关系为基础构成的,以主管人为户主", "C. 单身独居的,不可立为一户", "D. 居住在单位内部带有家属的职工,以及人数较少的单位,一般按家庭户立户"], "answer": "ABD", "chapter": 5, "id": 5021}, {"type": "multi", "text": "从《暂住证》到《居住证》的历史变革,以下哪些说法是正确的有:(   )\n‌", "options": ["A. 彰显了党和政府对公民权利的尊重和维护", "B. 居住证制度的实施旨在保障公民合法权益,促进社会公平正义", "C. 公安机关在居住证制度实施中发挥重要作用", "D. 体现了政府从管理为目的到服务为目的的转变"], "answer": "ABCD", "chapter": 5, "id": 5022}, {"type": "multi", "text": "特殊人群治安管控是重要的治安基础工作, 要求做到的有:(  )", "options": ["A. 不失控", "B. 情况明", "C. 底数清", "D. 不漏管"], "answer": "ABCD", "chapter": 5, "id": 5023}, {"type": "multi", "text": "关于长三角区域跨省户口网上迁移 “一站式”服务,下列哪些说法是正确的有:( )", "options": ["A. 该项服务有助于推动长三角区域一体化发展,促进实现公安工作现代化", "B. 居民在长三角区域内跨省迁移户口时,只需在迁入地公安机关申请网上服务办理", "C. 服务依托公安部人口信息系统,以网上迁移信息流转取代纸质证件", "D. 新政策实施后,申请人不必再往返于迁入迁出地,大大减轻了申请人负担"], "answer": "ABCD", "chapter": 5, "id": 5024}, {"type": "single", "text": "以下属不于社会安全事件的是(   )。", "options": ["A. 经济安全事件", "B. 特大交通事故", "C. 恐怖袭击事件", "D. 涉外突发事件"], "answer": "B", "chapter": 6, "id": 6000}, {"type": "single", "text": "以下突发事件信息发布工作错误的是:(   )", "options": ["A. 应注意纠正以往报道的偏差", "B. 要避免刺激受众的语言及画面", "C. 发布前要统一口径", "D. 事件信息应注意控制，择时发布"], "answer": "D", "chapter": 6, "id": 6001}, {"type": "single", "text": "群体性事件的扩张性特点是指在事件形成过程中通过信息传递，引起模仿效应，逐步乃至迅速蔓延扩散，导致事态迅速扩大和加剧。下列情况具有这一特点的是:(   )。", "options": ["A. 合法的游行请愿行为演变为带有政治色彩的反政府活动", "B. 某村发生哄抢粮食事件引发周边多个乡镇也发生了哄抢粮食事件", "C. 一般的球迷闹事演变成侮辱妇女的恶性事件", "D. 正常的上访演变成“打、砸、抢、烧”的骚乱事件"], "answer": "B", "chapter": 6, "id": 6002}, {"type": "single", "text": "有毒化学品泄露事件发生后，巡逻民警接到指令立即赶赴现场，开展先期处置工作，不包括以下哪项措施(   )。", "options": ["A. 封锁现场，疏散人群", "B. 对泄露的有毒化学品进行洗消", "C. 研判现场情况，上报信息", "D. 进行交通管制，为后续处置力量做好交通保障"], "answer": "B", "chapter": 6, "id": 6003}, {"type": "single", "text": "某地举行露天音乐节，观众因精彩的演出兴奋异常，纷纷涌向舞台。后排的观众不断舞台方向移动，导致前排观众非常拥挤。现场民警对情况的研判或采取的措施正确的是(    )。", "options": ["A. 该情况没有相向而动的人流，因此不具有危险性", "B. 应及时鸣枪示警，制止混乱", "C. 适时中止演出", "D. 大型活动现场安全管理责任在主办方，未出现突发事件公安机关不应直接参与"], "answer": "B", "chapter": 6, "id": 6004}, {"type": "single", "text": "公安民警在突发事件现场周边维持秩序时，被媒体记者的追问并拍摄，此时民警的行为错误的是(   )。", "options": ["A. 保持沉默，专心开展应急工作", "B. 引导记者到专门的采访区域进行采访工作", "C. 密切关注记者的行为", "D. 礼貌、认真地回答记者的提问，将目前的工作进展予以告知"], "answer": "B", "chapter": 6, "id": 6005}, {"type": "single", "text": "以下措施中体现危机隔离策略的是哪个?(   )", "options": ["A. 处置群体性事件时，将相互对抗的两方人群分隔开", "B. 在发现可疑爆炸装置的事故现场设置警戒带，疏散群众", "C. 设置物理隔离，避免不同的人群相向而行", "D. 对正在实施“打、砸、抢”行为的人实施立即拘留"], "answer": "D", "chapter": 6, "id": 6006}, {"type": "single", "text": "以下表述错误的是:(   )", "options": ["A. 突发事件处置工作能力的核心归根结底还是人员，装备是次要的", "B. 突发事件处置工作对装备和科技的依赖越来越大", "C. 不积极研发科技装备，突发事件处置工作将无法发展", "D. 科技是推动突发事件处置工作体制、机制变革的重要因素"], "answer": "A", "chapter": 6, "id": 6007}, {"type": "single", "text": "现行《中国人民共和国突发事件应对法》是(   )年颁布实施的。", "options": ["A. 1997", "B. 2003", "C. 2007", "D. 2009"], "answer": "C", "chapter": 6, "id": 6008}, {"type": "single", "text": "森林草原火灾属于(    )", "options": ["A. 自然灾害", "B. 事故灾难", "C. 公共卫生事件", "D. 社会安全事件"], "answer": "A", "chapter": 6, "id": 6009}, {"type": "single", "text": "某公司门前的道路上，聚集了大量群众，拉开横幅，针对该公司拖欠工资进行抗议，造成该道路无法正常通行。辖区巡逻民警接指挥中心派遣，到达事件地点后，采取的下列措施正确的是（  ）", "options": ["A. 以涉嫌扰乱社会秩序为由对闹事者采取强制传唤", "B. 以涉嫌阻碍交通管理为由对闹事者采取口头传唤", "C. 以严重危害社会治安秩序为由强行驱散闹事人群", "D. 以党委和政府为统一领导维护现场秩序教育群众"], "answer": "D", "chapter": 6, "id": 6010}, {"type": "single", "text": "对突发事件散布谣言的，依据《治安管理处罚法》第(   )条进行处罚。", "options": ["A. 24", "B. 25", "C. 29", "D. 30"], "answer": "C", "chapter": 6, "id": 6011}, {"type": "single", "text": "下列对现场秩序维护叙述错误的是(    )", "options": ["A. 应急部门负责突发事件现场秩序维护", "B. 重大突发事件现场社会秩序维护应该置于突出位置", "C. 保证现场秩序稳定是对现场进行有效处置的重要条件", "D. 现场秩序维护应考虑交通秩序维护"], "answer": "A", "chapter": 6, "id": 6012}, {"type": "single", "text": "在某市政府门前，突然聚集一群人，围攻市政府，对周围的车辆进行打砸，殴打前来劝阻的保卫人员，并扬言放火。大批警力到达现场后，应该采取的措施是:(   )", "options": ["A. 采取教育说服，稳定人群情绪，避免事态激化", "B. 立即上报，原地等待上级指令，不要轻易采取措施", "C. 依法果断采取强制措施，强制驱散人群，强行带离现场闹事人员", "D. 告知群众法不责众，疏导群众情绪，争取群众满意"], "answer": "C", "chapter": 6, "id": 6013}, {"type": "single", "text": "以下人员聚集事件，性质与其他存在根本差别的是(   )", "options": ["A. 出租车司机集体将车停在交通干道和路口，抗议政府对出租车租乘价格的新规定", "B. 一些人员聚集在广场，对公安机关归没收其《转法轮》等书籍的行为表示抗议", "C. 学生在学校操场集体静坐，对本学校伙食质量提出抗议", "D. 拆迁户在市政府门前集体静坐，要求提高补偿款额"], "answer": "B", "chapter": 6, "id": 6014}, {"type": "single", "text": "按照社会危害程度、影响范围等因素,突发事件分为(      )四级。法律、行政法规或者国务院另有规定的，从其规定。", "options": ["A. 巨大、重大、较大、一般", "B. 特大、重大、较大、一般", "C. 特别重大、重大、较大和一般", "D. 特大、重大、一般重大、较大"], "answer": "C", "chapter": 6, "id": 6015}, {"type": "single", "text": "特别重大、重大突发事件应急处置工作结束，或者相关危险因素消除后，现场应急指挥机构予以(   )。", "options": ["A. 保留", "B. 撤销", "C. 升级", "D. 解散"], "answer": "B", "chapter": 6, "id": 6016}, {"type": "single", "text": "某省甲市南县与乙市北县毗邻区域的村民，因争夺交界区域的土地耕种权，发生了群体性械斗事件。针对该群体性事件，公安机关采取的应急处置措施正确的是(      )", "options": ["A. 南县与北县公安机关立即出动警力，对现场所有村民采取强制措施", "B. 在该省公安厅统一领导下，由甲市与乙市公安局共同负责应对", "C. 可以封锁有关场所和道路，依法使用强制措施制止械斗", "D. 积极救助伤员，不得向单位和个人征用应急所需物资"], "answer": "C", "chapter": 6, "id": 6017}, {"type": "single", "text": "某市地铁内发生化学毒剂袭击事件，接到地铁工作人员报警后，公安机关第一时间到达现场。在化学武器处置专业队伍到达之前，公安机关开展了以下处置措施，其中不合理的是：（   ）。", "options": ["A. 迅速疏散地铁站内乘客", "B. 通过媒体发布处置进展", "C. 现场附近实施交通管制", "D. 向现场群众告知危险源"], "answer": "B", "chapter": 6, "id": 6018}, {"type": "multi", "text": "突发事件信息发布工作的作用在于(    )。", "options": ["A. 防止谣言产生，辟谣", "B. 体现政府的负责态度", "C. 转移公众视线，避免舆论过热", "D. 对公众进行警示和教育"], "answer": "ABD", "chapter": 6, "id": 6019}, {"type": "multi", "text": "某市发生暴恐事件，公安民警及时击毙的恐怖分子，此时现场一片混乱，公安民警对现场进行保护，并实施现场勘验。以下物品不应从现场移除的是(   )", "options": ["A. 遇难者尸体", "B. 恐怖分子尸体", "C. 宣传恐怖主义思想的传单", "D. 恐怖分子的凶器"], "answer": "ABD", "chapter": 6, "id": 6020}, {"type": "multi", "text": "以下表述正确的是(  )", "options": ["A. 突发事件处置警务对装备的依赖性非常大", "B. 保障工作是衡量处置能力的重要指标", "C. 科技是推动突发事件处置工作体制、机制变革的重要因素", "D. 突发事件处置工作能力的核心归根结底还是人员，装备是次要的"], "answer": "ABC", "chapter": 6, "id": 6021}, {"type": "multi", "text": "以下表述错误的是(  )", "options": ["A. 社会各单位应该组织建立由本单位职工组成的专业救援力量", "B. 公安机关可以组织辅警力量成为应急救援志愿者队伍", "C. 应急管理部成立后，公安机关的应急处突职能大大削弱", "D. 公安队伍不属于专业处置与救援队伍"], "answer": "ACD", "chapter": 6, "id": 6022}, {"type": "multi", "text": "某日八时许，甲市某临街店铺发生煤气爆炸，导致一人死亡，多人受伤，公共设施受损。市公安局110指挥中心接警后立即派民警赶赴现场处置。现场工作中属于公安民警职责的是:(    )", "options": ["A. 为伤员实施心肺复苏", "B. 向媒体发布工作进展", "C. 维持现场秩序", "D. 发现并制止违法犯罪"], "answer": "ACD", "chapter": 6, "id": 6023}, {"type": "multi", "text": "针对某工厂的危化品事故，地方政府发出了突发事件的二级警报，在预警期内可以采取的措施有:( )", "options": ["A. 启动应急预案，责令有关部门及时收集、报告有关信息", "B. 向社会公布反映突发事件信息的渠道，定时发布预测信息和评估结果", "C. 控制公司法人代表并中止该公司生产经营，防止发生次生、衍生事件", "D. 责令应急救援队伍、负有特定职责的人员进入待命状态，调集应急救援所需物资"], "answer": "ABCD", "chapter": 6, "id": 6024}, {"type": "multi", "text": "突发事件现场有一个外观为背包的可疑爆炸装置。处置人员调取监控发现，一名男子携带该装置，到达所在位置后，迅速放置在地面并离去。处置人员初步判断，该装置可能为:(  )", "options": ["A. 振动装置", "B. 定时装置", "C. 遥控装置", "D. 光控装置"], "answer": "BCD", "chapter": 6, "id": 6025}, {"type": "multi", "text": "在群体性事件的现场，民警可以采用的信息收集手段包括:(   )", "options": ["A. 使用执法记录仪拍摄现场执法过程", "B. 收集现场群众舆论", "C. 着便衣混入人群收集情报", "D. 使用无人机拍摄现场情况"], "answer": "ABCD", "chapter": 6, "id": 6026}, {"type": "multi", "text": "以下属于突发事件特征的是(   )", "options": ["A. 突发性", "B. 危险性", "C. 不确定性", "D. 紧迫性"], "answer": "ABCD", "chapter": 6, "id": 6027}, {"type": "multi", "text": "下列属于治安应急处置的目标的是(   )", "options": ["A. 控制事态蔓延扩大", "B. 保护现场不受破坏", "C. 对被害人进行紧急救助", "D. 为善后恢复创造条件"], "answer": "ABCD", "chapter": 6, "id": 6028}];
 
-  const QUESTIONS = [
-    // ========== 第1章 ==========
-    {id:101,chapter:1,type:"single",text:"安全属性\"CIA\"不包括（ ）。",options:["A. 完整性","B. 机密性","C. 可用性","D. 可控性"],answer:"D"},
-    {id:102,chapter:1,type:"single",text:"属于被动攻击的是（ ）。",options:["A. 中断","B. 截获","C. 篡改","D. 伪造"],answer:"B"},
-    {id:103,chapter:1,type:"single",text:"下列攻击中，主要针对可用性的攻击是（ ）。",options:["A. 中断","B. 截获","C. 篡改","D. 伪造"],answer:"A"},
-    {id:104,chapter:1,type:"single",text:"下列攻击中，主要针对完整性的攻击是（ ）。",options:["A. 中断","B. 截获","C. 篡改","D. 伪造"],answer:"C"},
-    {id:105,chapter:1,type:"single",text:"下列攻击中，主要针对机密性的攻击是（ ）。",options:["A. 中断","B. 截获","C. 篡改","D. 伪造"],answer:"B"},
-    {id:106,chapter:1,type:"single",text:"元属性\"可用性\"不包括的子属性是（ ）。",options:["A. 可靠性","B. 稳定性","C. 可生存性","D. 可控性"],answer:"D"},
-    {id:107,chapter:1,type:"single",text:"信息在传送过程中，如果接收方接收到的信息与发送方发送的信息不同，则信息的（ ）遭到了破坏。",options:["A. 可用性","B. 不可否认性","C. 完整性","D. 机密性"],answer:"C"},
-    {id:108,chapter:1,type:"single",text:"重放攻击破坏了信息的（ ）。",options:["A. 机密性","B. 可控性","C. 可鉴别性","D. 可用性"],answer:"C"},
-    {id:109,chapter:1,type:"single",text:"信息在传送过程中，通信量分析破坏了信息的（ ）。",options:["A. 可用性","B. 不可否认性","C. 完整性","D. 机密性"],answer:"D"},
-    {id:110,chapter:1,type:"single",text:"P2DR 模型中的\"D\"指的是（ ）。",options:["A. 策略","B. 检测","C. 保护","D. 恢复"],answer:"B"},
-    {id:111,chapter:1,type:"single",text:"下列攻击方式中，最能代表网络战攻击水平的是（ ）。",options:["A. 口令破解","B. APT 攻击","C. 缓冲区溢出攻击","D. 网络监听"],answer:"B"},
-    {id:112,chapter:1,type:"multi",text:"以保护信息为主的安全元属性包括（ ）。",options:["A. 机密性","B. 可控性","C. 可鉴别性","D. 可用性"],answer:"AC"},
-    {id:113,chapter:1,type:"multi",text:"以保护信息系统为主的安全元属性包括（ ）。",options:["A. 机密性","B. 可控性","C. 可鉴别性","D. 可用性"],answer:"BD"},
-    {id:114,chapter:1,type:"multi",text:"网络空间（Cyberspace）要保护的核心对象中，在技术层面反映\"网络（Cyber）\"属性的对象包括（ ）。",options:["A. 设施","B. 用户","C. 操作","D. 数据"],answer:"AD"},
-    {id:115,chapter:1,type:"multi",text:"网络空间（Cyberspace）要保护的核心对象中，在社会层面反映\"空间（space）\"属性的对象包括（ ）。",options:["A. 设施","B. 用户","C. 操作","D. 数据"],answer:"BC"},
-    {id:116,chapter:1,type:"multi",text:"P2DR 模型中，\"P2\"指的是（ ）。",options:["A. 检测","B. 保护","C. 响应","D. 策略"],answer:"BD"},
-    {id:117,chapter:1,type:"multi",text:"IATF 定义的与信息安全有关的核心要素包括（ ）。",options:["A. 策略（Policy）","B. 人（People）","C. 技术（Technology）","D. 操作（Operation）"],answer:"BCD"},
-    {id:118,chapter:1,type:"multi",text:"人为的恶意攻击分为被动攻击和主动攻击，在以下的攻击类型中属于主动攻击的是（ ）。",options:["A. 网络监听","B. 数据篡改及破坏","C. 身份假冒","D. 数据流分析"],answer:"BC"},
-    {id:119,chapter:1,type:"multi",text:"元安全属性\"可用性\"主要包括以下安全属性（ ）。",options:["A. 可靠性","B. 稳定性","C. 可维护性","D. 可生存性"],answer:"ABCD"},
-    {id:120,chapter:1,type:"multi",text:"元安全属性\"可鉴别性\"主要包括以下安全属性（ ）。",options:["A. 完整性","B. 真实性","C. 不可抵赖性","D. 稳定性"],answer:"ABC"},
-    // ========== 第3章 ==========
-    {id:301,chapter:3,type:"single",text:"下面有关ARP 协议的描述中，（ ）是错误的。",options:["A. ARP 欺骗只能被用于本地网络","B. ARP 欺骗可在本地网络以外成功使用","C. ARP 协议可被用来进行拒绝服务攻击","D. 一般情况下，当主机收到 ARP 请求或响应时，需要刷新其ARP 缓存"],answer:"B"},
-    {id:302,chapter:3,type:"single",text:"下列认证方式中，不属于 OSPF 协议定义的认证方法是（ ）。",options:["A. NULL 认证","B. 简单口令认证","C. MD5 加密认证","D. SHA1 加密认证"],answer:"D"},
-    {id:303,chapter:3,type:"single",text:"2011 年出现的一种针对路由协议的攻击方法，俗称\"数字大炮\"，这种攻击利用了（ ）路由协议存在的安全缺陷。",options:["A. RIP","B. OSPF","C. BGP","D. IGRP"],answer:"C"},
-    {id:304,chapter:3,type:"single",text:"攻击者在攻击一个目标时，经常用伪造的 IP 地址来发送攻击数据包，主要原因是（ ）。",options:["A. 路由器在转发 IP 包时不检查IP 源地址","B. 路由器在转发 IP 包时检查IP 源地址","C. 路由器在转发 IP 包时检查IP 目的地址","D. 路由器在转发 IP 包时不检查IP 目的地址"],answer:"A"},
-    {id:305,chapter:3,type:"single",text:"UDP 协议可被攻击者用来进行（ ）。",options:["A. 监听","B. 风暴型拒绝服务攻击","C. 连接劫持","D. 传播木马"],answer:"B"},
-    {id:306,chapter:3,type:"single",text:"TCP 协议报文中，与TCP 连接建立和释放过程无关的标志位是（ ）。",options:["A. SYN","B. FIN","C. ACK","D. URG"],answer:"D"},
-    {id:307,chapter:3,type:"single",text:"互联网中大量存在的\"中间盒子\"不符合互联网设计之初提出的（ ）原则，导致了大量网络攻击事件的发生。",options:["A. 端到端","B. 尽力而为","C. 分组交换","D. 分层设计"],answer:"A"},
-    {id:308,chapter:3,type:"single",text:"下列路由协议中，安全性最高的是（ ）。",options:["A. RIPv1","B. RIPng","C. RIPv2","D. 所有版本的RIP 协议"],answer:"B"},
-    {id:309,chapter:3,type:"single",text:"下列路由协议中，使用TCP 作为传输协议的是（ ）。",options:["A. RIP","B. OSPF","C. BGP","D. RIPng"],answer:"C"},
-    {id:310,chapter:3,type:"single",text:"下列交换方式中，最容易被攻击的是（ ）。",options:["A. 分组交换","B. 电路交换","C. 专线","D. 报文交换"],answer:"A"},
-    {id:311,chapter:3,type:"multi",text:"很多单位的安全管理员会在防火墙的设置中禁用因特网控制管理协议（ICMP），主要原因是攻击者常常使用 ICMP 进行（ ）。",options:["A. 拒绝服务攻击","B. 隐蔽通信","C. 主机扫描","D. 会话劫持"],answer:"ABC"},
-    {id:312,chapter:3,type:"multi",text:"TCP 协议可被攻击者用来进行（ ）。",options:["A. 拒绝服务攻击","B. 连接劫持","C. 网络端口扫描","D. 网络监听"],answer:"ABC"},
-    {id:313,chapter:3,type:"multi",text:"IP 协议可以被攻击者用来进行（ ）。",options:["A. 拒绝服务攻击","B. 源路由攻击","C. 绕过防火墙","D. 网络端口扫描"],answer:"ABC"},
-    {id:314,chapter:3,type:"multi",text:"下列协议中，使用 UDP 作为传输协议的是（ ）。",options:["A. FTP","B. DNS","C. SNMP","D. RIP"],answer:"BCD"},
-    {id:315,chapter:3,type:"multi",text:"DNS 协议易遭受的网络攻击包括（ ）。",options:["A. 缓存投毒","B. 拒绝服务攻击","C. 域名解析劫持","D. 溢出攻击"],answer:"ABC"},
-    {id:316,chapter:3,type:"multi",text:"Web 浏览器和服务器使用 HTTPS 协议进行通信，可确保通信的（ ）。",options:["A. 机密性","B. 完整性","C. 可靠性","D. 服务器的真实性"],answer:"ABD"},
-    {id:317,chapter:3,type:"multi",text:"下列攻击中，针对 OSPF 协议的攻击包括（ ）。",options:["A. 篡改IP 包中的协议字段","B. 最大年龄（Max Age attack）攻击","C. 最大序列号攻击","D. LSA 报文重放攻击"],answer:"ABCD"},
-    // ========== 第4章 ==========
-    {id:401,chapter:4,type:"single",text:"攻击者如果想查找互联网上某个地方的联网摄像头，最合适的搜索引擎是（ ）。",options:["A. 百度","B. ZoomEye","C. 360 搜索引擎","D. 搜狗"],answer:"B"},
-    {id:402,chapter:4,type:"single",text:"如果在百度上用关键词查找符合要求的Word 文件，则应使用的百度命令是（ ）。",options:["A. filetype","B. site","C. Inurl","D. index"],answer:"A"},
-    {id:403,chapter:4,type:"single",text:"下列词当中，不属于Shodan 搜索引擎网络服务类过滤词的是（ ）。",options:["A. net","B. port","C. os","D. ip"],answer:"D"},
-    {id:404,chapter:4,type:"single",text:"如果要查询 nju.edu.cn 是在哪个域名注册机构注册的，最合适的 Whois 数据库是（ ）。",options:["A. CNNIC 的Whois 数据库","B. ICANN 的 Whois 数据库","C. IANA 的 Whois 数据库","D. RIPE 的Whois 数据库"],answer:"A"},
-    {id:405,chapter:4,type:"single",text:"如果要查询 yahoo.com 是在哪个域名注册机构注册的，最合适的 Whois 数据库是（ ）。",options:["A. CNNIC 的Whois 数据库","B. ICANN 的 Whois 数据库","C. IANA 的 Whois 数据库","D. RIPE 的Whois 数据库"],answer:"B"},
-    {id:406,chapter:4,type:"single",text:"如果要查询美国哈佛大学校园内的一个IP 地址的相关信息，最合适的Whois 数据库是（ ）。",options:["A. RIPE 的Whois 数据库","B. APNIC 的Whois 数据库","C. ARIN 的Whois 数据库","D. LACNIC 的 Whois 数据库"],answer:"C"},
-    {id:407,chapter:4,type:"single",text:"如果要查询英国牛津大学校园内的一个IP 地址的相关信息，最合适的Whois 数据库是（ ）。",options:["A. RIPE 的Whois 数据库","B. APNIC 的Whois 数据库","C. ARIN 的Whois 数据库","D. LACNIC 的 Whois 数据库"],answer:"A"},
-    {id:408,chapter:4,type:"single",text:"如果要查询江苏南京某小区住户家里通过宽带接入互联网的电脑的IP 地址的相关信息，最合适的Whois 数据库是（ ）。",options:["A. RIPE 的Whois 数据库","B. APNIC 的Whois 数据库","C. ARIN 的Whois 数据库","D. LACNIC 的 Whis 数据库"],answer:"B"},
-    {id:409,chapter:4,type:"single",text:"如果想了解一个域名注册机构是不是合法的，则应该在（ ）的网站上查询。",options:["A. ICANN","B. APNIC","C. CNNIC","D. ARIN"],answer:"A"},
-    {id:410,chapter:4,type:"single",text:"下列 Whois 数据库中，最有可能查询到一个后缀为.com 的域名的拥有者的相关信息的是（ ）。",options:["A. CNNIC 的Whois 数据库","B. ICANN 的 Whois 数据库","C. IANA 的 Whois 数据库","D. MarkMonitor Inc.的 Whois 数据库"],answer:"D"},
-    {id:411,chapter:4,type:"single",text:"支持域名的IP 及其所有者信息查询的是（ ）。",options:["A. Whois 数据库","B. DNS","C. 目录服务","D. 搜索引擎"],answer:"A"},
-    {id:412,chapter:4,type:"single",text:"对于TCP SYN 扫描，如果发送一个SYN 标志置1 的请求包后，对方返回（ ）的响应包则表明目标端口处于打开状态。",options:["A. ACK 标志置1","B. SYN 和ACK 标志置1","C. SYN 和 RST 标志置 1","D. RST 和ACK 标志置1"],answer:"B"},
-    {id:413,chapter:4,type:"single",text:"网络扫描一般不会使用（ ）进行。",options:["A. IP 协议","B. DNS 协议","C. TCP 协议","D. ICMP 协议"],answer:"B"},
-    {id:414,chapter:4,type:"single",text:"为了防止网络扫描行为被网络安全系统发现，不应当采用（ ）策略。",options:["A. 随机端口扫描","B. 分布式扫描","C. 连续端口快速扫描","D. 伪造源地址"],answer:"C"},
-    {id:415,chapter:4,type:"single",text:"端口扫描的主要功能是（ ）。",options:["A. 探测目标主机上开放了哪些网络服务","B. 探测主机是否开机","C. 识别操作系统的类型","D. 判断目标主机上是否存在某个已公开的漏洞"],answer:"A"},
-    {id:416,chapter:4,type:"single",text:"漏洞扫描能够识别的漏洞类型是（ ）。",options:["A. 已知漏洞","B. 未知漏洞","C. 已知漏洞和未知漏洞","D. 所有漏洞"],answer:"A"},
-    {id:417,chapter:4,type:"single",text:"下列扫描方式中，使用 ICMP 协议的是（ ）。",options:["A. TCP FIN 扫描","B. TCP SYN 扫描","C. 漏洞扫描","D. ping 扫描"],answer:"D"},
-    {id:418,chapter:4,type:"multi",text:"用 ping 探测目标主机，如果得不到其响应，可能的原因有（ ）。",options:["A. 目标主机没开机","B. 防火墙阻止了 ping 请求","C. 目标主机路由不可达","D. 肯定是没开机"],answer:"ABC"},
-    {id:419,chapter:4,type:"multi",text:"可用于进行网络主机或端口扫描的TCP/IP 协议有（ ）。",options:["A. TCP","B. ICMP","C. UDP","D. ARP"],answer:"ABC"},
-    {id:420,chapter:4,type:"multi",text:"可用于操作系统识别的特征包括（ ）。",options:["A. 网络协议指纹","B. 旗标（banner）","C. TCP 协议可选项","D. 开放网络端口信息"],answer:"ABCD"},
-    {id:421,chapter:4,type:"multi",text:"TCP SYN 扫描中，利用的标志位包括（ ）。",options:["A. SYN","B. ACK","C. URG","D. RST"],answer:"ABD"},
-    {id:422,chapter:4,type:"multi",text:"网络扫描包括（ ）。",options:["A. 主机扫描","B. 端口扫描","C. 操作系统识别","D. 漏洞扫描"],answer:"ABCD"},
-    {id:423,chapter:4,type:"multi",text:"如果 ICMP 协议被防火墙封锁，则下列扫描方式很可能不准确（ ）。",options:["A. TCP 全连接扫描","B. TCP SYN 扫描","C. UDP 扫描","D. ping 扫描"],answer:"CD"},
-    // ========== 第5章 ==========
-    {id:501,chapter:5,type:"single",text:"某单位联在公网上的Web 服务器的访问速度突然变得比平常慢很多，甚至无法访问到，这台Web 服务器最有可能遭到的网络攻击是（ ）。",options:["A. 拒绝服务攻击","B. SQL 注入攻击","C. 木马入侵","D. 缓冲区溢出攻击"],answer:"A"},
-    {id:502,chapter:5,type:"single",text:"2018 年 2 月，知名代码托管网站GitHub 遭遇了大规模 Memcached DDoS 攻击，这种攻击最有可能属于（ ）。",options:["A. 直接型DDoS","B. 反射型DDoS","C. 剧毒包型DoS","D. TCP 连接耗尽型DDoS 攻击"],answer:"B"},
-    {id:503,chapter:5,type:"single",text:"2016 年 10 月 21 日，美国东海岸地区遭受大面积网络瘫痪，其攻击流量的来源之一是感染了（ ）僵尸的设备。",options:["A. Sinit","B. Agobot","C. Mirai","D. Slapper"],answer:"C"},
-    {id:504,chapter:5,type:"single",text:"拒绝服务攻击导致攻击目标瘫痪的根本原因是（ ）。",options:["A. 网络和系统资源是有限的","B. 防护能力弱","C. 攻击能力太强","D. 无法确定"],answer:"A"},
-    {id:505,chapter:5,type:"single",text:"下列攻击中，不属于拒绝服务攻击的是（ ）。",options:["A. SYN Flood","B. Ping of death","C. UDP Flood","D. SQL Injection"],answer:"D"},
-    {id:506,chapter:5,type:"single",text:"下列安全机制中，主要用于缓解拒绝服务攻击造成的影响的是（ ）。",options:["A. 杀毒软件","B. 入侵检测","C. 流量清洗","D. 防火墙"],answer:"C"},
-    {id:507,chapter:5,type:"single",text:"在风暴型拒绝服务攻击中，如果攻击者直接利用控制的僵尸主机向攻击目标发送攻击报文，则这种拒绝服务攻击属于（ ）。",options:["A. 反射型拒绝服务攻击","B. 直接型拒绝服务攻击","C. 碎片攻击","D. 剧毒包型拒绝服务攻击"],answer:"B"},
-    {id:508,chapter:5,type:"single",text:"拒绝服务攻击除了瘫痪目标这一直接目的外，在网络攻防行动中，有时是为了（ ），帮助安装的后门生效或提升权限。",options:["A. 重启目标系统","B. 窃听","C. 传播木马","D. 控制主机"],answer:"A"},
-    {id:509,chapter:5,type:"single",text:"对 DNS 实施拒绝服务攻击，主要目的是导致 DNS 瘫痪进而导致网络瘫痪，但有时也是为了（ ）。",options:["A. 假冒目标DNS","B. 权限提升","C. 传播木马","D. 控制主机"],answer:"A"},
-    {id:510,chapter:5,type:"multi",text:"很多单位的网络安全管理员在配置网络防火墙时，会阻止 ICMP 协议通过，这样做的主要目的是防止攻击者对单位网络实施（ ）。",options:["A. 木马传播","B. 主机扫描","C. 端口扫描","D. 拒绝服务攻击"],answer:"BD"},
-    {id:511,chapter:5,type:"multi",text:"反射型拒绝服务攻击在选择用作攻击流量的网络协议时，通常依据以下原则（ ）。",options:["A. 互联网上有很多可探测到的支持该协议的服务器","B. 部分协议的请求报文大小远小于响应报文的大小","C. 协议具有无连接特性","D. 协议具有有连接特性"],answer:"ABC"},
-    {id:512,chapter:5,type:"multi",text:"DNS 经常被用作反射式DDoS 攻击的反射源，主要原因包括（ ）。",options:["A. DNS 查询的响应包远大于请求包","B. DNS 报文比较短","C. 区传送或递归查询过程中 DNS 响应报文数量远大于请求报文数量","D. 因特网上有很多DNS 服务器"],answer:"ACD"},
-    {id:513,chapter:5,type:"multi",text:"下列选项中，影响了目标系统可用性的有（ ）。",options:["A. 拒绝服务攻击","B. 网络窃听","C. 控制目标系统并修改关键配置使得系统无法正常运行","D. 在目标系统上安装后门"],answer:"AC"},
-    {id:514,chapter:5,type:"multi",text:"近几年，物联网设备大量被攻击者控制，成为僵尸网络的一部分。从攻击者的角度来，看选择物联网设备作为控制对象的主要因素包括（ ）。",options:["A. 物联网设备数量大","B. 物联网设备安全防护弱","C. 物联网设备计算能力弱","D. 物联网设备安全漏洞多"],answer:"ABD"},
-    {id:515,chapter:5,type:"multi",text:"下列协议中，可用作拒绝服务攻击的有（ ）。",options:["A. ICMP","B. HTTP","C. TCP","D. UDP"],answer:"ABCD"},
-    {id:516,chapter:5,type:"multi",text:"下列协议中，可用作反射型拒绝服务攻击的包括是（ ）。",options:["A. UDP","B. SSDP","C. TCP","D. NTP"],answer:"BD"},
-    {id:517,chapter:5,type:"multi",text:"当拒绝服务攻击发生时，被攻击目标的网络安全人员通常可采取的措施包括（ ）。",options:["A. 用流量清洗设备对攻击流量进行清洗","B. 断开网络，待攻击停止后再连通","C. 关机","D. 不采取任何措施"],answer:"AB"},
-    {id:518,chapter:5,type:"multi",text:"下列选项中，可用于检测拒绝服务攻击的有（ ）。",options:["A. DoS 攻击工具的特征","B. 网络异常流量特征","C. 源IP 地址","D. 目的地址"],answer:"AB"},
-    // ========== 第6章 ==========
-    {id:601,chapter:6,type:"single",text:"关闭网络端口（ ）可阻止勒索病毒 WannaCry 传播。",options:["A. 23","B. 445","C. 115","D. 25"],answer:"B"},
-    {id:602,chapter:6,type:"single",text:"计算机蠕虫（Worm）的主要传播途径是（ ）。",options:["A. 网络系统漏洞","B. 移动存储设备","C. 电子邮件","D. 宿主程序的运行"],answer:"A"},
-    {id:603,chapter:6,type:"single",text:"同计算机木马和蠕虫相比，计算机病毒最重要的特点是（ ）。",options:["A. 寄生性","B. 破坏性","C. 潜伏性","D. 自我复制"],answer:"D"},
-    {id:604,chapter:6,type:"single",text:"下列恶意代码中，传播速度最快的是（ ）。",options:["A. 计算机病毒","B. 计算机木马","C. 计算机蠕虫","D. 病毒和木马"],answer:"C"},
-    {id:605,chapter:6,type:"single",text:"对木马的可执行文件 readme.exe，为了诱骗用户双击执行，下列选项中，最好的隐藏方式是（ ）。",options:["A. 文件全名为readme.txt.exe，文件图标为TXT 文档默认图标","B. 文件全名为readme.txt，文件图标为TXT 文档默认图标","C. 文件全名为readme.exe，文件图标为EXE 文件默认图标","D. 文件全名为readme.exe.txt，文件图标为TXT 文档默认图标"],answer:"A"},
-    {id:606,chapter:6,type:"single",text:"下列文件类型中，感染木马可能性最小的是（ ）。",options:["A. exe 文件","B. txt 文件","C. doc 文件","D. ppt 文件"],answer:"B"},
-    {id:607,chapter:6,type:"single",text:"很多网银登录界面上的密码输入编辑框处要求用户下载并安装银行提供的安全控件，安全控件的主要目的是阻止木马（ ）。",options:["A. 窃取用户通过键盘输入的密码","B. 控制用户主机","C. 窃取用户主机操作系统的登录密码","D. 窃取用户的数字证书"],answer:"A"},
-    {id:608,chapter:6,type:"single",text:"根据微软的恶意代码命名规范解读 Trojan:Win32/Reveton.T!lnk 恶意代码的基本信息，正确的是（ ）。",options:["A．这是一个蠕虫程序","B．该病毒存在变种","C．该木马使用Windows 图片文件扩展名来伪装自己","D．该木马的目标运行平台包括 64 位 Windows 系统"],answer:"B"},
-    {id:609,chapter:6,type:"multi",text:"计算机木马可通过（ ）进行传播。",options:["A. 移动存储设备","B. 电子邮件","C. Office 文档","D. Web 网页"],answer:"ABCD"},
-    {id:610,chapter:6,type:"multi",text:"可能会被计算机木马用作远程回传信息的方法有（ ）。",options:["A. 网盘","B. 电子邮件","C. 人工拷贝","D. 与木马控制端直接建立TCP 连接"],answer:"ABD"},
-    {id:611,chapter:6,type:"multi",text:"网络钓鱼邮件附件中常用来携带木马的文档文件类型有（ ）。",options:["A. DOC/DOCX","B. PPT/PPTX","C. XLS/XLSX","D. PDF"],answer:"ABCD"},
-    {id:612,chapter:6,type:"multi",text:"常用的木马启动方式包括（ ）。",options:["A. 开机自启动","B. Windows 中的计划任务","C. 通过DLL 启动","D. 文件浏览自动播放"],answer:"ABCD"},
-    {id:613,chapter:6,type:"multi",text:"杀毒软件为了防止恶意代码侵入计算机，通常要监控Windows系统中的（ ）。",options:["A. 注册表","B. 系统文件","C. 用户的文本文件","D. Office 文档"],answer:"ABD"},
-    {id:614,chapter:6,type:"multi",text:"计算机木马在运行过程中的隐藏方法有（ ）。",options:["A. 正常运行","B. 木马DLL","C. 远程线程插入","D. 进程列表欺骗"],answer:"BCD"},
-    {id:615,chapter:6,type:"multi",text:"下列选项中，远程控制木马隐藏其通信的方式有（ ）。",options:["A. 端口复用","B. 通信内容隐藏在ICMP 协议报文中","C. 通信内容隐藏在 HTTP 协议报文中","D. 直接建立TCP 连接进行明文通信"],answer:"ABC"},
-    {id:616,chapter:6,type:"multi",text:"木马为了提高通信的隐蔽能力，通常不会采取的策略是（ ）。",options:["A. 快速将窃取的数据传回来","B. 少量多次回传窃取的数据","C. 将被控主机上所有文件全部打包回传","D. 明文传输"],answer:"ACD"},
-    {id:617,chapter:6,type:"multi",text:"恶意代码判断其运行环境是否为沙箱的依据包括（ ）。",options:["A. 检查可用的CPU 数量","B. 检查是否在常用虚拟机中运行","C. 检查是否在常见沙箱中运行","D. 检查硬盘大小"],answer:"ABC"},
-    // ========== 第7章 ==========
-    {id:701,chapter:7,type:"single",text:"现有研究表明，人类构建的口令服从（ ）。",options:["A. 正态分布","B. 均匀分布","C. Zipf 分布","D. 随机分布"],answer:"C"},
-    {id:702,chapter:7,type:"single",text:"2014 年 12 月 25 日，12306 网站部分用户信息在因特网上疯传，黑客获得这些用户信息的最可能方式是（ ）。",options:["A. 撞库","B. 洗库","C. 12306 网站管理员故意泄密","D. 钓鱼邮件"],answer:"A"},
-    {id:703,chapter:7,type:"single",text:"下列国民口令中，对于中文网民而言破解较容易，而对英文网民而言破解难度较大的是（ ）。",options:["A. 123456","B. woaini1314","C. 111111","D. 123123"],answer:"B"},
-    {id:704,chapter:7,type:"single",text:"如果一个网站中有高达 99.5 %的用户口令由字母和数字共同构成，就意味着该网站在运行不久就执行了（ ）的口令策略。",options:["A. 随机无限制","B. 字母 + 特殊字符","C. 数字 + 字母","D. 数字 + 特殊字符"],answer:"C"},
-    {id:705,chapter:7,type:"single",text:"如果一个网站的口令数据库中，长度为11 位数字串的用户口令中，有大量的口令包含手机号，则这个网站很可能是（ ）。",options:["A. 英文网站","B. 中文网站","C. 法语网站","D. 阿拉伯语网站"],answer:"B"},
-    {id:706,chapter:7,type:"single",text:"英文网站 Rootkit 用户的口令使用个人信息相较于中文网站 12306 的用户口令要少很多，最可能的原因是（ ）。",options:["A. 中文用户更倾向于在口令中使用个人信息","B. 英文用户的安全意识强","C. 只是一种偶然现象，没什么规律","D. Rootkit 网站是黑客论坛，用户的安全意识强且具有更丰富的安全专业知识"],answer:"D"},
-    {id:707,chapter:7,type:"single",text:"下列口令攻击算法中，需要使用用户个人信息的是（ ）。",options:["A. PCFG 漫步攻击算法","B. Markov 漫步攻击算法","C. Targeted-Markov 算法","D. 穷举攻击"],answer:"C"},
-    {id:708,chapter:7,type:"single",text:"下列身份认证方法中，简单易实现、成本较低的认证方法是（ ）。",options:["A. 静态口令认证","B. 用户特征认证","C. 密码学认证","D. 信物认证"],answer:"A"},
-    {id:709,chapter:7,type:"single",text:"利用掌握的某网络应用账号的用户名和口令，在互联网上尝试登录其它网络应用的行为称为（ ）。",options:["A. 撞库","B. 洗库","C. 脱库","D. 解库"],answer:"A"},
-    {id:710,chapter:7,type:"single",text:"下列方法中，用于自动化检测口令文件或数据库泄露的方法是（ ）。",options:["A. IDS","B. Honeybot","C. Honeynet","D. Honeywords"],answer:"D"},
-    // ========== 第8章 ==========
-    {id:801,chapter:8,type:"single",text:"网卡工作在（ ）模式时，对于接收到的数据帧，不会检查其帧头信息，而是一律产生硬件中断，通知操作系统进行处理。",options:["A. 正常","B. 混杂","C. 加密","D. 杂凑"],answer:"B"},
-    {id:802,chapter:8,type:"single",text:"主机网卡在正常工作时，会接收目的MAC 地址为（ ）的数据帧。",options:["A. 本机MAC 地址和广播地址","B. 网关MAC 地址和广播地址","C. 本机MAC 地址和网关MAC 地址","D. 任意主机的MAC 地址"],answer:"A"},
-    {id:803,chapter:8,type:"single",text:"在交换式网络环境中，网络管理员通常通过（ ）技术实施网络监听。",options:["A. 端口镜像","B. MAC 攻击","C. 端口盗用","D. ARP 欺骗"],answer:"A"},
-    {id:804,chapter:8,type:"single",text:"虚假的MAC 地址记录充满了交换机的 MAC 地址表，这是（ ）攻击的表现形式。",options:["A. 端口镜像","B. MAC 攻击","C. 端口盗用","D. ARP 欺骗"],answer:"B"},
-    {id:805,chapter:8,type:"single",text:"ARP 木马利用感染主机向网络发送大量虚假 ARP 报文，导致网络访问不稳定。向被攻击主机发送的虚假ARP 报文中，源IP 地址为（ ），源MAC 地址为（ ）。",options:["A. 网关IP 地址","B. 感染木马的主机 IP 地址","C. 网关MAC 地址","D. 感染木马的主机 MAC 地址"],answer:"AD"},
-    {id:806,chapter:8,type:"single",text:"为了防御网络监听，最常用的方法是（ ）。",options:["A. 采用物理传输（非网络）","B. 信息加密","C. 无线传输","D. 使用专线传输"],answer:"B"},
-    {id:807,chapter:8,type:"single",text:"网络监听的主要攻击目标是通信的（ ）。",options:["A. 机密性","B. 可用性","C. 完整性","D. 可控性"],answer:"A"},
-    {id:808,chapter:8,type:"single",text:"在某学校网络安全课程实验中，很多同学发现自己用 Wireshark 可以抓到使用 WebMail 登录学校邮箱时输入的用户名和口令，但却看不到登录 QQ 邮箱时输入的用户名和口令，最可能的原因是（ ）。",options:["A. QQ 邮箱服务器只允许HTTPS 协议登录","B. 学校邮箱服务器只允许HTTPS 协议登录","C. Wireshark 安装或使用方法不对","D. QQ 邮箱服务器只允许HTTP 协议登录"],answer:"A"},
-    {id:809,chapter:8,type:"single",text:"为了实现网络监听，需要将网卡置为（ ）。",options:["A. 混杂模式","B. 广播模式","C. 单播模式","D. 正常模式"],answer:"A"},
-    {id:810,chapter:8,type:"single",text:"如果攻击者要利用ARP 欺骗成功地实现中间人攻击，必须（ ）。",options:["A. 只需污染发送者的ARP 缓存","B. 只需污染接收者的ARP 缓存","C. 必须同时污染发送者和接收者的ARP 缓存","D. 污染发送者的ARP 缓存或污染接收者的ARP 缓存"],answer:"C"},
-    {id:811,chapter:8,type:"multi",text:"在交换式网络环境中，攻击者可以通过（ ）等技术实施网络流量劫持。",options:["A. 端口镜像","B. MAC 攻击","C. 端口盗用","D. ARP 欺骗"],answer:"ABCD"},
-    {id:812,chapter:8,type:"multi",text:"攻击者无法窃听其通信内容的协议包括（ ）。",options:["A. HTTP","B. IPsec","C. TLS","D. HTTPS"],answer:"BCD"},
-    {id:813,chapter:8,type:"multi",text:"下列网络攻击行为中，破坏通信的机密性的有（ ）。",options:["A. 网络监听","B. 中断","C. 伪造","D. 通信量分析"],answer:"AD"},
-    {id:814,chapter:8,type:"multi",text:"下列措施中，（ ）可用于防范中间人网络监听。",options:["A. 交换机端口绑定","B. 通信加密","C. 授权","D. 认证"],answer:"AB"},
-    {id:815,chapter:8,type:"multi",text:"为了监听Wi-Fi 通信，攻击者可采用的方法包括（ ）。",options:["A. ARP 欺骗","B. 无线热点钓鱼","C. 破解无线路由器的后台管理员口令","D. DNS 劫持"],answer:"BC"},
-    // ========== 第10章 ==========
-    {id:1001,chapter:10,type:"single",text:"为提高Cookie 的安全性，不建议采取的策略是（ ）。",options:["A. 在 Cookie 中设置 secure 属性","B. 在Cookie 中不设置 domain 属性","C. 在Cookie 中设置 domain 属性","D. 将 Cookie 的生存周期设置为 0 或负值"],answer:"C"},
-    {id:1002,chapter:10,type:"single",text:"下列选项中，（ ）不属于Web 应用在输出过程中产生的安全漏洞。",options:["A. SQL 注入","B. CSRF","C. HTTP 头注入","D. OS 命令注入"],answer:"B"},
-    {id:1003,chapter:10,type:"single",text:"在Web 用户登录界面上，某攻击者在输入口令的地方输入' or 'a' = 'a 后成功实现了登录，则该登录网页存在（ ）漏洞。",options:["A. SQL 注入","B. CSRF","C. HTTP 头注入","D. XSS"],answer:"A"},
-    {id:1004,chapter:10,type:"single",text:"为了防范跨站脚本攻击（XSS），需要对用户输入的内容进行过滤，下列字符中，不应被过滤的是（ ）。",options:["A. <","B. >","C. '","D. o"],answer:"D"},
-    {id:1005,chapter:10,type:"single",text:"下列 Web 应用攻击方法中，不属于跨站被动攻击的是（ ）。",options:["A. CSRF","B. XSS","C. SQL 注入","D. HTTP 头注入"],answer:"C"},
-    {id:1006,chapter:10,type:"single",text:"利用已登录网站的受信任用户身份来向第三方网站发送交易转账请求的攻击方法是（ ）。",options:["A. CSRF","B. XSS","C. SQL 注入","D. HTTP 头注入"],answer:"A"},
-    {id:1007,chapter:10,type:"single",text:"下列方法中，不能防止CSRF 攻击的是（ ）。",options:["A. 嵌入令牌","B. 再次输入密码","C. 校验HTTP 头中的Referer","D. 过滤特殊字符"],answer:"D"},
-    {id:1008,chapter:10,type:"single",text:"下列选项中，不属于目录遍历漏洞的必要条件是（ ）。",options:["A. 外界能够指定文件名","B. 设置Cookie 中的 secure 属性","C. 能够使用绝对路径或相对路径等形式来指定其它目录的文件名","D. 没有对拼接后的文件名进行校验就允许访问该文件"],answer:"B"},
-    {id:1009,chapter:10,type:"single",text:"可污染缓存服务器的Web 攻击方法是（ ）。",options:["A. SQL 注入","B. 操作系统命令注入","C. HTTP 消息头注入","D. XSS"],answer:"C"},
-    {id:1010,chapter:10,type:"single",text:"下列选项中，不能消除操作系统命令注入漏洞的是（ ）。",options:["A. 使用HTTPS","B. 不调用 Shell 功能","C. 避免使用内部可能会调用 Shell 的函数","D. 不将外部输入的字符串作为命令行参数"],answer:"A"},
-    {id:1011,chapter:10,type:"single",text:"某单位联在公网上的Web 服务器的访问速度突然变得比平常慢很多，这台Web 服务器最有可能遭到的网络攻击是（ ）。",options:["A. 拒绝服务攻击","B. SQL 注入攻击","C. 木马入侵","D. 缓冲区溢出攻击"],answer:"A"},
-    {id:1012,chapter:10,type:"single",text:"某单位联在公网上的 Web 服务器经常遭受到网页篡改、网页挂马、SQL 注入等黑客攻击，请从下列选项中为该Web 服务器选择一款最有效的防护设备（ ）。",options:["A. 网络防火墙","B. IDS","C. WAF","D. 杀毒软件"],answer:"C"},
-    {id:1013,chapter:10,type:"single",text:"Web 浏览器和服务器使用 HTTPS 协议进行通信，不能确保通信的（ ）。",options:["A. 机密性","B. 完整性","C. 可靠性","D. 服务器的真实性"],answer:"C"},
-    // ========== 第11章 ==========
-    {id:1101,chapter:11,type:"single",text:"下列攻击方法中，属于社会工程攻击的是（ ）。",options:["A. SQL Injection","B. 钓鱼邮件","C. TCP 连接劫持","D. 网络扫描"],answer:"B"},
-    {id:1102,chapter:11,type:"single",text:"社会工程攻击主要针对的是（ ）。",options:["A. 人的脆弱性","B. 入侵检测系统的脆弱性","C. 防火墙的脆弱性","D. 系统维护的脆弱性"],answer:"A"},
-    {id:1103,chapter:11,type:"single",text:"下列工具中，主要用于社会工程攻击的是（ ）。",options:["A. Nmap","B. Nessus","C. Traceroute","D. SET"],answer:"D"},
-    {id:1104,chapter:11,type:"single",text:"很多APT 攻击组织常用热点新闻事件或敏感话题作为钓鱼邮件的内容，这种社会工程学方法属于（ ）。",options:["A. 伪装","B. 引诱","C. 说服","D. 恐吓"],answer:"B"},
-    {id:1105,chapter:11,type:"single",text:"社会工程学攻击一般需要借助大量的情报数据来实施，这些数据通常称为（ ）。",options:["A. 社工库","B. 数据库","C. 情报","D. 信息"],answer:"A"},
-    {id:1106,chapter:11,type:"multi",text:"下列选项中，常用来进行 URL 伪装的组合包括（ ）。",options:["A. 英文字母o 和数字 0","B. 英文字母 a 和俄文字母a","C. 英文字母I 和数字 1","D. 英文字母 h 和k"],answer:"ABC"},
-    {id:1107,chapter:11,type:"multi",text:"下列文字中，常被社会工程人员制作钓鱼网站时用来在 URL 中替换特定英文字母的有（ ）。",options:["A. 中文","B. 西里尔文","C. 俄文","D. 日文"],answer:"BC"},
-    {id:1108,chapter:11,type:"multi",text:"利用社会工程工具 SET，可以直接实现的功能有（ ）。",options:["A. 漏洞攻击","B. 制作钓鱼网站","C. 制作钓鱼邮件","D. 群发邮件"],answer:"BCD"},
-    {id:1109,chapter:11,type:"multi",text:"如果用户收到一封冒充邮箱管理员发送的安全警告邮件，提醒用户其口令已泄露，点击按钮修改口令，则这种社会工程学方法属于（ ）。",options:["A. 伪装","B. 引诱","C. 说服","D. 恐吓"],answer:"AD"},
-    {id:1110,chapter:11,type:"multi",text:"下列攻击中，利用人的弱点的攻击有（ ）。",options:["A. 窃听","B. 钓鱼短信","C. 钓鱼邮件","D. 同学聚会合影邮件"],answer:"BCD"},
-    // ========== 第12章 ==========
-    {id:1201,chapter:12,type:"single",text:"在防火墙技术中，我们所说的外网通常指的是（ ）。",options:["A. 受信任的网络","B. 非受信任的网络","C. 防火墙内的网络","D. 局域网"],answer:"B"},
-    {id:1202,chapter:12,type:"single",text:"下面关于防火墙策略说法正确的是（ ）。",options:["A. 在创建防火墙策略以前，不需要对企业那些必不可少的应用软件执行风险分析","B. 防火墙安全策略一旦设定，就不能再作任何改变","C. 防火墙处理入站通信的默认策略应该是阻止所有的包和连接，除了被指出的允许通过的类型和连接","D. 防火墙规则集与防火墙平台体系结构无关"],answer:"C"},
-    {id:1203,chapter:12,type:"single",text:"包过滤型防火墙主要作用在（ ）。",options:["A. 网络接口层","B. 应用层","C. 网络层","D. 数据链路层"],answer:"C"},
-    {id:1204,chapter:12,type:"single",text:"应用网关防火墙主要作用在（ ）。",options:["A. 数据链路层","B. 网络层","C.传输层","D. 应用层"],answer:"D"},
-    {id:1205,chapter:12,type:"single",text:"下列关于防火墙的说法，错误的是（ ）。",options:["A. 防火墙的核心是访问控制","B. 防火墙也有可能被攻击者远程控制","C. 路由器中不能集成防火墙的部分功能","D. 如果一个网络没有明确边界，则使用防火墙可能没效果"],answer:"C"},
-    {id:1206,chapter:12,type:"single",text:"在设计防火墙时，考虑内网中需要向外提供服务的服务器常常放在一个单独的网段，这个网段称为（ ）。",options:["A. RSA","B. DES","C. CA","D. DMZ"],answer:"D"},
-    {id:1207,chapter:12,type:"single",text:"4 种防火墙结构中，相对而言最安全的是（ ）。",options:["A. 屏蔽路由器结构","B. 屏蔽主机结构","C. 双宿主机结构","D. 屏蔽子网结构"],answer:"D"},
-    {id:1208,chapter:12,type:"single",text:"某单位联在公网上的Web 服务器经常遭受到网页篡改、网页挂马、SQL 注入等黑客攻击，请为该Web 服务器选择一款最有效的防护设备（ ）。",options:["A. 网络防火墙","B. IDS","C. WAF","D. 杀毒软件"],answer:"C"},
-    {id:1209,chapter:12,type:"single",text:"以下关于防火墙的描述，不正确的是（ ）。",options:["A. 防火墙采用的是隔离技术","B. 防火墙的主要工作原理是对数据包及来源进行检查，阻断被拒绝的数据传输","C. 防火墙的主要功能是查杀病毒","D. 防火墙虽然能够提高网络的安全性，但不能保证网络绝对安全"],answer:"C"},
-    {id:1210,chapter:12,type:"single",text:"很多单位的安全管理员会因为安全的原因禁用因特网控制管理协议（ICMP），则可以使用网络安全设备（ ）来实现。",options:["A. 杀毒软件","B. 防火墙","C. 入侵检测系统","D. 网络扫描软件"],answer:"B"},
-    {id:1211,chapter:12,type:"single",text:"下列防火墙部署模式中，可隐藏内网IP 地址的是（ ）。",options:["A. 透明模式","B. 网关模式","C. NAT 模式","D. 桥接模式"],answer:"C"},
-    {id:1212,chapter:12,type:"single",text:"方程式组织武器库中的 EXBA 工具利用 Cisco 防火墙的一个零日漏洞实现对 Cisco 防火墙的远程控制。攻击成功的前提是目标防火墙中必启用（ ）。",options:["A. FTP 服务","B. 包过滤服务","C. VPN 服务","D. SNMP 服务"],answer:"D"},
-    {id:1213,chapter:12,type:"multi",text:"配置防火墙时，错误的原则是（ ）。",options:["A. 允许从内部站点访问 Internet 而不允许从 Internet 访问内部站点","B. 没有明确允许的就是禁止的","C. 防火墙过滤规则的顺序与安全密切相关","D. 可以不考虑防火墙过滤规则的顺序"],answer:"AD"},
-    {id:1214,chapter:12,type:"multi",text:"下列安全机制中，可用于机密性保护的有（ ）。",options:["A. 加密","B. 防火墙","C. 入侵检测","D. 数字签名"],answer:"AB"},
-    {id:1215,chapter:12,type:"multi",text:"下列关于防火墙的说法中，正确的是（ ）。",options:["A. 防火墙并不能阻止所有的网络攻击","B. 防火墙自身可能存在安全漏洞导致攻击者可以绕过防火墙","C. 如果防火墙配置不当，可能会起不到预期的防护作用","D. 攻击流量不经过防火墙，而是通过无线接入单位内网，防火墙无法进行控制"],answer:"ABCD"},
-    {id:1216,chapter:12,type:"multi",text:"下列系统或设备中，（ ）采用访问控制机制来实现对资源的安全访问。",options:["A. 加密系统","B. 防火墙","C. 操作系统","D. 数据库"],answer:"BCD"},
-    {id:1217,chapter:12,type:"multi",text:"防火墙的安全漏洞可能存在于（ ）。",options:["A. 设计上","B. 安全策略的配置上","C. 防火墙软件的实现上","D. 硬件平台"],answer:"ABCD"},
-    {id:1218,chapter:12,type:"multi",text:"下列防火墙部署模式中，可提供路由功能的是（ ）。",options:["A. 透明模式","B. 网关模式","C. NAT 模式","D. 桥接模式"],answer:"BC"},
-    {id:1219,chapter:12,type:"multi",text:"下列说法正确的是（ ）。",options:["A. 路由器可以集成防火墙功能","B. 防火墙可以实现 VPN","C. 防火墙可以实现路由功能","D. 防火墙可以阻止内网用户泄密"],answer:"ABC"},
-    {id:1220,chapter:12,type:"multi",text:"从攻击者的角度看，为了提高成功率，可以采用（ ）等方法穿过防火墙。",options:["A. 将攻击数据包隐藏在HTTPS 流量中","B. 将攻击数据包的 TCP 目的端口设置成80","C. 将攻击数据包的 TCP 目的端口设置成5480","D. 将攻击数据包隐藏在 ICMP 协议流量中"],answer:"AB"},
-    // ========== 第13章 ==========
-    {id:1301,chapter:13,type:"single",text:"基于网络的IDS 最适合检测（ ）攻击。",options:["A. 字典攻击和特烙伊木马","B. 字典攻击和拒绝服务攻击","C. 网络扫描和拒绝服务攻击","D. 拒绝服务攻击和木马"],answer:"C"},
-    {id:1302,chapter:13,type:"single",text:"下列入侵检测方法中，（ ）不是特征检测的实现方式。",options:["A. 模式匹配法","B. 专家系统法","C. 统计分析法","D. 状态迁移法"],answer:"C"},
-    {id:1303,chapter:13,type:"single",text:"采用异常检测方法进行入侵检测时，可以用（ ）来评估用于异常检测的数据的质量。",options:["A. 条件熵","B. 数据量","C. 数据类别","D. 概率"],answer:"A"},
-    {id:1304,chapter:13,type:"single",text:"如果要检测已知攻击，检测准确率最高的方法是（ ）。",options:["A. 聚类分析","B. 人工免疫","C. 神经网络","D. 模式匹配"],answer:"D"},
-    {id:1305,chapter:13,type:"single",text:"下列方法中，适合检测未知攻击的是（ ）。",options:["A. 异常检测","B. 特征检测","C. 专家系统","D. 模式匹配"],answer:"A"},
-    {id:1306,chapter:13,type:"single",text:"Snort 软件采用的入侵检测方法属于（ ）。",options:["A. 异常检测","B. 特征检测","C. 神经网络","D. 机器学习"],answer:"B"},
-    {id:1307,chapter:13,type:"single",text:"下列安全机制中，兼有入侵检测和防御攻击的有（ ）。",options:["A. 防火墙","B. 杀毒软件","C. 网络欺骗防御","D. 入侵检测系统"],answer:"C"},
-    {id:1308,chapter:13,type:"single",text:"如果攻击者使用一个零日漏洞对目标网络进行渗透攻击，则最有可能检测并防御这种攻击的安全机制是（ ）。",options:["A. 防火墙","B. 杀毒软件","C. 网络欺骗防御","D. 入侵检测系统"],answer:"C"},
-    {id:1309,chapter:13,type:"single",text:"如果攻击者使用加密信道（如 IPsec, TLS, HTTPS）对目标网络进行攻击，则最有可能检测到这种攻击的是（ ）。",options:["A. 基于网络的IDS","B. 基于主机的IDS","C. 基于网络的IDS 和基于主机的IDS","D. 防火墙"],answer:"B"},
-    {id:1310,chapter:13,type:"single",text:"如果攻击者在扫描一个网络时，扫描到了大量活动的主机，但在实施进一步攻击时，却发现很多主机有些异常，则该网络很可能采取了（ ）防御机制。",options:["A. 基于主机的入侵检测","B. 基于网络的入侵检测","C. 防火墙","D. 网络混淆"],answer:"D"},
-    {id:1311,chapter:13,type:"multi",text:"单位网络边界处已配置了网络防火墙，在内网中再配置入侵检测系统的主要原因包括（ ）。",options:["A. 防火墙并不能阻止所有的网络攻击","B. 防火墙自身可能存在安全漏洞导致攻击者可以绕过防火墙","C. 如果防火墙配置不当，可能会起不到预期的防护作用","D. 攻击流量不经过防火墙，而是通过无线接入单位内网，防火墙无法进行控制"],answer:"ABCD"},
-    {id:1312,chapter:13,type:"multi",text:"下列数据中，可用于判断计算机是否被入侵的有（ ）。",options:["A. 操作系统日志","B. 网络数据","C. 应用程序日志","D. 注册表记录"],answer:"ABCD"},
-    {id:1313,chapter:13,type:"multi",text:"如果要进行未知攻击检测，则应选择（ ）。",options:["A. 聚类分析","B. 人工免疫","C. 神经网络","D. 模式匹配"],answer:"ABC"},
-    {id:1314,chapter:13,type:"multi",text:"评价入侵检测系统性能的最重要的两个指标是（ ）。",options:["A. 吞吐率","B. 漏报率","C. 速率","D. 误报率"],answer:"BD"},
-    {id:1315,chapter:13,type:"multi",text:"下列安全技术中，采用网络欺骗技术的是（ ）。",options:["A. 防火墙","B. 入侵检测","C. 蜜罐","D. 蜜网"],answer:"CD"},
-    {id:1316,chapter:13,type:"multi",text:"下列安全技术中，可用于检测网络攻击的有（ ）。",options:["A. 防火墙","B. VPN","C. 入侵检测系统","D. 蜜网"],answer:"CD"},
-    {id:1317,chapter:13,type:"multi",text:"下列安全机制中，可用于引诱攻击者发起攻击的是（ ）。",options:["A. 防火墙","B. 蜜罐","C. 入侵检测系统","D. 蜜网"],answer:"BD"},
-    {id:1318,chapter:13,type:"multi",text:"下列选项中，属于数据层欺骗技术的是（ ）。",options:["A. Honeywords","B. 协议指纹混淆","C. 诱饵文档","D. 设置大量虚假主机"],answer:"AC"}
-  ];
-
-  // ==================== 状态管理 ====================
-  let state = {
-    allQuestions: QUESTIONS,
-    selectedChapters: new Set(CHAPTERS.map(c=>c.id)),
-    selectedTypes: new Set(['single','multi']),
-    testMode: 'all',
-    questionLimit: 20,
-    autoWrongBank: true,
-    instantFeedback: true,
-    showProgress: true,
-    // 测试状态
-    currentQuestions: [],
-    currentIndex: 0,
-    doneSet: new Set(JSON.parse(localStorage.getItem('doneSet')||'[]')),
-    history: [], // {qid, answer, correct}
-    wrongBank: JSON.parse(localStorage.getItem('wrongBank')||'[]'),
-    submitted: false,
-    selectedAnswer: null,
-    isPracticeBank: false
+  // ==================== 存储键 ====================
+  const STORAGE_KEYS = {
+    WRONG_BANK: 'zian_wrong_bank',
+    MARKED_BANK: 'zian_marked_bank',
+    DONE_QUESTIONS: 'zian_done_questions',
   };
 
+  // ==================== 全局状态 ====================
+  let currentQuestions = [];
+  let currentIndex = 0;
+  let correctCount = 0;
+  let wrongCount = 0;
+  let selectedOptions = [];
+  let answered = false;
+  let quizMode = 'random';
+  let userAnswers = [];
+  let browseList = [];
+  let browseIndex = 0;
+
   // ==================== 工具函数 ====================
-  function saveState(){
-    try{
-      localStorage.setItem('doneSet',JSON.stringify([...state.doneSet]));
-      localStorage.setItem('wrongBank',JSON.stringify(state.wrongBank));
-    }catch(e){}
-  }
-
-  function getChapterName(id){
-    const c=CHAPTERS.find(x=>x.id===id);
-    return c?c.name:'';
-  }
-
-  function shuffle(arr){
-    const a=[...arr];
-    for(let i=a.length-1;i>0;i--){
-      const j=Math.floor(Math.random()*(i+1));
-      [a[i],a[j]]=[a[j],a[i]];
+  function shuffle(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
     }
-    return a;
+    return arr;
   }
 
-  function getAnswerText(q,answer){
-    if(!answer || answer.length===0) return '未作答';
-    return q.options.filter((_,i)=>answer.includes(String.fromCharCode(65+i))).join('；');
+  function getStorage(key) {
+    try {
+      return JSON.parse(localStorage.getItem(key)) || [];
+    } catch(e) {
+      return [];
+    }
   }
 
-  // ==================== UI 渲染 ====================
-  function initChapterList(){
-    const el=document.getElementById('chapterList');
-    el.innerHTML='';
-    CHAPTERS.forEach(ch=>{
-      const btn=document.createElement('div');
-      btn.className='chapter-btn'+(state.selectedChapters.has(ch.id)?' selected':'');
-      btn.textContent=ch.name;
-      btn.onclick=()=>{
-        if(state.selectedChapters.has(ch.id)){
-          if(state.selectedChapters.size>1) state.selectedChapters.delete(ch.id);
-        }else state.selectedChapters.add(ch.id);
-        btn.className='chapter-btn'+(state.selectedChapters.has(ch.id)?' selected':'');
+  function setStorage(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+
+  function getChapterName(chapterId) {
+    const ch = CHAPTERS.find(c => c.id === chapterId);
+    return ch ? ch.name : '未知章节';
+  }
+
+  function getCorrectOptions(question) {
+    const ans = question.answer;
+    if (Array.isArray(ans)) return ans;
+    return ans.split('');
+  }
+
+  function isAnswerCorrect(question, selected) {
+    const correct = getCorrectOptions(question);
+    if (selected.length !== correct.length) return false;
+    return selected.every(s => correct.includes(s)) && correct.every(c => selected.includes(c));
+  }
+
+  function showPanel(panelId) {
+    document.querySelectorAll('.controls-section').forEach(p => p.classList.remove('active'));
+    document.getElementById(panelId).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  // ==================== 主页 ====================
+  function updateHomeStats() {
+    document.getElementById('totalQCount').textContent = QUESTIONS.length;
+    document.getElementById('homeWrongCount').textContent = getStorage(STORAGE_KEYS.WRONG_BANK).length;
+    document.getElementById('homeMarkedCount').textContent = getStorage(STORAGE_KEYS.MARKED_BANK).length;
+  }
+
+  // ==================== 设置 ====================
+  function initChapterList() {
+    const container = document.getElementById('chapterList');
+    container.innerHTML = '';
+    CHAPTERS.forEach(ch => {
+      const btn = document.createElement('div');
+      btn.className = 'chapter-btn selected';
+      btn.dataset.chapterId = ch.id;
+      btn.textContent = ch.name + ' (' + ch.count + '题)';
+      btn.onclick = function() {
+        this.classList.toggle('selected');
       };
-      el.appendChild(btn);
+      container.appendChild(btn);
     });
   }
 
-  function initModeGrid(){
-    document.querySelectorAll('.mode-item').forEach(el=>{
-      el.className='mode-item'+(el.dataset.mode===state.testMode?' selected':'');
-      el.onclick=()=>{
-        state.testMode=el.dataset.mode;
-        document.querySelectorAll('.mode-item').forEach(x=>x.className='mode-item');
-        el.className='mode-item selected';
-      };
+  function selectAllChapters(select) {
+    document.querySelectorAll('#chapterList .chapter-btn').forEach(btn => {
+      if (select) btn.classList.add('selected');
+      else btn.classList.remove('selected');
     });
   }
 
-  function initEvents(){
-    document.getElementById('typeSingle').onchange=e=>{
-      if(e.target.checked) state.selectedTypes.add('single');
-      else state.selectedTypes.delete('single');
-    };
-    document.getElementById('typeMulti').onchange=e=>{
-      if(e.target.checked) state.selectedTypes.add('multi');
-      else state.selectedTypes.delete('multi');
-    };
-    document.getElementById('questionCount').oninput=e=>{
-      state.questionLimit=Math.max(1,parseInt(e.target.value)||20);
-    };
-    document.getElementById('autoWrongBank').onchange=e=>{state.autoWrongBank=e.target.checked;};
-    document.getElementById('instantFeedback').onchange=e=>{state.instantFeedback=e.target.checked;};
-    document.getElementById('showProgress').onchange=e=>{state.showProgress=e.target.checked;};
-    document.getElementById('skipDone').onchange=e=>{
-      if(e.target.checked) document.getElementById('redoDone').checked=false;
-    };
-    document.getElementById('redoDone').onchange=e=>{
-      if(e.target.checked) document.getElementById('skipDone').checked=false;
-    };
-    document.getElementById('startBtn').onclick=startTest;
-    document.getElementById('prevBtn').onclick=prevQuestion;
-    document.getElementById('submitBtn').onclick=submitAnswer;
-    document.getElementById('nextBtn').onclick=nextQuestion;
-    document.getElementById('reviewWrongBtn').onclick=showWrongAnswers;
-    document.getElementById('reviewAllBtn').onclick=showAllAnswers;
-    document.getElementById('restartBtn').onclick=backToSettings;
-    document.getElementById('clearBankBtn').onclick=clearWrongBank;
-    document.getElementById('practiceBankBtn').onclick=practiceWrongBank;
-    document.getElementById('backHomeBtn').onclick=backToSettings;
-    document.getElementById('topHomeBtn').onclick=backToSettings;
-    const testHomeBtn=document.getElementById('testHomeBtn');
-    if(testHomeBtn) testHomeBtn.onclick=backToSettings;
+  function selectMode(el) {
+    document.querySelectorAll('.mode-item').forEach(m => m.classList.remove('selected'));
+    el.classList.add('selected');
+    quizMode = el.dataset.mode;
   }
 
-  function showPanel(name){
-    document.getElementById('settingsPanel').style.display=name==='settings'?'block':'none';
-    document.getElementById('testPanel').className='controls-section'+(name==='test'?' active':'');
-    document.getElementById('resultPanel').className='controls-section'+(name==='result'?' active':'');
-    document.getElementById('wrongBankPanel').className='controls-section'+(name==='bank'?' active':'');
+  function getSelectedChapters() {
+    const selected = [];
+    document.querySelectorAll('#chapterList .chapter-btn.selected').forEach(btn => {
+      selected.push(parseInt(btn.dataset.chapterId));
+    });
+    return selected;
   }
 
-  // ==================== 测试逻辑 ====================
-  function buildQuestionPool(){
-    let pool=state.allQuestions.filter(q=>
-      state.selectedChapters.has(q.chapter)&&state.selectedTypes.has(q.type)
+  function getSelectedTypes() {
+    const types = [];
+    if (document.getElementById('typeSingle').checked) types.push('single');
+    if (document.getElementById('typeMulti').checked) types.push('multi');
+    return types;
+  }
+
+  // ==================== 答题 ====================
+  function startQuiz() {
+    const chapters = getSelectedChapters();
+    const types = getSelectedTypes();
+    
+    if (chapters.length === 0) {
+      alert('请至少选择一个章节');
+      return;
+    }
+    if (types.length === 0) {
+      alert('请至少选择一种题型');
+      return;
+    }
+
+    let pool = QUESTIONS.filter(q => 
+      chapters.includes(q.chapter) && types.includes(q.type)
     );
-    if(state.isPracticeBank){
-      pool=pool.filter(q=>state.wrongBank.some(w=>w.qid===q.id));
-    }
-    return pool;
-  }
 
-  function startTest(){
-    if(state.selectedChapters.size===0||state.selectedTypes.size===0){
-      alert('请至少选择一个章节和一种题型');
+    if (pool.length === 0) {
+      alert('没有符合条件的题目');
       return;
     }
-    state.isPracticeBank=false;
-    const skipDone=document.getElementById('skipDone').checked;
-    const redoDone=document.getElementById('redoDone').checked;
-    let pool=buildQuestionPool();
-    // 按功能选项过滤
-    if(skipDone){
-      pool=pool.filter(q=>!state.doneSet.has(q.id));
-      if(pool.length===0){alert('所有题目都已做过');return;}
+
+    if (quizMode === 'random') {
+      const count = parseInt(document.getElementById('questionCount').value) || 20;
+      currentQuestions = shuffle(pool).slice(0, Math.min(count, pool.length));
+    } else {
+      currentQuestions = pool;
     }
-    if(redoDone){
-      pool=pool.filter(q=>state.doneSet.has(q.id));
-      if(pool.length===0){alert('没有已做过的题目');return;}
+
+    currentIndex = 0;
+    correctCount = 0;
+    wrongCount = 0;
+    userAnswers = [];
+
+    document.getElementById('totalCount').textContent = currentQuestions.length;
+
+    const progressWrap = document.getElementById('progressWrap');
+    if (document.getElementById('showProgress').checked) {
+      progressWrap.style.display = 'block';
+    } else {
+      progressWrap.style.display = 'none';
     }
-    let questions;
-    switch(state.testMode){
-      case 'all':
-        questions=[...pool];
-        break;
-      case 'random':
-        questions=shuffle(pool).slice(0,state.questionLimit);
-        break;
-    }
-    state.currentQuestions=questions;
-    state.currentIndex=0;
-    state.history=[];
-    state.submitted=false;
-    state.selectedAnswer=null;
-    showPanel('test');
-    renderQuestion();
+
+    showPanel('testPanel');
+    showQuestion();
   }
 
-  function practiceWrongBank(){
-    if(state.wrongBank.length===0){
-      alert('错题本为空');
-      return;
-    }
-    state.isPracticeBank=true;
-    const pool=buildQuestionPool();
-    if(pool.length===0){
-      alert('错题本为空');
-      return;
-    }
-    state.currentQuestions=shuffle(pool);
-    state.currentIndex=0;
-    state.history=[];
-    state.submitted=false;
-    state.selectedAnswer=null;
-    showPanel('test');
-    renderQuestion();
-  }
+  function showQuestion() {
+    const q = currentQuestions[currentIndex];
+    selectedOptions = [];
+    answered = false;
 
-  function renderQuestion(){
-    const q=state.currentQuestions[state.currentIndex];
-    if(!q){showResults();return;}
-    document.getElementById('questionMeta').textContent=
-      getChapterName(q.chapter)+' · '+(q.type==='single'?'单项选择':'多项选择');
-    document.getElementById('questionText').textContent=q.text;
-    document.getElementById('progressWrap').style.display=state.showProgress?'block':'none';
-    document.getElementById('doneCount').textContent=state.currentIndex;
-    document.getElementById('totalCount').textContent=state.currentQuestions.length;
-    if(state.showProgress){
-      document.getElementById('progressBar').style.width=
-        ((state.currentIndex/state.currentQuestions.length)*100)+'%';
-    }
+    const typeBadge = q.type === 'single' 
+      ? '<span class="type-badge type-single">单选题</span>'
+      : '<span class="type-badge type-multi">多选题</span>';
+    
+    document.getElementById('questionMeta').innerHTML = 
+      typeBadge + '<span class="chapter-badge">' + getChapterName(q.chapter) + '</span>';
+    document.getElementById('questionText').textContent = '【' + (currentIndex + 1) + '】' + q.text;
 
-    // 检查是否已答过（从历史中恢复）
-    const histEntry=state.history[state.currentIndex];
-    const isSubmitted=!!histEntry;
-    const submittedAnswer=histEntry?histEntry.answer:null;
-    const doneCount=state.history.filter(h=>h).length;
-    document.getElementById('doneCount').textContent=doneCount;
-
-    const grid=document.getElementById('optionsGrid');
-    grid.innerHTML='';
-    q.options.forEach((opt,i)=>{
-      const key=String.fromCharCode(65+i);
-      const item=document.createElement('label');
-      let extraClass='';
-      if(isSubmitted){
-        if(histEntry.correct){
-          // 正确：选中的标绿
-          if(submittedAnswer&&submittedAnswer.includes(key)){
-            extraClass=' selected-correct';
-          }
-        }else{
-          // 错误：选中的标红，正确答案标绿
-          if(submittedAnswer&&submittedAnswer.includes(key)){
-            extraClass=' selected-wrong';
-          }
-          if(q.answer.includes(key)){
-            extraClass=' show-correct';
-          }
-        }
-      }else if(state.selectedAnswer&&state.selectedAnswer.includes(key)){
-        extraClass=' selected';
-      }
-      item.className='option-item'+extraClass;
-      item.innerHTML=`<input type="${q.type==='single'?'radio':'checkbox'}" 
-        name="qopt" value="${key}" 
-        ${(isSubmitted?submittedAnswer:state.selectedAnswer)&&(isSubmitted?submittedAnswer:state.selectedAnswer).includes(key)?'checked':''}
-        ${isSubmitted?'disabled':''}>${opt}`;
-      if(!isSubmitted){
-        item.onclick=()=>{
-          if(state.submitted) return;
-          if(q.type==='single'){
-            state.selectedAnswer=[key];
-            grid.querySelectorAll('input').forEach((inp,j)=>{
-              if(j!==i) inp.checked=false;
-            });
-          }else{
-            state.selectedAnswer=state.selectedAnswer||[];
-            if(state.selectedAnswer.includes(key)){
-              state.selectedAnswer=state.selectedAnswer.filter(x=>x!==key);
-            }else{
-              state.selectedAnswer=[...state.selectedAnswer,key];
+    const grid = document.getElementById('optionsGrid');
+    grid.innerHTML = '';
+    q.options.forEach((opt, idx) => {
+      const label = document.createElement('label');
+      label.className = 'option-item';
+      const inputType = q.type === 'single' ? 'radio' : 'checkbox';
+      label.innerHTML = '<input type="' + inputType + '" name="qopt" data-idx="' + idx + '"><span class="opt-label">' + opt + '</span>';
+      label.onclick = function(e) {
+        if (answered) { e.preventDefault(); return; }
+        const input = this.querySelector('input');
+        setTimeout(() => {
+          if (q.type === 'single') {
+            selectedOptions = [idx];
+          } else {
+            if (selectedOptions.includes(idx)) {
+              selectedOptions = selectedOptions.filter(i => i !== idx);
+            } else {
+              selectedOptions.push(idx);
             }
-            grid.querySelectorAll('input').forEach(inp=>{
-              inp.checked=state.selectedAnswer.includes(inp.value);
-            });
+            selectedOptions.sort((a,b) => a-b);
           }
-          // 更新选中样式
-          grid.querySelectorAll('.option-item').forEach(el=>{
-            el.className='option-item';
-            if(state.selectedAnswer&&state.selectedAnswer.includes(el.querySelector('input').value)){
-              el.className='option-item selected';
-            }
-          });
-        };
-      }
-      grid.appendChild(item);
+        }, 0);
+      };
+      grid.appendChild(label);
     });
 
-    // 渲染内联反馈
-    let fbEl=grid.nextElementSibling;
-    if(fbEl&&fbEl.classList.contains('feedback-inline')) fbEl.remove();
-    if(isSubmitted){
-      const fb=document.createElement('div');
-      fb.className='feedback-inline '+(histEntry.correct?'feedback-correct':'feedback-wrong');
-      if(histEntry.correct){
-        fb.innerHTML='<strong>✓ 回答正确</strong>';
-      }else{
-        fb.innerHTML=`<strong>✗ 回答错误</strong><br>你的答案：${getAnswerText(q,submittedAnswer)}<br>正确答案：${getAnswerText(q,q.answer.split(''))}`;
-      }
-      grid.insertAdjacentElement('afterend',fb);
-    }
+    document.getElementById('feedbackContainer').innerHTML = '';
+    document.getElementById('submitBtn').style.display = 'inline-block';
+    document.getElementById('nextBtn').style.display = 'none';
 
-    document.getElementById('submitBtn').style.display=isSubmitted?'none':'inline-block';
-    document.getElementById('nextBtn').style.display=isSubmitted?'inline-block':'none';
-    document.getElementById('prevBtn').disabled=state.currentIndex===0;
+    updateMarkBtn();
+    updateProgress();
   }
 
-  function submitAnswer(){
-    const q=state.currentQuestions[state.currentIndex];
-    if(!state.selectedAnswer||state.selectedAnswer.length===0){
+  function updateProgress() {
+    const percent = (currentIndex / currentQuestions.length) * 100;
+    document.getElementById('progressBar').style.width = percent + '%';
+  }
+
+  function updateMarkBtn() {
+    const q = currentQuestions[currentIndex];
+    const marked = getStorage(STORAGE_KEYS.MARKED_BANK).includes(q.id);
+    const btn = document.getElementById('markBtn');
+    if (marked) {
+      btn.classList.add('marked');
+      btn.textContent = '⭐ 已标记';
+    } else {
+      btn.classList.remove('marked');
+      btn.textContent = '⭐ 标记';
+    }
+  }
+
+  function toggleMark() {
+    const q = currentQuestions[currentIndex];
+    let marked = getStorage(STORAGE_KEYS.MARKED_BANK);
+    const idx = marked.indexOf(q.id);
+    if (idx >= 0) {
+      marked.splice(idx, 1);
+    } else {
+      marked.push(q.id);
+    }
+    setStorage(STORAGE_KEYS.MARKED_BANK, marked);
+    updateMarkBtn();
+  }
+
+  function submitAnswer() {
+    if (selectedOptions.length === 0) {
       alert('请选择答案');
       return;
     }
-    state.submitted=true;
-    const userAns=state.selectedAnswer.slice().sort().join('');
-    const correct=q.answer.split('').sort().join('');
-    const isCorrect=userAns===correct;
-    state.doneSet.add(q.id);
-    state.history[state.currentIndex]={qid:q.id,answer:state.selectedAnswer,correct:isCorrect,q:q};
-    // 更新统计
-    const done=state.history.filter(h=>h).length;
-    const correctNum=state.history.filter(h=>h&&h.correct).length;
-    const wrongNum=done-correctNum;
-    document.getElementById('doneCount').textContent=state.currentIndex+1;
-    document.getElementById('correctCount').textContent=correctNum;
-    document.getElementById('wrongCount').textContent=wrongNum;
-    document.getElementById('accuracy').textContent=
-      done>0?Math.round(correctNum/done*100):0;
-    // 即时反馈 - 内联
-    renderQuestion();
-    // 错题本
-    if(state.autoWrongBank&&!isCorrect){
-      if(!state.wrongBank.some(w=>w.qid===q.id)){
-        state.wrongBank.push({qid:q.id,q:q});
+
+    answered = true;
+    const q = currentQuestions[currentIndex];
+    const correct = isAnswerCorrect(q, selectedOptions.map(i => String.fromCharCode(65 + i)));
+
+    userAnswers[currentIndex] = {
+      selected: selectedOptions,
+      correct: correct
+    };
+
+    if (correct) {
+      correctCount++;
+    } else {
+      wrongCount++;
+      if (document.getElementById('autoWrongBank').checked) {
+        addToWrongBank(q.id);
       }
     }
-    saveState();
+
+    document.getElementById('doneCount').textContent = currentIndex + 1;
+    document.getElementById('correctCount').textContent = correctCount;
+    document.getElementById('wrongCount').textContent = wrongCount;
+    const acc = currentIndex + 1 > 0 ? Math.round((correctCount / (currentIndex + 1)) * 100) : 0;
+    document.getElementById('accuracy').textContent = acc;
+
+    if (document.getElementById('instantFeedback').checked) {
+      showFeedback(q, correct);
+    }
+
+    document.getElementById('submitBtn').style.display = 'none';
+    document.getElementById('nextBtn').style.display = 'inline-block';
   }
 
-  function nextQuestion(){
-    state.currentIndex++;
-    state.submitted=false;
-    state.selectedAnswer=null;
-    if(state.currentIndex>=state.currentQuestions.length){
-      showResults();
-    }else{
-      // 恢复已答过的题目的状态
-      const histEntry=state.history[state.currentIndex];
-      if(histEntry){
-        state.submitted=true;
-        state.selectedAnswer=histEntry.answer;
+  function showFeedback(q, correct) {
+    const correctIndices = getCorrectOptions(q).map(a => a.charCodeAt(0) - 65);
+    const options = document.querySelectorAll('#optionsGrid .option-item');
+    
+    options.forEach((opt, i) => {
+      const input = opt.querySelector('input');
+      opt.style.pointerEvents = 'none';
+      
+      if (correctIndices.includes(i)) {
+        opt.classList.add('show-correct');
       }
-      renderQuestion();
+      if (selectedOptions.includes(i) && !correctIndices.includes(i)) {
+        opt.classList.add('show-wrong');
+      }
+    });
+
+    const correctText = correctIndices.map(i => q.options[i]).join('、');
+    const feedback = document.createElement('div');
+    feedback.className = 'feedback-inline ' + (correct ? 'feedback-correct' : 'feedback-wrong');
+    feedback.innerHTML = (correct ? '✅ 回答正确！' : '❌ 回答错误！') +
+      '<br><strong>正确答案：</strong>' + q.answer + '. ' + correctText;
+    document.getElementById('feedbackContainer').appendChild(feedback);
+  }
+
+  function nextQuestion() {
+    if (currentIndex < currentQuestions.length - 1) {
+      currentIndex++;
+      showQuestion();
+    } else {
+      showResult();
     }
   }
 
-  function prevQuestion(){
-    if(state.currentIndex>0){
-      state.currentIndex--;
-      state.submitted=false;
-      state.selectedAnswer=null;
-      // 恢复已答过的状态
-      const histEntry=state.history[state.currentIndex];
-      if(histEntry){
-        state.submitted=true;
-        state.selectedAnswer=histEntry.answer;
+  function prevQuestion() {
+    if (currentIndex > 0) {
+      currentIndex--;
+      showQuestion();
+      const prevAns = userAnswers[currentIndex];
+      if (prevAns) {
+        selectedOptions = prevAns.selected;
+        answered = true;
+        const q = currentQuestions[currentIndex];
+        document.getElementById('submitBtn').style.display = 'none';
+        document.getElementById('nextBtn').style.display = 'inline-block';
+        
+        const options = document.querySelectorAll('#optionsGrid .option-item');
+        selectedOptions.forEach(idx => {
+          options[idx].querySelector('input').checked = true;
+        });
+        
+        showFeedback(q, prevAns.correct);
       }
-      renderQuestion();
     }
   }
 
-  function showResults(){
-    const done=state.history.length;
-    const correctNum=state.history.filter(h=>h.correct).length;
-    const wrongNum=done-correctNum;
-    document.getElementById('resTotal').textContent=done;
-    document.getElementById('resCorrect').textContent=correctNum;
-    document.getElementById('resWrong').textContent=wrongNum;
-    document.getElementById('resAccuracy').textContent=done>0?Math.round(correctNum/done*100)+'%':'0%';
-    showPanel('result');
+  function exitQuiz() {
+    if (confirm('确定要退出答题吗？当前进度将会丢失。')) {
+      showPanel('homePanel');
+      updateHomeStats();
+    }
   }
 
-  function showWrongAnswers(){
-    const panel=document.getElementById('wrongAnswerPanel');
-    const wrongs=state.history.filter(h=>!h.correct);
-    if(wrongs.length===0){panel.innerHTML='<p>没有错题</p>';panel.style.display='block';return;}
-    panel.innerHTML=wrongs.map(w=>`
-      <div class="wrong-answer-item">
-        <strong>${w.q.text}</strong><br>
-        你的答案：${getAnswerText(w.q,w.answer)}<br>
-        正确答案：${getAnswerText(w.q,w.q.answer.split(''))}
-      </div>`).join('');
-    panel.style.display='block';
+  // ==================== 结果 ====================
+  function showResult() {
+    const total = currentQuestions.length;
+    document.getElementById('resTotal').textContent = total;
+    document.getElementById('resCorrect').textContent = correctCount;
+    document.getElementById('resWrong').textContent = wrongCount;
+    const acc = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+    document.getElementById('resAccuracy').textContent = acc + '%';
+    document.getElementById('reviewPanel').style.display = 'none';
+    showPanel('resultPanel');
   }
 
-  function showAllAnswers(){
-    const panel=document.getElementById('wrongAnswerPanel');
-    panel.innerHTML=state.history.map(h=>`
-      <div class="wrong-answer-item" style="border-left-color:${h.correct?'#34a853':'#ea4335'}">
-        <strong>${h.q.text}</strong><br>
-        你的答案：${getAnswerText(h.q,h.answer)}<br>
-        正确答案：${getAnswerText(h.q,h.q.answer.split(''))}
-      </div>`).join('');
-    panel.style.display='block';
+  function showWrongPanel() {
+    const panel = document.getElementById('reviewPanel');
+    panel.style.display = 'block';
+    panel.innerHTML = '';
+    
+    let wrongItems = [];
+    currentQuestions.forEach((q, i) => {
+      const ua = userAnswers[i];
+      if (ua && !ua.correct) {
+        wrongItems.push({q, ua});
+      }
+    });
+
+    if (wrongItems.length === 0) {
+      panel.innerHTML = '<div class="empty-tip">🎉 恭喜！没有错题！</div>';
+      return;
+    }
+
+    wrongItems.forEach((item, idx) => {
+      const {q, ua} = item;
+      const correctText = getCorrectOptions(q).map(a => q.options[a.charCodeAt(0) - 65]).join('、');
+      const userText = ua.selected.map(i => q.options[i]).join('、');
+      
+      const div = document.createElement('div');
+      div.className = 'wrong-answer-item';
+      div.innerHTML = '<div style="font-weight:bold;margin-bottom:5px">' + (idx + 1) + '. ' + q.text + '</div>' +
+        '<div style="font-size:0.85rem;color:#666;line-height:1.6">' +
+        '<div class="stat-correct" style="font-weight:bold">✅ 正确答案：' + q.answer + '. ' + correctText + '</div>' +
+        '<div class="stat-wrong" style="font-weight:bold">❌ 你的答案：' + userText + '</div>' +
+        '</div>';
+      panel.appendChild(div);
+    });
   }
 
-  function clearWrongBank(){
-    if(!confirm('确定清空错题本？')) return;
-    state.wrongBank=[];
-    saveState();
-    renderWrongBank();
+  function showAllReview() {
+    const panel = document.getElementById('reviewPanel');
+    panel.style.display = 'block';
+    panel.innerHTML = '';
+
+    currentQuestions.forEach((q, i) => {
+      const ua = userAnswers[i] || {selected: [], correct: false};
+      const correctText = getCorrectOptions(q).map(a => q.options[a.charCodeAt(0) - 65]).join('、');
+      const userText = ua.selected.length > 0 ? ua.selected.map(i => q.options[i]).join('、') : '未作答';
+      
+      const div = document.createElement('div');
+      div.className = 'wrong-answer-item';
+      div.style.borderLeftColor = ua.correct ? '#34a853' : '#ea4335';
+      div.innerHTML = '<div style="font-weight:bold;margin-bottom:5px">' + (i + 1) + '. ' + q.text + '</div>' +
+        '<div style="font-size:0.85rem;color:#666;line-height:1.6">' +
+        '<div class="stat-correct">✅ 正确答案：' + q.answer + '. ' + correctText + '</div>' +
+        '<div class="' + (ua.correct ? 'stat-correct' : 'stat-wrong') + '">' + 
+        (ua.correct ? '✅ 你答对了' : '❌ 你的答案：' + userText) + '</div>' +
+        '</div>';
+      panel.appendChild(div);
+    });
   }
 
-  function renderWrongBank(){
-    document.getElementById('bankCount').textContent=state.wrongBank.length;
-    document.getElementById('bankLearned').textContent=
-      state.wrongBank.filter(w=>state.history.some(h=>h.qid===w.qid&&h.correct)).length;
-    const list=document.getElementById('wrongBankList');
-    list.innerHTML=state.wrongBank.map(w=>`
-      <div class="wrong-answer-item">
-        <strong>${w.q.text}</strong><br>
-        正确答案：${getAnswerText(w.q,w.q.answer.split(''))}
-      </div>`).join('');
+  // ==================== 错题本 ====================
+  function addToWrongBank(qid) {
+    let wrongs = getStorage(STORAGE_KEYS.WRONG_BANK);
+    if (!wrongs.includes(qid)) {
+      wrongs.push(qid);
+      setStorage(STORAGE_KEYS.WRONG_BANK, wrongs);
+    }
   }
 
-  function backToSettings(){
-    state.isPracticeBank=false;
-    showPanel('settings');
+  function showWrongBank() {
+    const wrongs = getStorage(STORAGE_KEYS.WRONG_BANK);
+    document.getElementById('wrongBankCount').textContent = wrongs.length;
+    
+    const list = document.getElementById('wrongBankList');
+    list.innerHTML = '';
+    
+    if (wrongs.length === 0) {
+      list.innerHTML = '<div class="empty-tip">错题本为空，继续加油！</div>';
+    } else {
+      wrongs.forEach(qid => {
+        const q = QUESTIONS.find(q => q.id === qid);
+        if (q) {
+          const div = document.createElement('div');
+          div.className = 'bank-list-item';
+          div.innerHTML = '<div class="bank-q">' + 
+            (q.type === 'single' ? '<span class="type-badge type-single">单</span>' : '<span class="type-badge type-multi">多</span>') +
+            q.text + '</div>' +
+            '<div class="bank-meta">' + getChapterName(q.chapter) + ' · 正确答案: ' + q.answer + '</div>';
+          div.onclick = function() {
+            browseSpecific(qid);
+          };
+          list.appendChild(div);
+        }
+      });
+    }
+    
+    showPanel('wrongBankPanel');
+  }
+
+  function practiceWrong() {
+    const wrongs = getStorage(STORAGE_KEYS.WRONG_BANK);
+    if (wrongs.length === 0) {
+      alert('错题本为空');
+      return;
+    }
+    
+    currentQuestions = shuffle(QUESTIONS.filter(q => wrongs.includes(q.id)));
+    currentIndex = 0;
+    correctCount = 0;
+    wrongCount = 0;
+    userAnswers = [];
+    
+    document.getElementById('totalCount').textContent = currentQuestions.length;
+    document.getElementById('progressWrap').style.display = 'block';
+    document.getElementById('testTitle').textContent = '错题专项练习';
+    
+    showPanel('testPanel');
+    showQuestion();
+  }
+
+  function clearWrongBank() {
+    if (confirm('确定要清空错题本吗？')) {
+      setStorage(STORAGE_KEYS.WRONG_BANK, []);
+      showWrongBank();
+    }
+  }
+
+  function exportWrongTxt() {
+    const wrongs = getStorage(STORAGE_KEYS.WRONG_BANK);
+    if (wrongs.length === 0) {
+      alert('错题本为空');
+      return;
+    }
+    
+    let content = '========================================\n';
+    content += '         错题本导出\n';
+    content += ' 导出时间: ' + new Date().toLocaleString() + '\n';
+    content += ' 共 ' + wrongs.length + ' 题\n';
+    content += '========================================\n\n';
+    
+    let qidx = 1;
+    wrongs.forEach(qid => {
+      const q = QUESTIONS.find(q => q.id === qid);
+      if (q) {
+        content += qidx + '. [' + (q.type === 'single' ? '单选题' : '多选题') + '] ' + q.text + '\n';
+        q.options.forEach(opt => {
+          content += '   ' + opt + '\n';
+        });
+        content += '   【正确答案】' + q.answer + '\n';
+        content += '   【章节】' + getChapterName(q.chapter) + '\n\n';
+        qidx++;
+      }
+    });
+    
+    downloadFile(content, '错题本_' + new Date().toISOString().slice(0,10) + '.txt');
+  }
+
+  // ==================== 标记题目 ====================
+  function showMarkedBank() {
+    const marked = getStorage(STORAGE_KEYS.MARKED_BANK);
+    document.getElementById('markedBankCount').textContent = marked.length;
+    
+    const list = document.getElementById('markedBankList');
+    list.innerHTML = '';
+    
+    if (marked.length === 0) {
+      list.innerHTML = '<div class="empty-tip">暂无标记题目</div>';
+    } else {
+      marked.forEach(qid => {
+        const q = QUESTIONS.find(q => q.id === qid);
+        if (q) {
+          const div = document.createElement('div');
+          div.className = 'bank-list-item';
+          div.innerHTML = '<div class="bank-q">' + 
+            (q.type === 'single' ? '<span class="type-badge type-single">单</span>' : '<span class="type-badge type-multi">多</span>') +
+            q.text + '</div>' +
+            '<div class="bank-meta">' + getChapterName(q.chapter) + ' · 正确答案: ' + q.answer + 
+            ' <span style="color:#ea4335;cursor:pointer;margin-left:10px" onclick="event.stopPropagation();removeMarked(' + qid + ')">[取消标记]</span></div>';
+          div.onclick = function() {
+            browseSpecific(qid);
+          };
+          list.appendChild(div);
+        }
+      });
+    }
+    
+    showPanel('markedBankPanel');
+  }
+
+  function removeMarked(qid) {
+    let marked = getStorage(STORAGE_KEYS.MARKED_BANK);
+    marked = marked.filter(id => id !== qid);
+    setStorage(STORAGE_KEYS.MARKED_BANK, marked);
+    showMarkedBank();
+  }
+
+  function practiceMarked() {
+    const marked = getStorage(STORAGE_KEYS.MARKED_BANK);
+    if (marked.length === 0) {
+      alert('没有标记的题目');
+      return;
+    }
+    
+    currentQuestions = shuffle(QUESTIONS.filter(q => marked.includes(q.id)));
+    currentIndex = 0;
+    correctCount = 0;
+    wrongCount = 0;
+    userAnswers = [];
+    
+    document.getElementById('totalCount').textContent = currentQuestions.length;
+    document.getElementById('progressWrap').style.display = 'block';
+    document.getElementById('testTitle').textContent = '标记题专项练习';
+    
+    showPanel('testPanel');
+    showQuestion();
+  }
+
+  function clearMarkedBank() {
+    if (confirm('确定要清空所有标记吗？')) {
+      setStorage(STORAGE_KEYS.MARKED_BANK, []);
+      showMarkedBank();
+    }
+  }
+
+  function exportMarkedTxt() {
+    const marked = getStorage(STORAGE_KEYS.MARKED_BANK);
+    if (marked.length === 0) {
+      alert('没有标记的题目');
+      return;
+    }
+    
+    let content = '========================================\n';
+    content += '         标记题目导出\n';
+    content += ' 导出时间: ' + new Date().toLocaleString() + '\n';
+    content += ' 共 ' + marked.length + ' 题\n';
+    content += '========================================\n\n';
+    
+    let qidx = 1;
+    marked.forEach(qid => {
+      const q = QUESTIONS.find(q => q.id === qid);
+      if (q) {
+        content += qidx + '. [' + (q.type === 'single' ? '单选题' : '多选题') + '] ' + q.text + '\n';
+        q.options.forEach(opt => {
+          content += '   ' + opt + '\n';
+        });
+        content += '   【正确答案】' + q.answer + '\n';
+        content += '   【章节】' + getChapterName(q.chapter) + '\n\n';
+        qidx++;
+      }
+    });
+    
+    downloadFile(content, '标记题目_' + new Date().toISOString().slice(0,10) + '.txt');
+  }
+
+  // ==================== 题库浏览 ====================
+  function initBrowse() {
+    const chId = parseInt(document.getElementById('browseChapter').value);
+    const type = document.getElementById('browseType').value;
+    
+    browseList = QUESTIONS.filter(q => {
+      if (chId > 0 && q.chapter !== chId) return false;
+      if (type !== 'all' && q.type !== type) return false;
+      return true;
+    });
+    
+    document.getElementById('browseTotal').textContent = browseList.length;
+    document.getElementById('browseTotal2').textContent = browseList.length;
+    
+    if (browseIndex >= browseList.length) browseIndex = 0;
+    if (browseList.length > 0) {
+      showBrowseQuestion();
+    }
+  }
+
+  function showBrowseQuestion() {
+    const q = browseList[browseIndex];
+    if (!q) return;
+    
+    document.getElementById('browseCurrent').textContent = browseIndex + 1;
+    
+    const typeBadge = q.type === 'single' 
+      ? '<span class="type-badge type-single">单选题</span>'
+      : '<span class="type-badge type-multi">多选题</span>';
+    
+    document.getElementById('browseMeta').innerHTML = 
+      typeBadge + '<span class="chapter-badge">' + getChapterName(q.chapter) + '</span>';
+    document.getElementById('browseText').textContent = '【' + (browseIndex + 1) + '】' + q.text;
+    
+    const grid = document.getElementById('browseOptions');
+    grid.innerHTML = '';
+    const correctIndices = getCorrectOptions(q).map(a => a.charCodeAt(0) - 65);
+    
+    q.options.forEach((opt, idx) => {
+      const div = document.createElement('div');
+      div.className = 'option-item show-correct';
+      if (!correctIndices.includes(idx)) {
+        div.classList.remove('show-correct');
+      }
+      div.innerHTML = '<span class="opt-label">' + opt + '</span>';
+      grid.appendChild(div);
+    });
+    
+    const correctText = correctIndices.map(i => q.options[i]).join('、');
+    document.getElementById('browseAnswer').innerHTML = 
+      '<strong>✅ 正确答案：</strong>' + q.answer + '. ' + correctText;
+    
+    // 标记按钮状态
+    const marked = getStorage(STORAGE_KEYS.MARKED_BANK).includes(q.id);
+    const btn = document.getElementById('browseMarkBtn');
+    if (marked) {
+      btn.textContent = '⭐ 已标记';
+    } else {
+      btn.textContent = '⭐ 标记';
+    }
+  }
+
+  function browsePrev() {
+    if (browseIndex > 0) {
+      browseIndex--;
+      showBrowseQuestion();
+    }
+  }
+
+  function browseNext() {
+    if (browseIndex < browseList.length - 1) {
+      browseIndex++;
+      showBrowseQuestion();
+    }
+  }
+
+  function browseToggleMark() {
+    if (browseList.length === 0) return;
+    const q = browseList[browseIndex];
+    let marked = getStorage(STORAGE_KEYS.MARKED_BANK);
+    const idx = marked.indexOf(q.id);
+    if (idx >= 0) {
+      marked.splice(idx, 1);
+    } else {
+      marked.push(q.id);
+    }
+    setStorage(STORAGE_KEYS.MARKED_BANK, marked);
+    showBrowseQuestion();
+  }
+
+  function browseSpecific(qid) {
+    const chId = 0;
+    const type = 'all';
+    document.getElementById('browseChapter').value = chId;
+    document.getElementById('browseType').value = type;
+    
+    initBrowse();
+    
+    const idx = browseList.findIndex(q => q.id === qid);
+    if (idx >= 0) {
+      browseIndex = idx;
+      showBrowseQuestion();
+    }
+    
+    showPanel('browsePanel');
+  }
+
+  // ==================== 导出文件 ====================
+  function downloadFile(content, filename) {
+    const blob = new Blob(['\ufeff' + content], {type: 'text/plain;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 
   // ==================== 初始化 ====================
-  function init(){
+  function init() {
     initChapterList();
-    initModeGrid();
-    initEvents();
-    // 清理已删除章节的本地记录（chapter 2、9）
-    try{
-      const removedChapters=new Set([2,9]);
-      state.doneSet=new Set([...state.doneSet].filter(id=>{
-        const qid=typeof id==='number'?id:parseInt(id);
-        return !removedChapters.has(Math.floor(qid/100));
-      }));
-      state.wrongBank=state.wrongBank.filter(w=>{
-        const c=w.qid?Math.floor(w.qid/100):null;
-        return !removedChapters.has(c);
-      });
-      localStorage.setItem('doneSet',JSON.stringify([...state.doneSet]));
-      localStorage.setItem('wrongBank',JSON.stringify(state.wrongBank));
-    }catch(e){}
-    renderWrongBank();
-    // 默认显示设置页（主页）
-    showPanel('settings');
+    
+    const sel = document.getElementById('browseChapter');
+    CHAPTERS.forEach(ch => {
+      const opt = document.createElement('option');
+      opt.value = ch.id;
+      opt.textContent = ch.name + ' (' + ch.count + '题)';
+      sel.appendChild(opt);
+    });
+    
+    updateHomeStats();
   }
 
-  // 绑定错题本按钮
-  document.addEventListener('DOMContentLoaded',()=>{
-    init();
-    // 在设置面板加一个跳转到错题本的按钮
-    const btn=document.createElement('button');
-    btn.className='btn btn-warning';
-    btn.style='width:100%;margin-top:10px';
-    btn.textContent='查看错题本';
-    btn.onclick=()=>{renderWrongBank();showPanel('bank');};
-    document.getElementById('settingsPanel').appendChild(btn);
-  });
+  init();
+
+  window.showPanel = showPanel;
+  window.selectAllChapters = selectAllChapters;
+  window.selectMode = selectMode;
+  window.startQuiz = startQuiz;
+  window.submitAnswer = submitAnswer;
+  window.nextQuestion = nextQuestion;
+  window.prevQuestion = prevQuestion;
+  window.exitQuiz = exitQuiz;
+  window.showWrongPanel = showWrongPanel;
+  window.showAllReview = showAllReview;
+  window.toggleMark = toggleMark;
+  window.showWrongBank = showWrongBank;
+  window.practiceWrong = practiceWrong;
+  window.clearWrongBank = clearWrongBank;
+  window.exportWrongTxt = exportWrongTxt;
+  window.showMarkedBank = showMarkedBank;
+  window.removeMarked = removeMarked;
+  window.practiceMarked = practiceMarked;
+  window.clearMarkedBank = clearMarkedBank;
+  window.exportMarkedTxt = exportMarkedTxt;
+  window.initBrowse = initBrowse;
+  window.browsePrev = browsePrev;
+  window.browseNext = browseNext;
+  window.browseToggleMark = browseToggleMark;
+  window.updateHomeStats = updateHomeStats;
 })();
 </script>
 </body>
